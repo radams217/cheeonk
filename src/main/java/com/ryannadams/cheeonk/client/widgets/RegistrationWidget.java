@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -54,7 +55,7 @@ public class RegistrationWidget extends Composite implements ClickHandler
 		});
 
 		panel.addStyleName("registrationWidget");
-		panel.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
+		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 
 		panel.add(new HTML("Email:"));
 		panel.add(emailField);

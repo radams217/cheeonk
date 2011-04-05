@@ -7,18 +7,9 @@
 
 	<!-- Servlets -->
 	<servlet>
-		<servlet-name>greetServlet</servlet-name>
-		<servlet-class>com.ryannadams.cheeonk.server.GreetingServiceImpl</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>chatServlet</servlet-name>
 		<servlet-class>com.ryannadams.cheeonk.server.ChatServiceImpl</servlet-class>
 	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>greetServlet</servlet-name>
-		<url-pattern>/cheeonk/greet</url-pattern>
-	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>chatServlet</servlet-name>
 		<url-pattern>/cheeonk/chat</url-pattern>

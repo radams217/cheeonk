@@ -2,8 +2,10 @@ package com.ryannadams.cheeonk.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -11,54 +13,60 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ryannadams.cheeonk.client.services.ChatService;
+import com.ryannadams.cheeonk.server.resources.ChatManager;
 import com.ryannadams.cheeonk.server.resources.ConnectionManager;
 
+@SuppressWarnings("serial")
 public class ChatServiceImpl extends RemoteServiceServlet implements
-		ChatService
+		ChatService, ChatManagerListener, MessageListener
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6635882140636994640L;
+	private static final ConnectionManager connectionManager = ConnectionManager
+			.getInstance();
+	private static final ChatManager chatManager = ChatManager.getInstance();
+
+	private Map<Chat, List<Message>> chats = new HashMap<Chat, List<Message>>();
+
+	@Override
+	public String[] getMessages()
+	{
+
+	}
+
+	@Override
+	public void processMessage(Chat chat, Message message)
+	{
+		chats.get(chat).add(message);
+	}
 
 	@Override
 	public Boolean login(String username, String password)
 	{
+		XMPPConnection connection = connectionManager.getConnection();
+
 		try
 		{
-			XMPPConnection connection = ConnectionManager.getInstance()
-					.getConnection();
-
 			connection.login(username, password);
-
-			return connection.isAuthenticated();
+			connection.getChatManager().addChatListener(this);
 		}
 		catch (XMPPException e)
 		{
 			e.printStackTrace();
 		}
 
-		return false;
+		return connection.isAuthenticated();
 	}
 
 	@Override
 	public Boolean logout()
 	{
-		try
-		{
-			ConnectionManager.getInstance().getConnection().disconnect();
+		XMPPConnection connection = connectionManager.getConnection();
+		connection.getChatManager().removeChatListener(this);
+		connection.disconnect();
 
-			return true;
-		}
-		catch (XMPPException e)
-		{
-			e.printStackTrace();
-		}
-
-		return false;
-
+		return !connection.isConnected();
 	}
 
 	@Override
@@ -66,52 +74,32 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	{
 		List<String> buddies = new ArrayList<String>();
 
-		try
+		Roster roster = connectionManager.getConnection().getRoster();
+
+		for (RosterEntry buddy : roster.getEntries())
 		{
-
-			Roster roster = ConnectionManager.getInstance().getConnection()
-					.getRoster();
-
-			for (RosterEntry buddy : roster.getEntries())
-			{
-				buddies.add(buddy.getName());
-			}
-
-		}
-		catch (XMPPException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			buddies.add(buddy.getName());
 		}
 
 		return buddies;
+	}
+
+	@Override
+	public void createChat(String recipient)
+	{
 
 	}
 
 	@Override
-	public void createChat(String username)
+	public void sendMessage(String message)
 	{
-		try
-		{
 
-			ConnectionManager.getInstance().getConnection().getChatManager()
-					.createChat(username, new MessageListener()
-					{
+	}
 
-						@Override
-						public void processMessage(Chat arg0, Message arg1)
-						{
-							// TODO Auto-generated method stub
-
-						}
-					});
-
-		}
-		catch (XMPPException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	@Override
+	public void chatCreated(Chat chat, boolean createdLocally)
+	{
+		// TODO Auto-generated method stub
 
 	}
 

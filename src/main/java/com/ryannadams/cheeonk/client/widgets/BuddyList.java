@@ -2,6 +2,8 @@ package com.ryannadams.cheeonk.client.widgets;
 
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -23,14 +25,40 @@ public class BuddyList extends Composite
 
 		flowpanel.addStyleName("buddyList");
 
-		for (String buddy : buddyList)
+		for (final String buddy : buddyList)
 		{
-			Button label = new Button(buddy);
-			flowpanel.add(label);
+			Button button = new Button(buddy);
+
+			final ChatPanel chat = new ChatPanel(true);
+
+			button.addClickHandler(new ClickHandler()
+			{
+
+				@Override
+				public void onClick(ClickEvent event)
+				{
+
+					chat.setUsername(buddy);
+					chat.show();
+
+					chat.addClickHandler(new ClickHandler()
+					{
+
+						@Override
+						public void onClick(ClickEvent event)
+						{
+							// TODO Auto-generated method stub
+
+						}
+					});
+
+				}
+			});
+
+			flowpanel.add(button);
 		}
 
 		initWidget(flowpanel);
 
 	}
-
 }

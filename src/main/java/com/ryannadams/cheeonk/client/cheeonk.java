@@ -13,8 +13,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.ryannadams.cheeonk.client.i18n.Messages;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
-import com.ryannadams.cheeonk.client.services.GreetingService;
-import com.ryannadams.cheeonk.client.services.GreetingServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
@@ -25,10 +23,9 @@ import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
  */
 public class cheeonk implements EntryPoint
 {
-	private final GreetingServiceAsync greetingService = GWT
-			.create(GreetingService.class);
 
-	private final ChatServiceAsync chatService = GWT.create(ChatService.class);
+	private final ChatServiceAsync chatService = GWT
+			.create(ChatService.class);
 
 	private final Messages messages = GWT.create(Messages.class);
 

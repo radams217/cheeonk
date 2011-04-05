@@ -8,7 +8,7 @@ public class ConnectionManager
 {
 	public static ConnectionManager instance;
 
-	public static ConnectionManager getInstance()
+	public static synchronized ConnectionManager getInstance()
 	{
 		if (instance == null)
 		{
@@ -20,7 +20,7 @@ public class ConnectionManager
 
 	private XMPPConnection connection;
 
-	public XMPPConnection getConnection() throws XMPPException
+	public XMPPConnection getConnection()
 	{
 		if (connection == null)
 		{
@@ -30,7 +30,14 @@ public class ConnectionManager
 
 		if (!connection.isConnected())
 		{
-			connection.connect();
+			try
+			{
+				connection.connect();
+			}
+			catch (XMPPException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		return connection;

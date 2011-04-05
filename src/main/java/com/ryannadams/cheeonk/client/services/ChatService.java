@@ -12,7 +12,11 @@ public interface ChatService extends RemoteService
 
 	Boolean logout();
 
-	void createChat(String username);
+	void createChat(String recipient);
 
 	List<String> getBuddyList();
+
+	void sendMessage(String message);
+
+	String[] getMessages();
 }

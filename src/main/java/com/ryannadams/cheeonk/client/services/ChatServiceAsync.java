@@ -13,4 +13,8 @@ public interface ChatServiceAsync
 	void createChat(String username, AsyncCallback<Void> callback);
 
 	void getBuddyList(AsyncCallback<List<String>> callback);
+
+	void sendMessage(String message, AsyncCallback<Void> callback);
+
+	void getMessages(AsyncCallback<String[]> callback);
 }
