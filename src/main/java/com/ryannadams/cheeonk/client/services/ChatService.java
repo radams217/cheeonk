@@ -1,9 +1,10 @@
 package com.ryannadams.cheeonk.client.services;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.ryannadams.cheeonk.client.IBuddy;
+import com.ryannadams.cheeonk.client.IChat;
+import com.ryannadams.cheeonk.client.IMessage;
 
 @RemoteServiceRelativePath("chat")
 public interface ChatService extends RemoteService
@@ -12,11 +13,15 @@ public interface ChatService extends RemoteService
 
 	Boolean logout();
 
+	IBuddy[] getBuddyList();
+
+	void addBuddy(IBuddy buddy);
+
+	void removeBuddy(IBuddy buddy);
+
 	void createChat(String recipient);
 
-	List<String> getBuddyList();
+	void sendMessage(IChat key, String message);
 
-	void sendMessage(String message);
-
-	String[] getMessages();
+	IMessage[] getMessages(IChat key);
 }

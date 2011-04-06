@@ -8,14 +8,16 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.ryannadams.cheeonk.client.IBuddy;
 
-public class BuddyList extends Composite
+public class BuddyList extends Composite implements ClickHandler
 {
 	// Probably will want to change this later
 	private FlowPanel flowpanel;
 	private FlexTable flextable;
+	private List<IBuddy> buddyList;
 
-	public BuddyList(List<String> buddyList)
+	public BuddyList()
 	{
 		flextable = new FlexTable();
 		flowpanel = new FlowPanel();
@@ -25,40 +27,53 @@ public class BuddyList extends Composite
 
 		flowpanel.addStyleName("buddyList");
 
-		for (final String buddy : buddyList)
+		initWidget(flowpanel);
+	}
+
+	public void setBuddyList(IBuddy[] buddyList)
+	{
+		for (IBuddy buddy : buddyList)
 		{
-			Button button = new Button(buddy);
+			Button button = new Button(buddy.getName());
+			button.setStyleName("buddyList-Status");
 
-			final ChatPanel chat = new ChatPanel(true);
-
-			button.addClickHandler(new ClickHandler()
-			{
-
-				@Override
-				public void onClick(ClickEvent event)
-				{
-
-					chat.setUsername(buddy);
-					chat.show();
-
-					chat.addClickHandler(new ClickHandler()
-					{
-
-						@Override
-						public void onClick(ClickEvent event)
-						{
-							// TODO Auto-generated method stub
-
-						}
-					});
-
-				}
-			});
+			button.addClickHandler(this);
 
 			flowpanel.add(button);
-		}
 
-		initWidget(flowpanel);
+			this.buddyList.add(buddy);
+		}
+	}
+
+	// public BuddyList(IBuddy[] buddyList)
+	// {
+	// flextable = new FlexTable();
+	// flowpanel = new FlowPanel();
+	//
+	// flextable.clear();
+	// flextable.setWidget(3, 0, flowpanel);
+	//
+	// flowpanel.addStyleName("buddyList");
+	//
+	// for (IBuddy buddy : buddyList)
+	// {
+	// Button button = new Button(buddy.getName());
+	// button.setStyleName("buddyList-Status");
+	//
+	// button.addClickHandler(this);
+	//
+	// flowpanel.add(button);
+	//
+	// this.buddyList.add(buddy);
+	// }
+	//
+	// initWidget(flowpanel);
+	//
+	// }
+
+	@Override
+	public void onClick(ClickEvent event)
+	{
 
 	}
 }

@@ -1,7 +1,5 @@
 package com.ryannadams.cheeonk.client;
 
-import java.util.List;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,18 +14,19 @@ import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
-import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class cheeonk implements EntryPoint
 {
-
-	private final ChatServiceAsync chatService = GWT
-			.create(ChatService.class);
+	private final ChatServiceAsync chatService = GWT.create(ChatService.class);
 
 	private final Messages messages = GWT.create(Messages.class);
+
+	private LoginWidget login;
+	private LogoutWidget logout;
+	private BuddyList buddyList;
 
 	/**
 	 * This is the entry point method.
@@ -35,6 +34,19 @@ public class cheeonk implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
+		login = new LoginWidget();
+		logout = new LogoutWidget();
+
+		buddyList = new BuddyList()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+
+			}
+
+		};
+
 		final Label errorLabel = new Label();
 
 		// Create the popup dialog box
@@ -43,9 +55,6 @@ public class cheeonk implements EntryPoint
 		// dialogBox.setAnimationEnabled(true);
 		// We can set the id of a widget by accessing its Element
 		// NOTE: closeButton.getElement().setId("closeButton");
-
-		final LoginWidget login = new LoginWidget();
-		final LogoutWidget logout = new LogoutWidget();
 
 		logout.addClickHandler(new ClickHandler()
 		{
@@ -97,7 +106,7 @@ public class cheeonk implements EntryPoint
 							public void onFailure(Throwable caught)
 							{
 								errorLabel.setText("didn't work");
-								// go to long login
+								// got to log login
 							}
 
 							@Override
@@ -111,7 +120,7 @@ public class cheeonk implements EntryPoint
 									logout.setUserName(login.getUsername());
 
 									chatService
-											.getBuddyList(new AsyncCallback<List<String>>()
+											.getBuddyList(new AsyncCallback<IBuddy[]>()
 											{
 
 												@Override
@@ -125,12 +134,10 @@ public class cheeonk implements EntryPoint
 
 												@Override
 												public void onSuccess(
-														List<String> result)
+														IBuddy[] result)
 												{
-													RootPanel
-															.get("buddyListContainer")
-															.add(new BuddyList(
-																	result));
+													buddyList
+															.setBuddyList(result);
 
 												}
 											});
@@ -150,8 +157,10 @@ public class cheeonk implements EntryPoint
 
 		RootPanel.get("loginContainer").add(login);
 
-		RootPanel.get("registrationFormContainer")
-				.add(new RegistrationWidget());
+		RootPanel.get("buddyListContainer").add(buddyList);
+
+		// RootPanel.get("registrationFormContainer")
+		// .add(new RegistrationWidget());
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element

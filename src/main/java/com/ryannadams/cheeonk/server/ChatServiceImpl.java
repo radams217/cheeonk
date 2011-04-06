@@ -1,45 +1,46 @@
 package com.ryannadams.cheeonk.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 
 import com.google.gwt.dev.util.collect.HashMap;
+import com.google.gwt.dev.util.collect.HashSet;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ryannadams.cheeonk.client.IBuddy;
+import com.ryannadams.cheeonk.client.IChat;
+import com.ryannadams.cheeonk.client.IMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
-import com.ryannadams.cheeonk.server.resources.ChatManager;
+import com.ryannadams.cheeonk.server.internal.BuddyWrapperImpl;
+import com.ryannadams.cheeonk.server.internal.ChatWrapperImpl;
+import com.ryannadams.cheeonk.server.internal.MessageWrapperImpl;
 import com.ryannadams.cheeonk.server.resources.ConnectionManager;
 
 @SuppressWarnings("serial")
 public class ChatServiceImpl extends RemoteServiceServlet implements
-		ChatService, ChatManagerListener, MessageListener
+		ChatService, ChatManagerListener, MessageListener, RosterListener
 {
-	private static final ConnectionManager connectionManager = ConnectionManager
+	private final ConnectionManager connectionManager = ConnectionManager
 			.getInstance();
-	private static final ChatManager chatManager = ChatManager.getInstance();
 
-	private Map<Chat, List<Message>> chats = new HashMap<Chat, List<Message>>();
+	// private final XMPPConnection connection = new XMPPConnection(
+	// new ConnectionConfiguration("ryannadams.com", 5222));
 
-	@Override
-	public String[] getMessages()
-	{
-
-	}
-
-	@Override
-	public void processMessage(Chat chat, Message message)
-	{
-		chats.get(chat).add(message);
-	}
+	private final Map<IChat, List<IMessage>> chatMap = new HashMap<IChat, List<IMessage>>();
+	private final Set<IBuddy> buddySet = new HashSet<IBuddy>();
 
 	@Override
 	public Boolean login(String username, String password)
@@ -50,6 +51,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 		{
 			connection.login(username, password);
 			connection.getChatManager().addChatListener(this);
+			connection.getRoster().addRosterListener(this);
 		}
 		catch (XMPPException e)
 		{
@@ -64,40 +66,112 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	{
 		XMPPConnection connection = connectionManager.getConnection();
 		connection.getChatManager().removeChatListener(this);
+		connection.getRoster().removeRosterListener(this);
 		connection.disconnect();
 
 		return !connection.isConnected();
 	}
 
 	@Override
-	public List<String> getBuddyList()
+	public IBuddy[] getBuddyList()
 	{
-		List<String> buddies = new ArrayList<String>();
-
 		Roster roster = connectionManager.getConnection().getRoster();
 
 		for (RosterEntry buddy : roster.getEntries())
 		{
-			buddies.add(buddy.getName());
+			buddySet.add(new BuddyWrapperImpl(buddy));
 		}
 
-		return buddies;
+		return buddySet.toArray(new IBuddy[buddySet.size()]);
+	}
+
+	@Override
+	public void addBuddy(IBuddy buddy)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removeBuddy(IBuddy buddy)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void createChat(String recipient)
 	{
-
+		connectionManager.getConnection().getChatManager()
+				.createChat(recipient, this);
 	}
 
 	@Override
-	public void sendMessage(String message)
+	public void sendMessage(IChat key, String message)
 	{
+		for (IChat chat : chatMap.keySet())
+		{
+			if (key.getParticipant().equals(chat.getParticipant()))
+			{
+				try
+				{
+					((ChatWrapperImpl) chat).getChat().sendMessage(message);
+				}
+				catch (XMPPException e)
+				{
+					e.printStackTrace();
+				}
+
+				break;
+			}
+		}
 
 	}
 
 	@Override
-	public void chatCreated(Chat chat, boolean createdLocally)
+	public IMessage[] getMessages(IChat key)
+	{
+		List<IMessage> messages = chatMap.get(key);
+
+		return messages.toArray(new IMessage[messages.size()]);
+	}
+
+	@Override
+	public void chatCreated(Chat key, boolean createdLocally)
+	{
+		chatMap.put(new ChatWrapperImpl(key), new ArrayList<IMessage>());
+	}
+
+	@Override
+	public void processMessage(Chat key, Message message)
+	{
+		chatMap.get(new ChatWrapperImpl(key)).add(
+				new MessageWrapperImpl(message));
+	}
+
+	@Override
+	public void entriesAdded(Collection<String> arg0)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void entriesDeleted(Collection<String> arg0)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void entriesUpdated(Collection<String> arg0)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void presenceChanged(Presence arg0)
 	{
 		// TODO Auto-generated method stub
 

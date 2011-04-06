@@ -1,8 +1,9 @@
 package com.ryannadams.cheeonk.client.services;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.ryannadams.cheeonk.client.IBuddy;
+import com.ryannadams.cheeonk.client.IChat;
+import com.ryannadams.cheeonk.client.IMessage;
 
 public interface ChatServiceAsync
 {
@@ -10,11 +11,15 @@ public interface ChatServiceAsync
 
 	void logout(AsyncCallback<Boolean> callback);
 
+	void getBuddyList(AsyncCallback<IBuddy[]> callback);
+
+	void addBuddy(IBuddy buddy, AsyncCallback<Void> callback);
+
+	void removeBuddy(IBuddy buddy, AsyncCallback<Void> callback);
+
 	void createChat(String username, AsyncCallback<Void> callback);
 
-	void getBuddyList(AsyncCallback<List<String>> callback);
+	void sendMessage(IChat key, String message, AsyncCallback<Void> callback);
 
-	void sendMessage(String message, AsyncCallback<Void> callback);
-
-	void getMessages(AsyncCallback<String[]> callback);
+	void getMessages(IChat key, AsyncCallback<IMessage[]> callback);
 }

@@ -1,40 +1,44 @@
 package com.ryannadams.cheeonk.client.widgets;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.ClientChatImpl;
+import com.ryannadams.cheeonk.client.IMessage;
+import com.ryannadams.cheeonk.client.services.ChatService;
+import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 
-public class ChatPanel extends DialogBox
+public class ChatPanel extends Composite
 {
+	private final ChatServiceAsync chatService = GWT.create(ChatService.class);
 
-	private Label username;
-	private Label history;
-	private TextBox message;
+	private Label recipient;
+	private Label chatWindow;
+	private TextBox messageBox;
 	private Button send;
 
-	public ChatPanel(boolean autoHide)
+	public ChatPanel()
 	{
-		super(autoHide);
-		username = new Label();
-		history = new Label();
-		message = new TextBox();
+		recipient = new Label();
+		chatWindow = new Label();
+		chatWindow.setStyleName("Chat-Window");
+		messageBox = new TextBox();
 		send = new Button("Send");
 
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("Chat-Popup");
-		panel.add(username);
-		panel.add(history);
-		panel.add(message);
+		panel.add(recipient);
+		panel.add(chatWindow);
+		panel.add(messageBox);
 		panel.add(send);
 
-		setWidget(panel);
-
-		setTitle(username.getText());
+		initWidget(panel);
 
 		// Create a new timer that calls Window.alert().
 		Timer t = new Timer()
@@ -42,38 +46,44 @@ public class ChatPanel extends DialogBox
 			@Override
 			public void run()
 			{
-				messageService.getMessages(new AsyncCallback<String[]>()
-				{
+				chatService.getMessages(
+						new ClientChatImpl(recipient.getText()),
+						new AsyncCallback<IMessage[]>()
+						{
 
-					@Override
-					public void onSuccess(String[] result)
-					{
-						history.setText(result[result.length - 1]);
-					}
+							@Override
+							public void onSuccess(IMessage[] messages)
+							{
+								StringBuffer result = new StringBuffer();
 
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						// TODO Auto-generated method stub
+								if (messages.length > 0)
+								{
+									result.append(messages[0].getBody());
 
-					}
-				});
+									chatWindow.setText(result.toString());
+
+								}
+
+							}
+
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								// TODO Auto-generated method stub
+
+							}
+						});
 			}
 		};
 
-		// Schedule the timer to run once in 5 seconds.
-		t.scheduleRepeating(2000);
+		// Schedule the timer to run once in 1 second.
+		t.scheduleRepeating(1000);
 
 	}
 
-	public void setHistory(String history)
+	public void setRecipient(String username)
 	{
-		this.history.setText(history);
-	}
-
-	public void setUsername(String username)
-	{
-		this.username.setText(username);
+		this.recipient.setText(username);
 	}
 
 	public void addClickHandler(ClickHandler clickHandler)
