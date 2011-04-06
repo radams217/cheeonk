@@ -2,6 +2,8 @@ package com.ryannadams.cheeonk.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +19,10 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
-import com.google.gwt.dev.util.collect.HashMap;
-import com.google.gwt.dev.util.collect.HashSet;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.ryannadams.cheeonk.client.IBuddy;
-import com.ryannadams.cheeonk.client.IChat;
-import com.ryannadams.cheeonk.client.IMessage;
+import com.ryannadams.cheeonk.client.chat.IBuddy;
+import com.ryannadams.cheeonk.client.chat.IChat;
+import com.ryannadams.cheeonk.client.chat.IMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.server.internal.BuddyWrapperImpl;
 import com.ryannadams.cheeonk.server.internal.ChatWrapperImpl;

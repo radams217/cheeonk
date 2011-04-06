@@ -2,7 +2,7 @@ package com.ryannadams.cheeonk.server.internal;
 
 import org.jivesoftware.smack.RosterEntry;
 
-import com.ryannadams.cheeonk.client.IBuddy;
+import com.ryannadams.cheeonk.client.chat.IBuddy;
 
 public class BuddyWrapperImpl implements IBuddy
 {

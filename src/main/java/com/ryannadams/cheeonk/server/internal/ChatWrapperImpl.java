@@ -2,7 +2,7 @@ package com.ryannadams.cheeonk.server.internal;
 
 import org.jivesoftware.smack.Chat;
 
-import com.ryannadams.cheeonk.client.IChat;
+import com.ryannadams.cheeonk.client.chat.IChat;
 
 public class ChatWrapperImpl implements IChat
 {

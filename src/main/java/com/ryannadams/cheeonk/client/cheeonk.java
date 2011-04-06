@@ -8,12 +8,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.ryannadams.cheeonk.client.chat.IBuddy;
 import com.ryannadams.cheeonk.client.i18n.Messages;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
+import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -159,8 +161,8 @@ public class cheeonk implements EntryPoint
 
 		RootPanel.get("buddyListContainer").add(buddyList);
 
-		// RootPanel.get("registrationFormContainer")
-		// .add(new RegistrationWidget());
+		RootPanel.get("registrationFormContainer")
+				.add(new RegistrationWidget());
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element

@@ -9,8 +9,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.ClientChatImpl;
-import com.ryannadams.cheeonk.client.IMessage;
+import com.ryannadams.cheeonk.client.chat.ChatImpl;
+import com.ryannadams.cheeonk.client.chat.IMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 
@@ -47,7 +47,7 @@ public class ChatPanel extends Composite
 			public void run()
 			{
 				chatService.getMessages(
-						new ClientChatImpl(recipient.getText()),
+						new ChatImpl(recipient.getText()),
 						new AsyncCallback<IMessage[]>()
 						{
 

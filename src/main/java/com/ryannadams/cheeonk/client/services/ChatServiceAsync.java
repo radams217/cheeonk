@@ -1,9 +1,9 @@
 package com.ryannadams.cheeonk.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.ryannadams.cheeonk.client.IBuddy;
-import com.ryannadams.cheeonk.client.IChat;
-import com.ryannadams.cheeonk.client.IMessage;
+import com.ryannadams.cheeonk.client.chat.IBuddy;
+import com.ryannadams.cheeonk.client.chat.IChat;
+import com.ryannadams.cheeonk.client.chat.IMessage;
 
 public interface ChatServiceAsync
 {

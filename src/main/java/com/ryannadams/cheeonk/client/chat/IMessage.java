@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client;
+package com.ryannadams.cheeonk.client.chat;
 
 public interface IMessage
 {

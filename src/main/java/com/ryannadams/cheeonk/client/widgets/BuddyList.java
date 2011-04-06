@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.ryannadams.cheeonk.client.IBuddy;
+import com.ryannadams.cheeonk.client.chat.IBuddy;
 
 public class BuddyList extends Composite implements ClickHandler
 {
