@@ -8,14 +8,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.ryannadams.cheeonk.client.chat.IBuddy;
+import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 
 public class BuddyList extends Composite implements ClickHandler
 {
 	// Probably will want to change this later
 	private FlowPanel flowpanel;
 	private FlexTable flextable;
-	private List<IBuddy> buddyList;
+	private List<ClientBuddy> buddyList;
 
 	public BuddyList()
 	{
@@ -30,9 +30,9 @@ public class BuddyList extends Composite implements ClickHandler
 		initWidget(flowpanel);
 	}
 
-	public void setBuddyList(IBuddy[] buddyList)
+	public void setBuddyList(ClientBuddy[] buddyList)
 	{
-		for (IBuddy buddy : buddyList)
+		for (ClientBuddy buddy : buddyList)
 		{
 			Button button = new Button(buddy.getName());
 			button.setStyleName("buddyList-Status");
@@ -41,7 +41,7 @@ public class BuddyList extends Composite implements ClickHandler
 
 			flowpanel.add(button);
 
-			this.buddyList.add(buddy);
+			// this.buddyList.add(buddy);
 		}
 	}
 

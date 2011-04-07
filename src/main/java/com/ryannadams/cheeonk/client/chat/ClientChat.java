@@ -2,16 +2,16 @@ package com.ryannadams.cheeonk.client.chat;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ChatImpl implements IChat, IsSerializable
+public class ClientChat implements IsSerializable
 {
-	private String participant;
+	protected String participant;
 
-	public ChatImpl()
+	public ClientChat()
 	{
 
 	}
 
-	public ChatImpl(String participant)
+	public ClientChat(String participant)
 	{
 		this.participant = participant;
 	}
@@ -21,7 +21,6 @@ public class ChatImpl implements IChat, IsSerializable
 		this.participant = participant;
 	}
 
-	@Override
 	public String getParticipant()
 	{
 		return participant;

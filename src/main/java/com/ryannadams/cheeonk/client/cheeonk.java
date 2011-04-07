@@ -4,15 +4,20 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.ryannadams.cheeonk.client.chat.IBuddy;
+import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.chat.ClientChat;
+import com.ryannadams.cheeonk.client.chat.ClientMessage;
 import com.ryannadams.cheeonk.client.i18n.Messages;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
+import com.ryannadams.cheeonk.client.widgets.ChatPanel;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
@@ -44,7 +49,102 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void onClick(ClickEvent event)
 			{
+				final DialogBox panel = new DialogBox(true);
+				final ChatPanel chatPanel = new ChatPanel("ryan");
 
+				chatService.createChat("ryan", new AsyncCallback<ClientChat>()
+				{
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onSuccess(final ClientChat chat)
+					{
+						Timer t = new Timer()
+						{
+							@Override
+							public void run()
+							{
+								chatService.getMessages(chat,
+										new AsyncCallback<ClientMessage[]>()
+										{
+
+											@Override
+											public void onSuccess(
+													ClientMessage[] messages)
+											{
+												StringBuffer result = new StringBuffer();
+
+												if (messages.length > 0)
+												{
+													result.append(messages[0]
+															.getBody());
+
+													chatPanel
+															.setChatWindow(result
+																	.toString());
+
+												}
+
+											}
+
+											@Override
+											public void onFailure(
+													Throwable caught)
+											{
+												// TODO Auto-generated method
+												// stub
+
+											}
+										});
+							}
+						};
+
+						// Schedule the timer to run once in 1 second.
+						t.scheduleRepeating(1000);
+
+						chatPanel.addClickHandler(new ClickHandler()
+						{
+
+							@Override
+							public void onClick(ClickEvent event)
+							{
+
+								chatService.sendMessage(chat, "test test",
+										new AsyncCallback<Void>()
+										{
+
+											@Override
+											public void onFailure(
+													Throwable caught)
+											{
+												// TODO Auto-generated method
+												// stub
+
+											}
+
+											@Override
+											public void onSuccess(Void result)
+											{
+												// TODO Auto-generated method
+												// stub
+
+											}
+										});
+
+							}
+						});
+
+					}
+				});
+
+				panel.add(chatPanel);
+				panel.show();
 			}
 
 		};
@@ -122,7 +222,7 @@ public class cheeonk implements EntryPoint
 									logout.setUserName(login.getUsername());
 
 									chatService
-											.getBuddyList(new AsyncCallback<IBuddy[]>()
+											.getBuddyList(new AsyncCallback<ClientBuddy[]>()
 											{
 
 												@Override
@@ -136,7 +236,7 @@ public class cheeonk implements EntryPoint
 
 												@Override
 												public void onSuccess(
-														IBuddy[] result)
+														ClientBuddy[] result)
 												{
 													buddyList
 															.setBuddyList(result);

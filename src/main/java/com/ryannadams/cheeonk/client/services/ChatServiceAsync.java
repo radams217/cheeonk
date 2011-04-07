@@ -1,9 +1,9 @@
 package com.ryannadams.cheeonk.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.ryannadams.cheeonk.client.chat.IBuddy;
-import com.ryannadams.cheeonk.client.chat.IChat;
-import com.ryannadams.cheeonk.client.chat.IMessage;
+import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.chat.ClientChat;
+import com.ryannadams.cheeonk.client.chat.ClientMessage;
 
 public interface ChatServiceAsync
 {
@@ -11,15 +11,16 @@ public interface ChatServiceAsync
 
 	void logout(AsyncCallback<Boolean> callback);
 
-	void getBuddyList(AsyncCallback<IBuddy[]> callback);
+	void getBuddyList(AsyncCallback<ClientBuddy[]> callback);
 
-	void addBuddy(IBuddy buddy, AsyncCallback<Void> callback);
+	void addBuddy(ClientBuddy buddy, AsyncCallback<Void> callback);
 
-	void removeBuddy(IBuddy buddy, AsyncCallback<Void> callback);
+	void removeBuddy(ClientBuddy buddy, AsyncCallback<Void> callback);
 
-	void createChat(String username, AsyncCallback<Void> callback);
+	void createChat(String username, AsyncCallback<ClientChat> callback);
 
-	void sendMessage(IChat key, String message, AsyncCallback<Void> callback);
+	void sendMessage(ClientChat key, String message,
+			AsyncCallback<Void> callback);
 
-	void getMessages(IChat key, AsyncCallback<IMessage[]> callback);
+	void getMessages(ClientChat key, AsyncCallback<ClientMessage[]> callback);
 }
