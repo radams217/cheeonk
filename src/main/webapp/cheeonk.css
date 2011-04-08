@@ -168,3 +168,9 @@ label {
 #closeButton {
 	margin: 15px 6px 6px;
 }
+
+.Chat-Window
+{
+	width: 100px;
+	height: 100px;	
+}

@@ -35,7 +35,24 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	private final ConnectionManager connectionManager = ConnectionManager
 			.getInstance();
 
-	private final Map<ChatWrapper, List<MessageWrapper>> chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
+	private final Map<ChatWrapper, List<MessageWrapper>> chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>()
+	{
+		@Override
+		public boolean equals(Object arg0)
+		{
+			// TODO Auto-generated method stub
+			return super.equals(arg0);
+		}
+
+		@Override
+		public int hashCode()
+		{
+
+			return 1;
+
+		};
+
+	};
 	private final Set<BuddyWrapper> buddySet = new HashSet<BuddyWrapper>();
 
 	@Override
@@ -122,14 +139,19 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public ClientChat[] pollIncomingChats()
 	{
-		System.out.println("DEBUG: Polling Incoming Chats");
+		System.out.println("DEBUG: Polling for Incoming Chats");
 
 		List<ClientChat> newChatList = new ArrayList<ClientChat>();
 
 		for (ChatWrapper chat : chatMap.keySet())
 		{
-			newChatList.add(chat.getClientChat());
-			chat.setTransmitted(true);
+			if (!chat.isTransmitted())
+			{
+				System.out.println("DEBUG: Chat with "
+						+ chat.getChat().getParticipant() + " found.");
+				newChatList.add(chat.getClientChat());
+				chat.setTransmitted(true);
+			}
 		}
 
 		return newChatList.toArray(new ClientChat[newChatList.size()]);
@@ -138,7 +160,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void sendMessage(ClientChat key, String message)
 	{
-		System.out.println("DEBUG: Polling Incoming Messages");
+		System.out.println("DEBUG: Sending Outgoing Message");
 
 		// Store local message sent to message list?
 		for (ChatWrapper chat : chatMap.keySet())
@@ -178,6 +200,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public ClientMessage[] pollIncomingMessages(ClientChat key)
 	{
+		System.out.println("DEBUG: Polling for Incoming Messages");
+
 		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
 
 		// Do in reverse order, break when isTransmitted is true will save
@@ -186,6 +210,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 		{
 			if (!message.isTransmitted())
 			{
+				System.out.println("DEBUG: Message from "
+						+ message.getMessage().getFrom() + " received.");
 				newMessageList.add(message.getClientMessage());
 
 				message.setTransmitted(true);

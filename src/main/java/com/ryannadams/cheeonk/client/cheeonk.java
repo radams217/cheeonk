@@ -27,6 +27,7 @@ import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
  */
 public class cheeonk implements EntryPoint
 {
+	private final int POLLING_INTERVAL = 4000;
 	private final ChatServiceAsync chatService = GWT.create(ChatService.class);
 
 	private final Messages messages = GWT.create(Messages.class);
@@ -37,7 +38,6 @@ public class cheeonk implements EntryPoint
 
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
-	private Timer pollMessages;
 
 	private void startPollingChats()
 	{
@@ -71,7 +71,6 @@ public class cheeonk implements EntryPoint
 								@Override
 								public void onClick(ClickEvent event)
 								{
-
 									chatService.sendMessage(chat,
 											chatPanel.getMessageText(),
 											new AsyncCallback<Void>()
@@ -101,6 +100,47 @@ public class cheeonk implements EntryPoint
 								}
 							});
 
+							Timer pollMessages = new Timer()
+							{
+								@Override
+								public void run()
+								{
+									chatService
+											.pollIncomingMessages(
+													chat,
+													new AsyncCallback<ClientMessage[]>()
+													{
+
+														@Override
+														public void onFailure(
+																Throwable caught)
+														{
+															// TODO
+															// Auto-generated
+															// method stub
+
+														}
+
+														@Override
+														public void onSuccess(
+																ClientMessage[] messages)
+														{
+															for (ClientMessage message : messages)
+															{
+																chatPanel
+																		.setChatWindow(message
+																				.getBody());
+															}
+
+														}
+													});
+
+								}
+
+							};
+
+							pollMessages.scheduleRepeating(POLLING_INTERVAL);
+
 							panel.add(chatPanel);
 							panel.show();
 						}
@@ -112,40 +152,12 @@ public class cheeonk implements EntryPoint
 			}
 		};
 
-		pollChats.scheduleRepeating(2000);
+		pollChats.scheduleRepeating(POLLING_INTERVAL);
 
 	}
 
 	private void startPollingMessages(final ClientChat chat)
 	{
-		pollMessages = new Timer()
-		{
-
-			@Override
-			public void run()
-			{
-				chatService.pollIncomingMessages(chat,
-						new AsyncCallback<ClientMessage[]>()
-						{
-
-							@Override
-							public void onFailure(Throwable caught)
-							{
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onSuccess(ClientMessage[] result)
-							{
-								// TODO Auto-generated method stub
-
-							}
-						});
-
-			}
-
-		};
 
 	}
 
@@ -228,57 +240,102 @@ public class cheeonk implements EntryPoint
 			public void onClick(ClickEvent event)
 			{
 				final DialogBox panel = new DialogBox(true);
-				final ChatPanel chatPanel = new ChatPanel("ryan");
+				final ChatPanel chatPanel = new ChatPanel("radams217");
 
-				chatService.createChat("ryan", new AsyncCallback<ClientChat>()
-				{
-
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void onSuccess(final ClientChat chat)
-					{
-
-						chatPanel.addClickHandler(new ClickHandler()
+				chatService.createChat("radams217",
+						new AsyncCallback<ClientChat>()
 						{
 
 							@Override
-							public void onClick(ClickEvent event)
+							public void onFailure(Throwable caught)
 							{
+								// TODO Auto-generated method stub
 
-								chatService.sendMessage(chat,
-										chatPanel.getMessageText(),
-										new AsyncCallback<Void>()
-										{
+							}
 
-											@Override
-											public void onFailure(
-													Throwable caught)
-											{
-												// TODO Auto-generated method
-												// stub
+							@Override
+							public void onSuccess(final ClientChat chat)
+							{
+								Timer pollMessages = new Timer()
+								{
+									@Override
+									public void run()
+									{
+										chatService
+												.pollIncomingMessages(
+														chat,
+														new AsyncCallback<ClientMessage[]>()
+														{
 
-											}
+															@Override
+															public void onFailure(
+																	Throwable caught)
+															{
+																// TODO
+																// Auto-generated
+																// method stub
 
-											@Override
-											public void onSuccess(Void result)
-											{
-												// TODO Auto-generated method
-												// stub
+															}
 
-											}
-										});
+															@Override
+															public void onSuccess(
+																	ClientMessage[] messages)
+															{
+																for (ClientMessage message : messages)
+																{
+																	chatPanel
+																			.setChatWindow(message
+																					.getBody());
+																}
+
+															}
+														});
+
+									}
+
+								};
+
+								pollMessages
+										.scheduleRepeating(POLLING_INTERVAL);
+
+								chatPanel.addClickHandler(new ClickHandler()
+								{
+
+									@Override
+									public void onClick(ClickEvent event)
+									{
+
+										chatService.sendMessage(chat,
+												chatPanel.getMessageText(),
+												new AsyncCallback<Void>()
+												{
+
+													@Override
+													public void onFailure(
+															Throwable caught)
+													{
+														// TODO Auto-generated
+														// method
+														// stub
+
+													}
+
+													@Override
+													public void onSuccess(
+															Void result)
+													{
+														// TODO Auto-generated
+														// method
+														// stub
+
+													}
+												});
+
+									}
+								});
 
 							}
 						});
-
-					}
-				});
 
 				panel.add(chatPanel);
 				panel.show();
