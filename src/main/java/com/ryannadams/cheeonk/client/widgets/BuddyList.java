@@ -1,7 +1,5 @@
 package com.ryannadams.cheeonk.client.widgets;
 
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -15,7 +13,6 @@ public class BuddyList extends Composite implements ClickHandler
 	// Probably will want to change this later
 	private FlowPanel flowpanel;
 	private FlexTable flextable;
-	private List<ClientBuddy> buddyList;
 
 	public BuddyList()
 	{
@@ -40,36 +37,8 @@ public class BuddyList extends Composite implements ClickHandler
 			button.addClickHandler(this);
 
 			flowpanel.add(button);
-
-			// this.buddyList.add(buddy);
 		}
 	}
-
-	// public BuddyList(IBuddy[] buddyList)
-	// {
-	// flextable = new FlexTable();
-	// flowpanel = new FlowPanel();
-	//
-	// flextable.clear();
-	// flextable.setWidget(3, 0, flowpanel);
-	//
-	// flowpanel.addStyleName("buddyList");
-	//
-	// for (IBuddy buddy : buddyList)
-	// {
-	// Button button = new Button(buddy.getName());
-	// button.setStyleName("buddyList-Status");
-	//
-	// button.addClickHandler(this);
-	//
-	// flowpanel.add(button);
-	//
-	// this.buddyList.add(buddy);
-	// }
-	//
-	// initWidget(flowpanel);
-	//
-	// }
 
 	@Override
 	public void onClick(ClickEvent event)

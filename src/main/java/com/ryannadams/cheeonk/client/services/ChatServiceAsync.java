@@ -17,10 +17,17 @@ public interface ChatServiceAsync
 
 	void removeBuddy(ClientBuddy buddy, AsyncCallback<Void> callback);
 
+	void pollBuddyUpdates(AsyncCallback<ClientBuddy[]> callback);
+
 	void createChat(String username, AsyncCallback<ClientChat> callback);
+
+	void pollIncomingChats(AsyncCallback<ClientChat[]> callback);
 
 	void sendMessage(ClientChat key, String message,
 			AsyncCallback<Void> callback);
 
 	void getMessages(ClientChat key, AsyncCallback<ClientMessage[]> callback);
+
+	void pollIncomingMessages(ClientChat key,
+			AsyncCallback<ClientMessage[]> callback);
 }

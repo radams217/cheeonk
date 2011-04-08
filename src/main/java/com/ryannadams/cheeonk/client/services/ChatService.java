@@ -19,9 +19,16 @@ public interface ChatService extends RemoteService
 
 	void removeBuddy(ClientBuddy buddy);
 
+	ClientBuddy[] pollBuddyUpdates();
+
 	ClientChat createChat(String recipient);
+
+	ClientChat[] pollIncomingChats();
 
 	void sendMessage(ClientChat key, String message);
 
 	ClientMessage[] getMessages(ClientChat key);
+
+	ClientMessage[] pollIncomingMessages(ClientChat key);
+
 }

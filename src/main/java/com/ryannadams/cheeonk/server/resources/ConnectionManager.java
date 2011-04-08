@@ -25,7 +25,7 @@ public class ConnectionManager
 		if (connection == null)
 		{
 			connection = new XMPPConnection(new ConnectionConfiguration(
-					"ryannadams.com", 5222));
+					"localhost", 5222));
 		}
 
 		if (!connection.isConnected())

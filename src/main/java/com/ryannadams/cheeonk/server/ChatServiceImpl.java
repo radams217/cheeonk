@@ -81,7 +81,11 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 
 		for (BuddyWrapper buddy : buddySet)
 		{
-			buddyList.add(buddy.getClientBuddy());
+			if (!buddy.isTransmitted())
+			{
+				buddyList.add(buddy.getClientBuddy());
+				buddy.setTransmitted(true);
+			}
 		}
 
 		return buddyList.toArray(new ClientBuddy[buddyList.size()]);
@@ -102,6 +106,13 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
+	public ClientBuddy[] pollBuddyUpdates()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public ClientChat createChat(String recipient)
 	{
 		return new ChatWrapper(connectionManager.getConnection()
@@ -109,9 +120,27 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
+	public ClientChat[] pollIncomingChats()
+	{
+		System.out.println("DEBUG: Polling Incoming Chats");
+
+		List<ClientChat> newChatList = new ArrayList<ClientChat>();
+
+		for (ChatWrapper chat : chatMap.keySet())
+		{
+			newChatList.add(chat.getClientChat());
+			chat.setTransmitted(true);
+		}
+
+		return newChatList.toArray(new ClientChat[newChatList.size()]);
+	}
+
+	@Override
 	public void sendMessage(ClientChat key, String message)
 	{
-		// Store message to message list?
+		System.out.println("DEBUG: Polling Incoming Messages");
+
+		// Store local message sent to message list?
 		for (ChatWrapper chat : chatMap.keySet())
 		{
 			if (key.getParticipant().equals(chat.getChat().getParticipant()))
@@ -140,15 +169,30 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 		// looping through the entire array
 		for (MessageWrapper message : chatMap.get(key))
 		{
+			messageList.add(message.getClientMessage());
+		}
+
+		return messageList.toArray(new ClientMessage[messageList.size()]);
+	}
+
+	@Override
+	public ClientMessage[] pollIncomingMessages(ClientChat key)
+	{
+		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
+
+		// Do in reverse order, break when isTransmitted is true will save
+		// looping through the entire array
+		for (MessageWrapper message : chatMap.get(key))
+		{
 			if (!message.isTransmitted())
 			{
-				messageList.add(message.getClientMessage());
+				newMessageList.add(message.getClientMessage());
 
 				message.setTransmitted(true);
 			}
 		}
 
-		return messageList.toArray(new ClientMessage[messageList.size()]);
+		return newMessageList.toArray(new ClientMessage[newMessageList.size()]);
 	}
 
 	@Override
