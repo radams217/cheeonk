@@ -35,24 +35,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	private final ConnectionManager connectionManager = ConnectionManager
 			.getInstance();
 
-	private final Map<ChatWrapper, List<MessageWrapper>> chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>()
-	{
-		@Override
-		public boolean equals(Object arg0)
-		{
-			// TODO Auto-generated method stub
-			return super.equals(arg0);
-		}
-
-		@Override
-		public int hashCode()
-		{
-
-			return 1;
-
-		};
-
-	};
+	private final Map<ChatWrapper, List<MessageWrapper>> chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
 	private final Set<BuddyWrapper> buddySet = new HashSet<BuddyWrapper>();
 
 	@Override
@@ -147,8 +130,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 		{
 			if (!chat.isTransmitted())
 			{
-				System.out.println("DEBUG: Chat with "
-						+ chat.getChat().getParticipant() + " found.");
+				System.out.println("DEBUG: Chat with " + chat.getParticipant()
+						+ " found.");
 				newChatList.add(chat.getClientChat());
 				chat.setTransmitted(true);
 			}
@@ -160,12 +143,13 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void sendMessage(ClientChat key, String message)
 	{
-		System.out.println("DEBUG: Sending Outgoing Message");
+		System.out.println("DEBUG: Sending Outgoing Message to "
+				+ key.getParticipant() + ". [" + message + "]");
 
 		// Store local message sent to message list?
 		for (ChatWrapper chat : chatMap.keySet())
 		{
-			if (key.getParticipant().equals(chat.getChat().getParticipant()))
+			if (key.getParticipant().equals(chat.getParticipant()))
 			{
 				try
 				{
@@ -211,7 +195,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 			if (!message.isTransmitted())
 			{
 				System.out.println("DEBUG: Message from "
-						+ message.getMessage().getFrom() + " received.");
+						+ message.getMessage().getFrom() + " received. ["
+						+ message.getMessage().getBody() + "]");
 				newMessageList.add(message.getClientMessage());
 
 				message.setTransmitted(true);
@@ -233,6 +218,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void processMessage(Chat key, Message message)
 	{
+		System.out.println("DEBUG: Adding Message from " + message.getFrom()
+				+ " to the Queue. [" + message.getBody() + "]");
 		chatMap.get(new ChatWrapper(key)).add(new MessageWrapper(message));
 	}
 

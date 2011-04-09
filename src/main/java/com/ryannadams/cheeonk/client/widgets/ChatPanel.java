@@ -1,56 +1,70 @@
 package com.ryannadams.cheeonk.client.widgets;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ChatPanel extends Composite
+public class ChatPanel extends DialogBox
 {
-	private Label recipient;
-	private Label chatWindow;
-	private TextBox messageBox;
-	private Button send;
+	private HTML chatWindow;
+	private TextArea messageArea;
 
 	public ChatPanel(String recipienttext)
 	{
-		recipient = new Label(recipienttext);
-		chatWindow = new Label();
-		chatWindow.setStyleName("Chat-Window");
-		messageBox = new TextBox();
-		send = new Button("Send");
+		super(true);
+
+		chatWindow = new HTML();
+		chatWindow.setStyleName("chat-Window");
+		ScrollPanel scroll = new ScrollPanel();
+		scroll.add(chatWindow);
+		messageArea = new TextArea();
+		messageArea.setStyleName("chat-MessageArea");
+
+		addKeyPressHandler(new KeyPressHandler()
+		{
+
+			@Override
+			public void onKeyPress(KeyPressEvent event)
+			{
+				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+				{
+					addChatMessage("me", messageArea.getText());
+					messageArea.setText("");
+				}
+
+			}
+
+		});
 
 		VerticalPanel panel = new VerticalPanel();
-		panel.setStyleName("Chat-Popup");
-		panel.add(recipient);
-		panel.add(chatWindow);
-		panel.add(messageBox);
-		panel.add(send);
+		panel.setStyleName("chat-Panel");
+		panel.add(scroll);
+		panel.add(messageArea);
 
-		initWidget(panel);
+		add(panel);
+
+		setText("Cheeonk with " + recipienttext);
 	}
 
-	public void setChatWindow(String text)
+	public void addChatMessage(String from, String message)
 	{
-		this.chatWindow.setText(text);
-
-	}
-
-	public void setRecipient(String username)
-	{
-		this.recipient.setText(username);
+		String temp = chatWindow.getHTML();
+		chatWindow.setHTML(temp + from + " [TIME]:<BR/>" + message + "<BR/>");
 	}
 
 	public String getMessageText()
 	{
-		return messageBox.getText();
+		return messageArea.getText();
 	}
 
-	public void addClickHandler(ClickHandler clickHandler)
+	public void addKeyPressHandler(KeyPressHandler keyPressHandler)
 	{
-		send.addClickHandler(clickHandler);
+		messageArea.addKeyPressHandler(keyPressHandler);
 	}
 
 }

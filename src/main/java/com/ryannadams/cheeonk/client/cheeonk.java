@@ -4,9 +4,11 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -27,7 +29,7 @@ import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
  */
 public class cheeonk implements EntryPoint
 {
-	private final int POLLING_INTERVAL = 4000;
+	private final int POLLING_INTERVAL = 5000;
 	private final ChatServiceAsync chatService = GWT.create(ChatService.class);
 
 	private final Messages messages = GWT.create(Messages.class);
@@ -62,40 +64,43 @@ public class cheeonk implements EntryPoint
 
 						for (final ClientChat chat : chats)
 						{
-							final DialogBox panel = new DialogBox(true);
 							final ChatPanel chatPanel = new ChatPanel(chat
 									.getParticipant());
-							chatPanel.addClickHandler(new ClickHandler()
+							chatPanel.addKeyPressHandler(new KeyPressHandler()
 							{
 
 								@Override
-								public void onClick(ClickEvent event)
+								public void onKeyPress(KeyPressEvent event)
 								{
-									chatService.sendMessage(chat,
-											chatPanel.getMessageText(),
-											new AsyncCallback<Void>()
-											{
-
-												@Override
-												public void onFailure(
-														Throwable caught)
+									if (KeyCodes.KEY_ENTER == event
+											.getNativeEvent().getKeyCode())
+									{
+										chatService.sendMessage(chat,
+												chatPanel.getMessageText(),
+												new AsyncCallback<Void>()
 												{
-													// TODO Auto-generated
-													// method
-													// stub
 
-												}
+													@Override
+													public void onFailure(
+															Throwable caught)
+													{
+														// TODO Auto-generated
+														// method
+														// stub
 
-												@Override
-												public void onSuccess(
-														Void result)
-												{
-													// TODO Auto-generated
-													// method
-													// stub
+													}
 
-												}
-											});
+													@Override
+													public void onSuccess(
+															Void result)
+													{
+														// TODO Auto-generated
+														// method
+														// stub
+
+													}
+												});
+									}
 
 								}
 							});
@@ -128,8 +133,9 @@ public class cheeonk implements EntryPoint
 															for (ClientMessage message : messages)
 															{
 																chatPanel
-																		.setChatWindow(message
-																				.getBody());
+																		.addChatMessage(
+																				message.getFrom(),
+																				message.getBody());
 															}
 
 														}
@@ -141,8 +147,7 @@ public class cheeonk implements EntryPoint
 
 							pollMessages.scheduleRepeating(POLLING_INTERVAL);
 
-							panel.add(chatPanel);
-							panel.show();
+							chatPanel.show();
 						}
 
 					}
@@ -153,11 +158,6 @@ public class cheeonk implements EntryPoint
 		};
 
 		pollChats.scheduleRepeating(POLLING_INTERVAL);
-
-	}
-
-	private void startPollingMessages(final ClientChat chat)
-	{
 
 	}
 
@@ -239,7 +239,6 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				final DialogBox panel = new DialogBox(true);
 				final ChatPanel chatPanel = new ChatPanel("radams217");
 
 				chatService.createChat("radams217",
@@ -284,8 +283,9 @@ public class cheeonk implements EntryPoint
 																for (ClientMessage message : messages)
 																{
 																	chatPanel
-																			.setChatWindow(message
-																					.getBody());
+																			.addChatMessage(
+																					message.getFrom(),
+																					message.getBody());
 																}
 
 															}
@@ -298,47 +298,57 @@ public class cheeonk implements EntryPoint
 								pollMessages
 										.scheduleRepeating(POLLING_INTERVAL);
 
-								chatPanel.addClickHandler(new ClickHandler()
-								{
+								chatPanel
+										.addKeyPressHandler(new KeyPressHandler()
+										{
 
-									@Override
-									public void onClick(ClickEvent event)
-									{
-
-										chatService.sendMessage(chat,
-												chatPanel.getMessageText(),
-												new AsyncCallback<Void>()
+											@Override
+											public void onKeyPress(
+													KeyPressEvent event)
+											{
+												if (KeyCodes.KEY_ENTER == event
+														.getNativeEvent()
+														.getKeyCode())
 												{
+													chatService.sendMessage(
+															chat,
+															chatPanel
+																	.getMessageText(),
+															new AsyncCallback<Void>()
+															{
 
-													@Override
-													public void onFailure(
-															Throwable caught)
-													{
-														// TODO Auto-generated
-														// method
-														// stub
+																@Override
+																public void onFailure(
+																		Throwable caught)
+																{
+																	// TODO
+																	// Auto-generated
+																	// method
+																	// stub
 
-													}
+																}
 
-													@Override
-													public void onSuccess(
-															Void result)
-													{
-														// TODO Auto-generated
-														// method
-														// stub
+																@Override
+																public void onSuccess(
+																		Void result)
+																{
+																	// TODO
+																	// Auto-generated
+																	// method
+																	// stub
 
-													}
-												});
+																}
+															});
 
-									}
-								});
+												}
+
+											}
+										});
 
 							}
 						});
 
-				panel.add(chatPanel);
-				panel.show();
+				chatPanel.show();
 			}
 
 		};

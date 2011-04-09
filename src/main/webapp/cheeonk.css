@@ -169,8 +169,25 @@ label {
 	margin: 15px 6px 6px;
 }
 
-.Chat-Window
+.chat-Panel
+{	
+	width: 330px;
+	height: 330px;
+	margin: 10px;	
+}
+
+.chat-Window
 {
-	width: 100px;
-	height: 100px;	
+	border: solid 0px #333;
+	background-color: #FFFFFF;
+	width: 320px;
+	height: 150px;
+}
+
+.chat-MessageArea
+{
+	min-width: 330px;
+	min-height: 90px;
+	font-family: Verdana, sans-serif;
+	font-size: 10pt;	
 }
