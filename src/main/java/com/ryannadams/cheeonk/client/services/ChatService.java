@@ -5,30 +5,30 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
 import com.ryannadams.cheeonk.client.chat.ClientMessage;
+import com.ryannadams.cheeonk.shared.chat.ConnectionKey;
 
 @RemoteServiceRelativePath("chat")
 public interface ChatService extends RemoteService
 {
-	Boolean login(String username, String password);
+	String login(ConnectionKey connectionKey);
 
-	Boolean logout();
+	Boolean logout(ConnectionKey connectionKey);
 
-	ClientBuddy[] getBuddyList();
+	ClientBuddy[] getBuddyList(ConnectionKey connectionKey);
 
-	void addBuddy(ClientBuddy buddy);
+	void addBuddy(ConnectionKey connectionKey, ClientBuddy buddy);
 
-	void removeBuddy(ClientBuddy buddy);
+	void removeBuddy(ConnectionKey connectionKey, ClientBuddy buddy);
 
-	ClientBuddy[] pollBuddyUpdates();
+	ClientBuddy[] getBuddyUpdates(ConnectionKey connectionKey);
 
-	ClientChat createChat(String recipient);
+	ClientChat createChat(ConnectionKey connectionKey, String recipient);
 
-	ClientChat[] pollIncomingChats();
+	ClientChat[] getIncomingChats(ConnectionKey connectionKey);
 
-	void sendMessage(ClientChat key, String message);
+	void sendMessage(ConnectionKey connectionKey, ClientChat chat,
+			String message);
 
-	ClientMessage[] getMessages(ClientChat key);
-
-	ClientMessage[] pollIncomingMessages(ClientChat key);
+	ClientMessage[] getMessages(ConnectionKey connectionKey, ClientChat chat);
 
 }

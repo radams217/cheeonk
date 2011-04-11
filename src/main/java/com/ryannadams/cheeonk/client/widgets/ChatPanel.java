@@ -34,7 +34,7 @@ public class ChatPanel extends DialogBox
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
 					addChatMessage("me", messageArea.getText());
-					messageArea.setText("");
+					// messageArea.setText("");
 				}
 
 			}
