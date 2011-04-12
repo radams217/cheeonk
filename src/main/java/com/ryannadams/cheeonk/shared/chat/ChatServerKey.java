@@ -1,6 +1,8 @@
 package com.ryannadams.cheeonk.shared.chat;
 
-public class ConnectionKey
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class ChatServerKey implements IsSerializable
 {
 	private String connectionID;
 	private String host;
@@ -9,7 +11,12 @@ public class ConnectionKey
 	private String domain;
 	private String password;
 
-	public ConnectionKey(String host, int port, String userName, String domain,
+	public ChatServerKey()
+	{
+
+	}
+
+	public ChatServerKey(String host, int port, String userName, String domain,
 			String password)
 	{
 		this.host = host;
@@ -19,7 +26,7 @@ public class ConnectionKey
 		this.password = password;
 	}
 
-	public ConnectionKey(String host, int port, String domain)
+	public ChatServerKey(String host, int port, String domain)
 	{
 		this.host = host;
 		this.port = port;
@@ -110,7 +117,7 @@ public class ConnectionKey
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ConnectionKey other = (ConnectionKey) obj;
+		ChatServerKey other = (ChatServerKey) obj;
 		if (connectionID == null)
 		{
 			if (other.connectionID != null)
@@ -149,14 +156,14 @@ public class ConnectionKey
 	 * 
 	 * @return ConnectionKey
 	 */
-	public static ConnectionKey getCheeonkConnectionKey()
+	public static ChatServerKey getCheeonkConnectionKey()
 	{
-		return new ConnectionKey("localhost", 5222, "ryannadams.com");
+		return new ChatServerKey("localhost", 5222, "ryannadams.com");
 	}
 
-	public static ConnectionKey getGChatConnectionKey()
+	public static ChatServerKey getGChatConnectionKey()
 	{
-		return new ConnectionKey("gchat.google.com", 5222, "google.com");
+		return new ChatServerKey("gchat.google.com", 5222, "google.com");
 	}
 
 }

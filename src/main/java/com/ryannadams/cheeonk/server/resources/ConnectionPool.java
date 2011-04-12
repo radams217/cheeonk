@@ -6,11 +6,11 @@ import java.util.Map;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 
-import com.ryannadams.cheeonk.shared.chat.ConnectionKey;
+import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 public class ConnectionPool
 {
-	private Map<ConnectionKey, XMPPConnection> connectionPool;
+	private Map<ChatServerKey, XMPPConnection> connectionPool;
 
 	static
 	{
@@ -19,10 +19,10 @@ public class ConnectionPool
 
 	public ConnectionPool()
 	{
-		connectionPool = new HashMap<ConnectionKey, XMPPConnection>();
+		connectionPool = new HashMap<ChatServerKey, XMPPConnection>();
 	}
 
-	public XMPPConnection getConnection(ConnectionKey key)
+	public XMPPConnection getConnection(ChatServerKey key)
 	{
 		if (!connectionPool.containsKey(key))
 		{

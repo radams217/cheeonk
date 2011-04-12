@@ -4,35 +4,35 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
 import com.ryannadams.cheeonk.client.chat.ClientMessage;
-import com.ryannadams.cheeonk.shared.chat.ConnectionKey;
+import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 public interface ChatServiceAsync
 {
-	void login(ConnectionKey connectionKey, AsyncCallback<String> callback);
+	void login(ChatServerKey connectionKey, AsyncCallback<String> callback);
 
-	void logout(ConnectionKey connectionKey, AsyncCallback<Boolean> callback);
+	void logout(ChatServerKey connectionKey, AsyncCallback<Boolean> callback);
 
-	void getBuddyList(ConnectionKey connectionKey,
+	void getBuddyList(ChatServerKey connectionKey,
 			AsyncCallback<ClientBuddy[]> callback);
 
-	void addBuddy(ConnectionKey connectionKey, ClientBuddy buddy,
+	void addBuddy(ChatServerKey connectionKey, ClientBuddy buddy,
 			AsyncCallback<Void> callback);
 
-	void removeBuddy(ConnectionKey connectionKey, ClientBuddy buddy,
+	void removeBuddy(ChatServerKey connectionKey, ClientBuddy buddy,
 			AsyncCallback<Void> callback);
 
-	void getBuddyUpdates(ConnectionKey connectionKey,
+	void getBuddyUpdates(ChatServerKey connectionKey,
 			AsyncCallback<ClientBuddy[]> callback);
 
-	void createChat(ConnectionKey connectionKey, String username,
+	void createChat(ChatServerKey connectionKey, String username,
 			AsyncCallback<ClientChat> callback);
 
-	void getIncomingChats(ConnectionKey connectionKey,
+	void getIncomingChats(ChatServerKey connectionKey,
 			AsyncCallback<ClientChat[]> callback);
 
-	void sendMessage(ConnectionKey connectionKey, ClientChat chat,
+	void sendMessage(ChatServerKey connectionKey, ClientChat chat,
 			String message, AsyncCallback<Void> callback);
 
-	void getMessages(ConnectionKey connectionKey, ClientChat chat,
+	void getMessages(ChatServerKey connectionKey, ClientChat chat,
 			AsyncCallback<ClientMessage[]> callback);
 }

@@ -23,7 +23,7 @@ import com.ryannadams.cheeonk.client.widgets.ChatPanel;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
-import com.ryannadams.cheeonk.shared.chat.ConnectionKey;
+import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -42,7 +42,7 @@ public class cheeonk implements EntryPoint
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
 
-	private final ConnectionKey connectionKey = ConnectionKey
+	private final ChatServerKey connectionKey = ChatServerKey
 			.getCheeonkConnectionKey();
 
 	private void startPollingChats()

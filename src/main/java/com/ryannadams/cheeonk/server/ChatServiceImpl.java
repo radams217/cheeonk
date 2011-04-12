@@ -1,10 +1,9 @@
 package com.ryannadams.cheeonk.server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
@@ -13,42 +12,45 @@ import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
 import com.ryannadams.cheeonk.client.chat.ClientMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
-import com.ryannadams.cheeonk.server.internal.BuddyContainer;
-import com.ryannadams.cheeonk.server.internal.ChatContainer;
+import com.ryannadams.cheeonk.server.internal.ChatServerInstance;
 import com.ryannadams.cheeonk.server.internal.ChatWrapper;
-import com.ryannadams.cheeonk.server.resources.ConnectionPool;
-import com.ryannadams.cheeonk.shared.chat.ConnectionKey;
+import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 @SuppressWarnings("serial")
 public class ChatServiceImpl extends RemoteServiceServlet implements
 		ChatService
 {
-	private final ConnectionPool connectionPool = new ConnectionPool();
+	// private final Logger logger;
+	private final Map<ChatServerKey, ChatServerInstance> chatServerInstances;
 
-	private final Map<ConnectionKey, ChatContainer> chatContainers = new HashMap<ConnectionKey, ChatContainer>();
-	private final Map<ConnectionKey, BuddyContainer> buddyContainers = new HashMap<ConnectionKey, BuddyContainer>();
+	public ChatServiceImpl()
+	{
+		// logger = LoggerFactory.getLogger(ChatServiceImpl.class);
+		chatServerInstances = new HashMap<ChatServerKey, ChatServerInstance>();
+	}
 
 	@Override
-	public String login(ConnectionKey connectionKey)
+	public String login(ChatServerKey key)
 	{
-		XMPPConnection connection = connectionPool.getConnection(connectionKey);
-		ChatContainer chatContainer = new ChatContainer();
+		if (!chatServerInstances.containsKey(key))
+		{
+			chatServerInstances.put(key, new ChatServerInstance(key));
+		}
+
+		XMPPConnection connection = chatServerInstances.get(key)
+				.getConnection();
 
 		try
 		{
 			connection.connect();
-			connection.login(connectionKey.getUserName(),
-					connectionKey.getPassword());
-			connection.getChatManager().addChatListener(chatContainer);
-			chatContainers.put(connectionKey, chatContainer);
+			chatServerInstances.get(key).addListeners();
+			connection.login(key.getUserName(), key.getPassword());
 
-			BuddyContainer buddyContainer = new BuddyContainer(connection
-					.getRoster().getEntries());
-
-			buddyContainers.put(connectionKey, buddyContainer);
-
-			connection.getRoster().addRosterListener(buddyContainer);
-
+			for (RosterEntry rosterEntry : connection.getRoster().getEntries())
+			{
+				chatServerInstances.get(key).getBuddyContainer()
+						.addBuddy(rosterEntry);
+			}
 		}
 		catch (XMPPException e)
 		{
@@ -60,90 +62,80 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Boolean logout(ConnectionKey connectionKey)
+	public Boolean logout(ChatServerKey key)
 	{
-		XMPPConnection connection = connectionPool.getConnection(connectionKey);
+		ChatServerInstance instance = chatServerInstances.get(key);
+		instance.removeListeners();
 
-		connection.getChatManager().removeChatListener(
-				chatContainers.get(connectionKey));
-		connection.getRoster().removeRosterListener(
-				buddyContainers.get(connectionKey));
+		XMPPConnection connection = instance.getConnection();
 		connection.disconnect();
 
 		return !connection.isConnected();
 	}
 
 	@Override
-	public ClientBuddy[] getBuddyList(ConnectionKey connectionKey)
+	public ClientBuddy[] getBuddyList(ChatServerKey key)
 	{
-		List<ClientBuddy> buddyList = new ArrayList<ClientBuddy>();
-
-		// for (BuddyWrapper buddy : buddySet)
-		// {
-		// if (!buddy.isTransmitted())
-		// {
-		// buddyList.add(buddy.getClientBuddy());
-		// buddy.setTransmitted(true);
-		// }
-		// }
-
-		return buddyList.toArray(new ClientBuddy[buddyList.size()]);
+		return chatServerInstances.get(key).getBuddyContainer()
+				.getBuddyList(key);
 	}
 
 	@Override
-	public void addBuddy(ConnectionKey connectionKey, ClientBuddy buddy)
+	public void addBuddy(ChatServerKey key, ClientBuddy buddy)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeBuddy(ConnectionKey connectionKey, ClientBuddy buddy)
+	public void removeBuddy(ChatServerKey key, ClientBuddy buddy)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public ClientBuddy[] getBuddyUpdates(ConnectionKey connectionKey)
+	public ClientBuddy[] getBuddyUpdates(ChatServerKey key)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ClientChat createChat(ConnectionKey connectionKey, String recipient)
+	public ClientChat createChat(ChatServerKey key, String recipient)
 	{
-		XMPPConnection connection = connectionPool.getConnection(connectionKey);
+		ChatServerInstance instance = chatServerInstances.get(key);
 
-		return new ChatWrapper(connection.getChatManager().createChat(
-				recipient, chatContainers.get(connectionKey))).getClientChat();
+		return new ChatWrapper(instance.getConnection().getChatManager()
+				.createChat(recipient, instance.getChatContainer()))
+				.getClientChat();
 	}
 
 	@Override
-	public ClientChat[] getIncomingChats(ConnectionKey connectionKey)
+	public ClientChat[] getIncomingChats(ChatServerKey key)
 	{
 		System.out.println("DEBUG: Polling for Incoming Chats");
 
-		return new ClientChat[0];
+		return chatServerInstances.get(key).getChatContainer()
+				.getIncomingChats();
 	}
 
 	@Override
-	public void sendMessage(ConnectionKey connectionKey, ClientChat chat,
-			String message)
+	public void sendMessage(ChatServerKey key, ClientChat chat, String message)
 	{
 		System.out.println("DEBUG: Sending Outgoing Message to "
 				+ chat.getParticipant() + ". [" + message + "]");
 
+		chatServerInstances.get(key).getChatContainer()
+				.sendMessage(chat, message);
 	}
 
 	@Override
-	public ClientMessage[] getMessages(ConnectionKey connectionKey,
-			ClientChat chatKey)
+	public ClientMessage[] getMessages(ChatServerKey key, ClientChat chatKey)
 	{
-		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
 
-		return newMessageList.toArray(new ClientMessage[newMessageList.size()]);
+		return chatServerInstances.get(key).getChatContainer()
+				.getMessages(chatKey);
 	}
 
 }

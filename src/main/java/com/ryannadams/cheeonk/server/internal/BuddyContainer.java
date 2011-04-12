@@ -1,28 +1,46 @@
 package com.ryannadams.cheeonk.server.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.packet.Presence;
 
+import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
+
 public class BuddyContainer implements RosterListener
 {
-	private final Set<BuddyWrapper> buddySet = new HashSet<BuddyWrapper>();
+	private final Set<BuddyWrapper> buddySet;
 
-	public BuddyContainer(Collection<RosterEntry> rosterEntries)
+	public BuddyContainer()
 	{
-		for (RosterEntry rosterEntry : rosterEntries)
-		{
-			buddySet.add(new BuddyWrapper(rosterEntry));
-		}
+		buddySet = new HashSet<BuddyWrapper>();
 	}
 
-	public Set<BuddyWrapper> getBuddySet()
+	public void addBuddy(RosterEntry rosterEntry)
 	{
-		return buddySet;
+		buddySet.add(new BuddyWrapper(rosterEntry));
+	}
+
+	public ClientBuddy[] getBuddyList(ChatServerKey key)
+	{
+		List<ClientBuddy> buddyList = new ArrayList<ClientBuddy>();
+
+		for (BuddyWrapper buddy : buddySet)
+		{
+			if (!buddy.isTransmitted())
+			{
+				buddyList.add(buddy.getClientBuddy());
+				buddy.setTransmitted(true);
+			}
+		}
+
+		return buddyList.toArray(new ClientBuddy[buddyList.size()]);
 	}
 
 	@Override
