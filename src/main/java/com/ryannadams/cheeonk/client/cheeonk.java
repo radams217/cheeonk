@@ -19,6 +19,7 @@ import com.ryannadams.cheeonk.client.i18n.Messages;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
+import com.ryannadams.cheeonk.client.widgets.BuddyWidget;
 import com.ryannadams.cheeonk.client.widgets.ChatPanel;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
@@ -30,7 +31,7 @@ import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
  */
 public class cheeonk implements EntryPoint
 {
-	private final int POLLING_INTERVAL = 5000;
+	private final int POLLING_INTERVAL = 2000;
 
 	private final ChatServiceAsync chatService;
 	private final Messages messages;
@@ -211,7 +212,18 @@ public class cheeonk implements EntryPoint
 								@Override
 								public void onSuccess(ClientBuddy[] result)
 								{
-									buddyList.setBuddyList(result);
+									for (final ClientBuddy buddy : result)
+									{
+										buddyList.addBuddy(new BuddyWidget(buddy)
+										{
+											@Override
+											public void onClick(ClickEvent event)
+											{
+												createChatPanel(buddy.getName()).show();
+											}
+
+										});
+									}
 								}
 							});
 
@@ -226,73 +238,7 @@ public class cheeonk implements EntryPoint
 			}
 		});
 
-		buddyList = new BuddyList()
-		{
-			@Override
-			public void onClick(ClickEvent event)
-			{
-				final ChatPanel chatPanel = new ChatPanel("radams217@ryannadams.com");
-
-				chatService.createChat(key, "radams217@ryannadams.com", new AsyncCallback<ClientChat>()
-				{
-
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void onSuccess(final ClientChat chat)
-					{
-						Timer timer = pollMessages(chatPanel, chat);
-						timer.scheduleRepeating(POLLING_INTERVAL);
-
-						chatPanel.addKeyPressHandler(new KeyPressHandler()
-						{
-
-							@Override
-							public void onKeyPress(KeyPressEvent event)
-							{
-								if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
-								{
-									chatService.sendMessage(key, chat, chatPanel.getMessageText(), new AsyncCallback<Void>()
-									{
-
-										@Override
-										public void onFailure(Throwable caught)
-										{
-											// TODO
-											// Auto-generated
-											// method
-											// stub
-
-										}
-
-										@Override
-										public void onSuccess(Void result)
-										{
-											// TODO
-											// Auto-generated
-											// method
-											// stub
-
-										}
-									});
-
-								}
-
-							}
-						});
-
-					}
-				});
-
-				chatPanel.show();
-			}
-
-		};
+		buddyList = new BuddyList();
 
 		// Create the popup dialog box
 		// final DialogBox dialogBox = new DialogBox();
@@ -348,6 +294,61 @@ public class cheeonk implements EntryPoint
 		RootPanel.get("registrationFormContainer").add(new RegistrationWidget());
 
 		RootPanel.get("errorLabelContainer").add(errorLabel);
+
+	}
+
+	public ChatPanel createChatPanel(String to)
+	{
+		final ChatPanel chatPanel = new ChatPanel(to + "@ryannadams.com");
+
+		chatService.createChat(key, to + "@ryannadams.com", new AsyncCallback<ClientChat>()
+		{
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onSuccess(final ClientChat chat)
+			{
+				Timer timer = pollMessages(chatPanel, chat);
+				timer.scheduleRepeating(POLLING_INTERVAL);
+
+				chatPanel.addKeyPressHandler(new KeyPressHandler()
+				{
+					@Override
+					public void onKeyPress(KeyPressEvent event)
+					{
+						if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+						{
+							chatService.sendMessage(key, chat, chatPanel.getMessageText(), new AsyncCallback<Void>()
+							{
+
+								@Override
+								public void onFailure(Throwable caught)
+								{
+
+								}
+
+								@Override
+								public void onSuccess(Void result)
+								{
+
+								}
+							});
+
+						}
+
+					}
+				});
+
+			}
+		});
+
+		return chatPanel;
 
 	}
 }

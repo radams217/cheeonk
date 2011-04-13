@@ -11,23 +11,23 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ChatPanel extends DialogBox
 {
-	private HTML chatWindow;
-	private TextArea messageArea;
+	private final HTML chatWindow;
+	private final TextArea messageArea;
+	private final ScrollPanel scrollPanel;
 
 	public ChatPanel(String recipienttext)
 	{
-		super(true);
+		super(false);
 
 		chatWindow = new HTML();
 		chatWindow.setStyleName("chat-Window");
-		ScrollPanel scroll = new ScrollPanel();
-		scroll.add(chatWindow);
+		scrollPanel = new ScrollPanel();
+		scrollPanel.add(chatWindow);
 		messageArea = new TextArea();
 		messageArea.setStyleName("chat-MessageArea");
 
 		addKeyPressHandler(new KeyPressHandler()
 		{
-
 			@Override
 			public void onKeyPress(KeyPressEvent event)
 			{
@@ -43,7 +43,7 @@ public class ChatPanel extends DialogBox
 
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("chat-Panel");
-		panel.add(scroll);
+		panel.add(scrollPanel);
 		panel.add(messageArea);
 
 		add(panel);
@@ -54,7 +54,8 @@ public class ChatPanel extends DialogBox
 	public void addChatMessage(String from, String message)
 	{
 		String temp = chatWindow.getHTML();
-		chatWindow.setHTML(temp + from + " [TIME]:<BR/>" + message + "<BR/>");
+		chatWindow.setHTML(temp + from + ":<BR/>" + message + "<BR/>");
+		scrollPanel.scrollToBottom();
 	}
 
 	public String getMessageText()

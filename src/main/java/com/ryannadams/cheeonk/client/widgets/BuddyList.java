@@ -1,48 +1,43 @@
 package com.ryannadams.cheeonk.client.widgets;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 
-public class BuddyList extends Composite implements ClickHandler
+public class BuddyList extends Composite
 {
 	// Probably will want to change this later
-	private FlowPanel flowpanel;
-	private FlexTable flextable;
+	private FlowPanel flowPanel;
+	private FlexTable flexTable;
 
 	public BuddyList()
 	{
-		flextable = new FlexTable();
-		flowpanel = new FlowPanel();
+		flexTable = new FlexTable();
+		flowPanel = new FlowPanel();
 
-		flextable.clear();
-		flextable.setWidget(3, 0, flowpanel);
+		flexTable.clear();
+		flexTable.setWidget(3, 0, flowPanel);
 
-		flowpanel.addStyleName("buddyList");
+		flowPanel.addStyleName("buddyList");
 
-		initWidget(flowpanel);
+		initWidget(flowPanel);
 	}
 
-	public void setBuddyList(ClientBuddy[] buddyList)
+	public void addBuddy(BuddyWidget buddy)
 	{
-		for (ClientBuddy buddy : buddyList)
-		{
-			Button button = new Button(buddy.getName());
-			button.setStyleName("buddyList-Status");
-
-			button.addClickHandler(this);
-
-			flowpanel.add(button);
-		}
+		flowPanel.add(buddy);
 	}
 
-	@Override
-	public void onClick(ClickEvent event)
-	{
-
-	}
+	// public void setBuddyList(ClientBuddy[] buddyList)
+	// {
+	// for (ClientBuddy buddy : buddyList)
+	// {
+	// Button button = new Button(buddy.getName());
+	// button.setStyleName("buddyList-Status");
+	//
+	// button.addClickHandler(this);
+	//
+	// flowPanel.add(button);
+	// }
+	// }
 }
