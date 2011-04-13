@@ -5,15 +5,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class ClientChat extends AbstractChat implements IsSerializable
 {
 	protected String participant;
+	protected String threadID;
 
 	public ClientChat()
 	{
 
 	}
 
-	public ClientChat(String participant)
+	public ClientChat(String threadID)
 	{
-		this.participant = participant;
+		this.threadID = threadID;
 	}
 
 	public void setParticipant(String participant)
@@ -21,10 +22,16 @@ public class ClientChat extends AbstractChat implements IsSerializable
 		this.participant = participant;
 	}
 
+	// @Override
+	// public String getParticipant()
+	// {
+	// return participant;
+	// }
+
 	@Override
-	public String getParticipant()
+	public String getThreadID()
 	{
-		return participant;
+		return threadID;
 	}
 
 }

@@ -6,8 +6,7 @@ import com.google.gwt.resources.client.ImageResource;
 
 public interface ImageResources extends ClientBundle
 {
-	public static final ImageResources INSTANCE = GWT
-			.create(ImageResources.class);
+	public static final ImageResources INSTANCE = GWT.create(ImageResources.class);
 
 	@Source("com/ryannadams/cheeonk/client/images/banner.png")
 	public ImageResource getBanner();

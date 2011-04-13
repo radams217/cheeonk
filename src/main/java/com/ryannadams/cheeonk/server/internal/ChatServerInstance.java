@@ -13,8 +13,7 @@ public class ChatServerInstance
 
 	public ChatServerInstance(ChatServerKey key)
 	{
-		this.connection = new XMPPConnection(new ConnectionConfiguration(
-				key.getHost(), key.getPort()));
+		this.connection = new XMPPConnection(new ConnectionConfiguration(key.getHost(), key.getPort()));
 
 		this.buddyContainer = new BuddyContainer();
 		this.chatContainer = new ChatContainer();

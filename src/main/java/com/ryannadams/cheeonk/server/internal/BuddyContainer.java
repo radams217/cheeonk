@@ -11,7 +11,6 @@ import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.packet.Presence;
 
 import com.ryannadams.cheeonk.client.chat.ClientBuddy;
-import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 public class BuddyContainer implements RosterListener
 {
@@ -27,7 +26,7 @@ public class BuddyContainer implements RosterListener
 		buddySet.add(new BuddyWrapper(rosterEntry));
 	}
 
-	public ClientBuddy[] getBuddyList(ChatServerKey key)
+	public ClientBuddy[] getBuddyList()
 	{
 		List<ClientBuddy> buddyList = new ArrayList<ClientBuddy>();
 

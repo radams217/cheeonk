@@ -16,8 +16,7 @@ public class ChatServerKey implements IsSerializable
 
 	}
 
-	public ChatServerKey(String host, int port, String userName, String domain,
-			String password)
+	public ChatServerKey(String host, int port, String userName, String domain, String password)
 	{
 		this.host = host;
 		this.port = port;
@@ -98,13 +97,11 @@ public class ChatServerKey implements IsSerializable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((connectionID == null) ? 0 : connectionID.hashCode());
+		result = prime * result + ((connectionID == null) ? 0 : connectionID.hashCode());
 		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		result = prime * result + ((host == null) ? 0 : host.hashCode());
 		result = prime * result + port;
-		result = prime * result
-				+ ((userName == null) ? 0 : userName.hashCode());
+		result = prime * result + ((userName == null) ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -122,21 +119,24 @@ public class ChatServerKey implements IsSerializable
 		{
 			if (other.connectionID != null)
 				return false;
-		} else
+		}
+		else
 			if (!connectionID.equals(other.connectionID))
 				return false;
 		if (domain == null)
 		{
 			if (other.domain != null)
 				return false;
-		} else
+		}
+		else
 			if (!domain.equals(other.domain))
 				return false;
 		if (host == null)
 		{
 			if (other.host != null)
 				return false;
-		} else
+		}
+		else
 			if (!host.equals(other.host))
 				return false;
 		if (port != other.port)
@@ -145,7 +145,8 @@ public class ChatServerKey implements IsSerializable
 		{
 			if (other.userName != null)
 				return false;
-		} else
+		}
+		else
 			if (!userName.equals(other.userName))
 				return false;
 		return true;

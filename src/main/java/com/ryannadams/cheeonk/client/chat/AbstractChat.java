@@ -6,19 +6,32 @@ public abstract class AbstractChat implements IChat
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		IChat other = (IChat) obj;
-		if (getParticipant() == null)
 		{
-			if (other.getParticipant() != null)
+			return true;
+		}
+
+		if (obj == null)
+		{
+			return false;
+		}
+
+		IChat other = (IChat) obj;
+
+		if (getThreadID() == null)
+		{
+			if (other.getThreadID() != null)
+			{
 				return false;
-		} else
-			if (!getParticipant().equals(other.getParticipant()))
+			}
+		}
+		else
+		{
+			if (!getThreadID().equals(other.getThreadID()))
+			{
 				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -27,9 +40,7 @@ public abstract class AbstractChat implements IChat
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((getParticipant() == null) ? 0 : getParticipant().hashCode());
+		result = prime * result + ((getThreadID() == null) ? 0 : getThreadID().hashCode());
 		return result;
 	}
 }

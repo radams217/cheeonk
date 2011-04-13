@@ -23,15 +23,21 @@ public class ChatWrapper extends AbstractChat implements IChat
 		return chat;
 	}
 
+	// @Override
+	// public String getParticipant()
+	// {
+	// return chat.getParticipant();
+	// }
+
 	@Override
-	public String getParticipant()
+	public String getThreadID()
 	{
-		return chat.getParticipant();
+		return chat.getThreadID();
 	}
 
 	public ClientChat getClientChat()
 	{
-		return new ClientChat(chat.getParticipant());
+		return new ClientChat(chat.getThreadID());
 	}
 
 	public boolean isTransmitted()

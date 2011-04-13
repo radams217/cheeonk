@@ -41,8 +41,7 @@ public class DatePickerTextBox extends Composite
 			}
 		});
 
-		calendarButton = new PushButton(new Image(
-				ImageResources.INSTANCE.getCalendar()));
+		calendarButton = new PushButton(new Image(ImageResources.INSTANCE.getCalendar()));
 		calendarButton.setStyleName("Date-Picker-Button");
 		calendarButton.addClickHandler(new ClickHandler()
 		{
@@ -58,25 +57,21 @@ public class DatePickerTextBox extends Composite
 					public void setPosition(int offsetWidth, int offsetHeight)
 					{
 						int left = calendarButton.getAbsoluteLeft();
-						int top = calendarButton.getAbsoluteTop()
-								+ calendarButton.getOffsetHeight();
+						int top = calendarButton.getAbsoluteTop() + calendarButton.getOffsetHeight();
 						popup.setPopupPosition(left, top);
 					}
 				});
 
-				birthDatePicker
-						.addValueChangeHandler(new ValueChangeHandler<Date>()
-						{
+				birthDatePicker.addValueChangeHandler(new ValueChangeHandler<Date>()
+				{
 
-							@Override
-							public void onValueChange(
-									ValueChangeEvent<Date> event)
-							{
-								birthDateField.setText(event.getValue()
-										.toString());
-								popup.hide();
-							}
-						});
+					@Override
+					public void onValueChange(ValueChangeEvent<Date> event)
+					{
+						birthDateField.setText(event.getValue().toString());
+						popup.hide();
+					}
+				});
 
 				popup.add(birthDatePicker);
 				popup.show();

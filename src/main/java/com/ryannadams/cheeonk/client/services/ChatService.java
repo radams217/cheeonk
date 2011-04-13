@@ -26,8 +26,7 @@ public interface ChatService extends RemoteService
 
 	ClientChat[] getIncomingChats(ChatServerKey connectionKey);
 
-	void sendMessage(ChatServerKey connectionKey, ClientChat chat,
-			String message);
+	void sendMessage(ChatServerKey connectionKey, ClientChat chat, String message);
 
 	ClientMessage[] getMessages(ChatServerKey connectionKey, ClientChat chat);
 

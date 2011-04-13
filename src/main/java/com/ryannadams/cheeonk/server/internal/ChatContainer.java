@@ -16,11 +16,16 @@ import com.ryannadams.cheeonk.client.chat.ClientMessage;
 
 public class ChatContainer implements ChatManagerListener, MessageListener
 {
-	private final Map<ChatWrapper, List<MessageWrapper>> chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
+	private final Map<ChatWrapper, List<MessageWrapper>> chatMap;
+
+	public ChatContainer()
+	{
+		chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
+	}
 
 	public ClientChat[] getIncomingChats()
 	{
-		System.out.println("DEBUG: Polling for Incoming Chats");
+		// System.out.println("DEBUG: Polling for Incoming Chats");
 
 		List<ClientChat> newChatList = new ArrayList<ClientChat>();
 
@@ -28,8 +33,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		{
 			if (!chat.isTransmitted())
 			{
-				System.out.println("DEBUG: Chat with " + chat.getParticipant()
-						+ " found.");
+				System.out.println("DEBUG: Chat with " + chat.getThreadID() + " found.");
 				newChatList.add(chat.getClientChat());
 				chat.setTransmitted(true);
 			}
@@ -44,6 +48,13 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		ChatWrapper chat = new ChatWrapper(key);
 		chat.setTransmitted(createdLocally);
 
+		System.out.println("DEBUG: Chat Created ThreadID: " + chat.getThreadID());
+
+		if (!createdLocally)
+		{
+			key.addMessageListener(this);
+		}
+
 		chatMap.put(chat, new ArrayList<MessageWrapper>());
 	}
 
@@ -52,7 +63,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		// Store local message sent to message list?
 		for (ChatWrapper chatWrapper : chatMap.keySet())
 		{
-			if (chat.getParticipant().equals(chat.getParticipant()))
+			if (chat.getThreadID().equals(chat.getThreadID()))
 			{
 				try
 				{
@@ -71,7 +82,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 
 	public ClientMessage[] getMessages(ClientChat key)
 	{
-		System.out.println("DEBUG: Polling for Incoming Messages");
+		// System.out.println("DEBUG: Polling for Incoming Messages");
 
 		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
 
@@ -81,9 +92,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		{
 			if (!message.isTransmitted())
 			{
-				System.out.println("DEBUG: Message from "
-						+ message.getMessage().getFrom() + " received. ["
-						+ message.getMessage().getBody() + "]");
+				System.out.println("DEBUG: Message from " + message.getMessage().getFrom() + " received. [" + message.getMessage().getBody() + "]");
 				newMessageList.add(message.getClientMessage());
 
 				message.setTransmitted(true);
@@ -99,11 +108,8 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		switch (message.getType())
 		{
 			case chat:
-				System.out.println("DEBUG: Adding Message from "
-						+ message.getFrom() + " to the Queue. ["
-						+ message.getBody() + "]");
-				chatMap.get(new ChatWrapper(key)).add(
-						new MessageWrapper(message));
+				System.out.println("DEBUG: Adding Message from " + message.getFrom() + " to " + message.getTo() + " to the Queue. [" + message.getBody() + "]");
+				chatMap.get(new ChatWrapper(key)).add(new MessageWrapper(message));
 				break;
 
 			case groupchat:
@@ -116,9 +122,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 				break;
 
 			case error:
-				System.err.println("ERROR: Message to " + message.getTo()
-						+ " from " + message.getFrom() + " wasn't sent. "
-						+ message.getError());
+				System.err.println("ERROR: Message to " + message.getTo() + " from " + message.getFrom() + " wasn't sent. " + message.getError());
 				break;
 		}
 

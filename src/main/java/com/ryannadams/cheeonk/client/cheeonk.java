@@ -31,19 +31,25 @@ import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 public class cheeonk implements EntryPoint
 {
 	private final int POLLING_INTERVAL = 5000;
-	private final ChatServiceAsync chatService = GWT.create(ChatService.class);
 
-	private final Messages messages = GWT.create(Messages.class);
+	private final ChatServiceAsync chatService;
+	private final Messages messages;
+	private final ChatServerKey key;
+	private final LoginWidget login;
+	private final LogoutWidget logout;
 
-	private LoginWidget login;
-	private LogoutWidget logout;
 	private BuddyList buddyList;
-
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
 
-	private final ChatServerKey connectionKey = ChatServerKey
-			.getCheeonkConnectionKey();
+	public cheeonk()
+	{
+		chatService = GWT.create(ChatService.class);
+		messages = GWT.create(Messages.class);
+		key = ChatServerKey.getCheeonkConnectionKey();
+		login = new LoginWidget();
+		logout = new LogoutWidget();
+	}
 
 	private void startPollingChats()
 	{
@@ -52,129 +58,104 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void run()
 			{
-				chatService.getIncomingChats(connectionKey,
-						new AsyncCallback<ClientChat[]>()
+				chatService.getIncomingChats(key, new AsyncCallback<ClientChat[]>()
+				{
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+
+					}
+
+					@Override
+					public void onSuccess(ClientChat[] chats)
+					{
+						for (final ClientChat chat : chats)
 						{
-
-							@Override
-							public void onFailure(Throwable caught)
-							{
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onSuccess(ClientChat[] chats)
+							final ChatPanel chatPanel = new ChatPanel(chat.getThreadID());
+							chatPanel.addKeyPressHandler(new KeyPressHandler()
 							{
 
-								for (final ClientChat chat : chats)
+								@Override
+								public void onKeyPress(KeyPressEvent event)
 								{
-									final ChatPanel chatPanel = new ChatPanel(
-											chat.getParticipant());
-									chatPanel
-											.addKeyPressHandler(new KeyPressHandler()
-											{
-
-												@Override
-												public void onKeyPress(
-														KeyPressEvent event)
-												{
-													if (KeyCodes.KEY_ENTER == event
-															.getNativeEvent()
-															.getKeyCode())
-													{
-														chatService
-																.sendMessage(
-																		connectionKey,
-																		chat,
-																		chatPanel
-																				.getMessageText(),
-																		new AsyncCallback<Void>()
-																		{
-
-																			@Override
-																			public void onFailure(
-																					Throwable caught)
-																			{
-																				// TODO
-																				// Auto-generated
-																				// method
-																				// stub
-
-																			}
-
-																			@Override
-																			public void onSuccess(
-																					Void result)
-																			{
-																				// TODO
-																				// Auto-generated
-																				// method
-																				// stub
-
-																			}
-																		});
-													}
-
-												}
-											});
-
-									Timer pollMessages = new Timer()
+									if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 									{
-										@Override
-										public void run()
+										chatService.sendMessage(key, chat, chatPanel.getMessageText(), new AsyncCallback<Void>()
 										{
-											chatService
-													.getMessages(
-															connectionKey,
-															chat,
-															new AsyncCallback<ClientMessage[]>()
-															{
 
-																@Override
-																public void onFailure(
-																		Throwable caught)
-																{
-																	// TODO
-																	// Auto-generated
-																	// method
-																	// stub
+											@Override
+											public void onFailure(Throwable caught)
+											{
+												// TODO
+												// Auto-generated
+												// method
+												// stub
 
-																}
+											}
 
-																@Override
-																public void onSuccess(
-																		ClientMessage[] messages)
-																{
-																	for (ClientMessage message : messages)
-																	{
-																		chatPanel
-																				.addChatMessage(
-																						message.getFrom(),
-																						message.getBody());
-																	}
+											@Override
+											public void onSuccess(Void result)
+											{
+												// TODO
+												// Auto-generated
+												// method
+												// stub
 
-																}
-															});
+											}
+										});
+									}
 
-										}
-
-									};
-
-									pollMessages
-											.scheduleRepeating(POLLING_INTERVAL);
-
-									chatPanel.show();
 								}
+							});
 
-							}
+							Timer timer = pollMessages(chatPanel, chat);
+							timer.scheduleRepeating(POLLING_INTERVAL);
 
-						});
+							chatPanel.show();
+						}
+
+					}
+
+				});
 
 			}
 		};
 
 		pollChats.scheduleRepeating(POLLING_INTERVAL);
+
+	}
+
+	private Timer pollMessages(final ChatPanel chatPanel, final ClientChat chat)
+	{
+		return new Timer()
+		{
+			@Override
+			public void run()
+			{
+				chatService.getMessages(key, chat, new AsyncCallback<ClientMessage[]>()
+				{
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						// TODO: log this
+					}
+
+					@Override
+					public void onSuccess(ClientMessage[] messages)
+					{
+						for (ClientMessage message : messages)
+						{
+							chatPanel.addChatMessage(message.getFrom(), message.getBody());
+						}
+
+					}
+				});
+
+			}
+
+		};
 
 	}
 
@@ -187,25 +168,21 @@ public class cheeonk implements EntryPoint
 		// Temp for now to display errors
 		final Label errorLabel = new Label();
 
-		login = new LoginWidget();
-		logout = new LogoutWidget();
-
 		login.addClickHandler(new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				connectionKey.setUserName(login.getUsername());
-				connectionKey.setPassword(login.getPassword());
+				key.setUserName(login.getUsername());
+				key.setPassword(login.getPassword());
 
-				chatService.login(connectionKey, new AsyncCallback<String>()
+				chatService.login(key, new AsyncCallback<String>()
 				{
 
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						errorLabel
-								.setText("Login Unsuccessful.  Please Check your UserName and Password.");
+						errorLabel.setText("Login Unsuccessful.  Please Check your UserName and Password.");
 					}
 
 					@Override
@@ -213,35 +190,33 @@ public class cheeonk implements EntryPoint
 					{
 						if (result != null)
 						{
-							connectionKey.setConnectionID(result);
+							// connectionKey.setConnectionID(result);
 							RootPanel.get("loginContainer").remove(login);
 							RootPanel.get("loginContainer").add(logout);
 							logout.setUserName(login.getUsername());
 
 							startPollingChats();
 
-							chatService.getBuddyList(connectionKey,
-									new AsyncCallback<ClientBuddy[]>()
-									{
+							chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
+							{
 
-										@Override
-										public void onFailure(Throwable caught)
-										{
-											// TODO Auto-generated
-											// method stub
+								@Override
+								public void onFailure(Throwable caught)
+								{
+									// TODO Auto-generated
+									// method stub
 
-										}
+								}
 
-										@Override
-										public void onSuccess(
-												ClientBuddy[] result)
-										{
-											buddyList.setBuddyList(result);
+								@Override
+								public void onSuccess(ClientBuddy[] result)
+								{
+									buddyList.setBuddyList(result);
+								}
+							});
 
-										}
-									});
-
-						} else
+						}
+						else
 						{
 							errorLabel.setText("login failed");
 						}
@@ -256,118 +231,63 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				final ChatPanel chatPanel = new ChatPanel(
-						"radams217@ryannadams.com");
+				final ChatPanel chatPanel = new ChatPanel("radams217@ryannadams.com");
 
-				chatService.createChat(connectionKey,
-						"radams217@ryannadams.com",
-						new AsyncCallback<ClientChat>()
+				chatService.createChat(key, "radams217@ryannadams.com", new AsyncCallback<ClientChat>()
+				{
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onSuccess(final ClientChat chat)
+					{
+						Timer timer = pollMessages(chatPanel, chat);
+						timer.scheduleRepeating(POLLING_INTERVAL);
+
+						chatPanel.addKeyPressHandler(new KeyPressHandler()
 						{
 
 							@Override
-							public void onFailure(Throwable caught)
+							public void onKeyPress(KeyPressEvent event)
 							{
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onSuccess(final ClientChat chat)
-							{
-								Timer pollMessages = new Timer()
+								if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 								{
-									@Override
-									public void run()
+									chatService.sendMessage(key, chat, chatPanel.getMessageText(), new AsyncCallback<Void>()
 									{
-										chatService
-												.getMessages(
-														connectionKey,
-														chat,
-														new AsyncCallback<ClientMessage[]>()
-														{
 
-															@Override
-															public void onFailure(
-																	Throwable caught)
-															{
-																// TODO
-																// Auto-generated
-																// method stub
-
-															}
-
-															@Override
-															public void onSuccess(
-																	ClientMessage[] messages)
-															{
-																for (ClientMessage message : messages)
-																{
-																	chatPanel
-																			.addChatMessage(
-																					message.getFrom(),
-																					message.getBody());
-																}
-
-															}
-														});
-
-									}
-
-								};
-
-								pollMessages
-										.scheduleRepeating(POLLING_INTERVAL);
-
-								chatPanel
-										.addKeyPressHandler(new KeyPressHandler()
+										@Override
+										public void onFailure(Throwable caught)
 										{
+											// TODO
+											// Auto-generated
+											// method
+											// stub
 
-											@Override
-											public void onKeyPress(
-													KeyPressEvent event)
-											{
-												if (KeyCodes.KEY_ENTER == event
-														.getNativeEvent()
-														.getKeyCode())
-												{
-													chatService.sendMessage(
-															connectionKey,
-															chat,
-															chatPanel
-																	.getMessageText(),
-															new AsyncCallback<Void>()
-															{
+										}
 
-																@Override
-																public void onFailure(
-																		Throwable caught)
-																{
-																	// TODO
-																	// Auto-generated
-																	// method
-																	// stub
+										@Override
+										public void onSuccess(Void result)
+										{
+											// TODO
+											// Auto-generated
+											// method
+											// stub
 
-																}
+										}
+									});
 
-																@Override
-																public void onSuccess(
-																		Void result)
-																{
-																	// TODO
-																	// Auto-generated
-																	// method
-																	// stub
-
-																}
-															});
-
-												}
-
-											}
-										});
+								}
 
 							}
 						});
+
+					}
+				});
 
 				chatPanel.show();
 			}
@@ -388,7 +308,7 @@ public class cheeonk implements EntryPoint
 			public void onClick(ClickEvent event)
 			{
 
-				chatService.logout(connectionKey, new AsyncCallback<Boolean>()
+				chatService.logout(key, new AsyncCallback<Boolean>()
 				{
 
 					@Override
@@ -403,11 +323,11 @@ public class cheeonk implements EntryPoint
 					{
 						if (result)
 						{
-							connectionKey.setConnectionID(null);
 							RootPanel.get("loginContainer").remove(logout);
 							RootPanel.get("loginContainer").add(login);
 
-						} else
+						}
+						else
 						{
 							errorLabel.setText("logout failed");
 						}
@@ -419,15 +339,13 @@ public class cheeonk implements EntryPoint
 			}
 		});
 
-		RootPanel.get("banner").add(
-				new Image(ImageResources.INSTANCE.getBanner()));
+		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
 
 		RootPanel.get("loginContainer").add(login);
 
 		RootPanel.get("buddyListContainer").add(buddyList);
 
-		RootPanel.get("registrationFormContainer")
-				.add(new RegistrationWidget());
+		RootPanel.get("registrationFormContainer").add(new RegistrationWidget());
 
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 

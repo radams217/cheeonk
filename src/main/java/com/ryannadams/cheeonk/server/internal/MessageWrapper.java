@@ -23,8 +23,7 @@ public class MessageWrapper extends Transmitted
 
 	public ClientMessage getClientMessage()
 	{
-		return new ClientMessage(message.getBody(), message.getTo(),
-				message.getFrom());
+		return new ClientMessage(message.getBody(), message.getTo(), message.getFrom());
 	}
 
 }

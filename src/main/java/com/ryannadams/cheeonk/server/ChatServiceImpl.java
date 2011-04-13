@@ -17,8 +17,7 @@ import com.ryannadams.cheeonk.server.internal.ChatWrapper;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 @SuppressWarnings("serial")
-public class ChatServiceImpl extends RemoteServiceServlet implements
-		ChatService
+public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 {
 	// private final Logger logger;
 	private final Map<ChatServerKey, ChatServerInstance> chatServerInstances;
@@ -37,26 +36,26 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 			chatServerInstances.put(key, new ChatServerInstance(key));
 		}
 
-		XMPPConnection connection = chatServerInstances.get(key)
-				.getConnection();
+		XMPPConnection connection = chatServerInstances.get(key).getConnection();
 
 		try
 		{
 			connection.connect();
-			chatServerInstances.get(key).addListeners();
 			connection.login(key.getUserName(), key.getPassword());
+			chatServerInstances.get(key).addListeners();
 
 			for (RosterEntry rosterEntry : connection.getRoster().getEntries())
 			{
-				chatServerInstances.get(key).getBuddyContainer()
-						.addBuddy(rosterEntry);
+				chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry);
 			}
 		}
 		catch (XMPPException e)
 		{
 			e.printStackTrace();
+			return null;
 		}
 
+		// key.setConnectionID(connection.getConnectionID());
 		// if not connected this will be null
 		return connection.getConnectionID();
 	}
@@ -76,8 +75,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public ClientBuddy[] getBuddyList(ChatServerKey key)
 	{
-		return chatServerInstances.get(key).getBuddyContainer()
-				.getBuddyList(key);
+		return chatServerInstances.get(key).getBuddyContainer().getBuddyList();
 	}
 
 	@Override
@@ -106,36 +104,27 @@ public class ChatServiceImpl extends RemoteServiceServlet implements
 	{
 		ChatServerInstance instance = chatServerInstances.get(key);
 
-		return new ChatWrapper(instance.getConnection().getChatManager()
-				.createChat(recipient, instance.getChatContainer()))
-				.getClientChat();
+		return new ChatWrapper(instance.getConnection().getChatManager().createChat(recipient, instance.getChatContainer())).getClientChat();
 	}
 
 	@Override
 	public ClientChat[] getIncomingChats(ChatServerKey key)
 	{
-		System.out.println("DEBUG: Polling for Incoming Chats");
-
-		return chatServerInstances.get(key).getChatContainer()
-				.getIncomingChats();
+		return chatServerInstances.get(key).getChatContainer().getIncomingChats();
 	}
 
 	@Override
 	public void sendMessage(ChatServerKey key, ClientChat chat, String message)
 	{
-		System.out.println("DEBUG: Sending Outgoing Message to "
-				+ chat.getParticipant() + ". [" + message + "]");
+		System.out.println("DEBUG: Sending Outgoing Message to " + chat.getThreadID() + ". [" + message + "]");
 
-		chatServerInstances.get(key).getChatContainer()
-				.sendMessage(chat, message);
+		chatServerInstances.get(key).getChatContainer().sendMessage(chat, message);
 	}
 
 	@Override
 	public ClientMessage[] getMessages(ChatServerKey key, ClientChat chatKey)
 	{
-
-		return chatServerInstances.get(key).getChatContainer()
-				.getMessages(chatKey);
+		return chatServerInstances.get(key).getChatContainer().getMessages(chatKey);
 	}
 
 }
