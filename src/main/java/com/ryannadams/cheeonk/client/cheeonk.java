@@ -23,7 +23,6 @@ import com.ryannadams.cheeonk.client.widgets.BuddyWidget;
 import com.ryannadams.cheeonk.client.widgets.ChatPanel;
 import com.ryannadams.cheeonk.client.widgets.LoginWidget;
 import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
-import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 /**
@@ -32,6 +31,8 @@ import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 public class cheeonk implements EntryPoint
 {
 	private final int POLLING_INTERVAL = 2000;
+
+	private final String signInContainer = "bannerSignin";
 
 	private final ChatServiceAsync chatService;
 	private final Messages messages;
@@ -192,8 +193,8 @@ public class cheeonk implements EntryPoint
 						if (result != null)
 						{
 							// connectionKey.setConnectionID(result);
-							RootPanel.get("loginContainer").remove(login);
-							RootPanel.get("loginContainer").add(logout);
+							RootPanel.get(signInContainer).remove(login);
+							RootPanel.get(signInContainer).add(logout);
 							logout.setUserName(login.getUsername());
 
 							startPollingChats();
@@ -254,6 +255,8 @@ public class cheeonk implements EntryPoint
 			public void onClick(ClickEvent event)
 			{
 
+				pollChats.cancel();
+
 				chatService.logout(key, new AsyncCallback<Boolean>()
 				{
 
@@ -269,8 +272,8 @@ public class cheeonk implements EntryPoint
 					{
 						if (result)
 						{
-							RootPanel.get("loginContainer").remove(logout);
-							RootPanel.get("loginContainer").add(login);
+							RootPanel.get(signInContainer).remove(logout);
+							RootPanel.get(signInContainer).add(login);
 
 						}
 						else
@@ -287,11 +290,12 @@ public class cheeonk implements EntryPoint
 
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
 
-		RootPanel.get("loginContainer").add(login);
+		RootPanel.get(signInContainer).add(login);
 
 		RootPanel.get("buddyListContainer").add(buddyList);
 
-		RootPanel.get("registrationFormContainer").add(new RegistrationWidget());
+		// RootPanel.get("registrationFormContainer").add(new
+		// RegistrationWidget());
 
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
@@ -336,6 +340,7 @@ public class cheeonk implements EntryPoint
 								@Override
 								public void onSuccess(Void result)
 								{
+									chatPanel.clearMessageText();
 
 								}
 							});

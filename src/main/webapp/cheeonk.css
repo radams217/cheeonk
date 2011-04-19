@@ -1,154 +1,204 @@
-body {
+/* Color Palette
+
+Generated using an image from http://www.degraeve.com/color-palette/index.php
+for this image: http://www.desktoprating.com/wallpapers/animal-wallpapers-pictures/giraffe-wallpaper.jpg
+
+dull
+	#221111
+	#664433
+	#996655
+	#bbaa99
+	#aa8877
+	
+vibrant
+	#331111
+	#994422
+	#cc8866
+	#eedddd
+	#ddaa99
+
+Banner Blues:	
+	2272be
+	3377bb
+*/
+
+body
+{
+	background-color:#ffffff;
 	text-align: center;
-	background-color: #FFFFFF;
+	width: 100%;
+	margin: auto;
 }
 
-#container {
-	text-align: left;
-	margin: 10px auto;
+.header
+{
+	position: relative;
+	background-color: #3377bb;
+	width: 100%;
+	margin: auto;
+}
+
+.content
+{
+	position: relative;
+	background-color: #ffffff;
 	width: 1024px;
-	display: table;
+	height: 300px;
+	margin: auto;
 }
 
-#headerwrapper {
-	display: table-row;
+.footer
+{
+	position: relative;
+	font-family:Verdana;
+	font-size: 10pt;
+	width: 1024px;
+	margin: auto;
+}
+
+#banner
+{
+	position: relative;
+	width: 1280px;
+	margin: auto;
+}
+
+.bannerNavigation
+{
+	position: absolute;
+	top: 10px;
+	left: 138px;
+}
+
+#bannerSignin
+{
+	position: absolute;
+	top: 10px;
+	right: 138px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	font-family:  Verdana;
+	font-size: 10pt;
+	color: #ffffff;
+}
+
+.menubar
+{
+	position: absolute;
 	width: 100%;
 	height: 35px;
-	border: 1px;
-}
-
-.navigationLink {
-	color: #004499;
-	font-size: 10pt;
-}
-
-.navigationLink:hover {
-	color: #002244;
-	font-size: 10pt;
-}
-
-#banner {
-	display: table-row;
-	background-color: #FFFFFF;
-}
-
-#content {
-	display: table-row;
-	background-color: #F1F1F1;
-	border-style: solid;
-	border-width: 4px;
-	border-color: #000000;
-}
-
-#buddyListContainer {
-	float: left;
-	width: 200px;
-}
-
-#registrationFormContainer {
-	float: left;
-	width: 824px;
-}
-
-.topbar {
-	display: table-row;
-	float: left;
-	width: 100%;
 	background-color: #000000;
-	position: relative;
-	padding: 0px 0px 0px 0px;
+	bottom: 0px;
+}
+
+#buddyListContainer
+{
+	position: absolute;
+	width: 200px;
+	height: 400px;
+	background-color: #b9d1e8;
+	top: -130px;
+	left: 0px;
+	border-style: solid;
+	border-width: 10px;
+	border-color: #ffffff;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-khtml-border-radius: 20px;
+	border-radius: 20px;
+}
+
+.buddy
+{
+	width: 100%;
+	border-style: solid;
+	border-color: #000000;
+	border-width: 1px;
+	font-family:  Verdana;
+	font-size: 10pt;
 	text-align: left;
 }
 
-#errorLabelContainer {
-	display: table-row;
-	width: 100%;
+.textfield
+{
+	font-family:Verdana;
+	font-size:10pt;
 }
 
-#loginContainer {
-	float: right;
-}
-
-.messageform {
-	float: left;
-}
-
-.footer {
-	display: table-row;
-	text-align: right;
-	font-family: Verdana;
-	font-size: 10pt;
-}
-
-#navigation {
-	float: left;
-}
-
-.textfield {
-	font-family: Verdana;
-	font-size: 10pt;
-}
-
-.buttonPane {
+.buttonPane
+{
 	float: right;
 	vertical-align: bottom;
 }
 
-.button {
-	border: 1px solid #006;
-	background: #aaaaaa;
-	font-size: 10pt;
-	cursor: pointer;
+.button 
+{
+    border: 1px solid #006;
+    background: #aaaaaa;
+	font-size:10pt;
+	cursor:pointer;
 }
 
-.button:hover {
-	background: #cccccc;
+.button:hover 
+{
+    background:#cccccc;
 }
 
-space {
+space
+{
 	margin-left: 10px;
 }
 
-A {
-	text-decoration: none;
-	font-family: Verdana, sans-serif;
-}
-
-A:hover {
-	text-decoration: none;
-	font-family: Verdana, sans-serif;
-}
-
-.sideBarLink {
-	color: #FFFFFF;
-	font-weight: bold;
-	font-size: 11pt;
-}
-
-.sideBarLink:hover {
-	color: #cccccc;
-	font-size: 11pt;
-}
-
-.entity {
-	margin-top: 9px;
-	margin-bottom: 9px;
-}
-
-description {
-	text-decoration: none;
-	font-family: Verdana, sans-serif;
+description
+{
+	text-decoration:none;
+	font-family:Verdana, sans-serif;
 	font-size: 9pt;
 }
 
-label {
-	font-family: Verdana, sans-serif;
+label
+{
+	font-family:Verdana, sans-serif;
+	font-size:10pt;
+}
+
+/* Link Stylings */
+
+.navigationLink
+{
+	color:#FFFFFF;
 	font-size: 10pt;
 }
 
-.sendButton {
-	display: block;
-	font-size: 16pt;
+.navigationLink:hover
+{
+	color:#990000;
+	font-size: 10pt;
+}
+
+.footerLink
+{
+	color:#004499;
+	font-size: 10pt;
+}
+
+.footerLink:hover
+{
+	color:#990000;
+	font-size: 10pt;
+}
+
+a
+{
+	text-decoration:none;
+	font-family:Verdana, sans-serif;
+}
+
+a:hover
+{
+	text-decoration:none;
+	font-family:Verdana, sans-serif;
 }
 
 /** Most GWT widgets already have a style name defined */

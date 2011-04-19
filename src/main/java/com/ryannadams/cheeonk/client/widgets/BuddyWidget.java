@@ -15,6 +15,7 @@ public class BuddyWidget extends Composite implements ClickHandler
 	{
 		Button button = new Button(buddy.getName());
 
+		button.setStyleName("buddy");
 		button.addClickHandler(this);
 
 		this.buddy = buddy;

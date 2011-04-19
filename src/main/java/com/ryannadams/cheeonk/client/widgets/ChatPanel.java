@@ -1,8 +1,11 @@
 package com.ryannadams.cheeonk.client.widgets;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -14,6 +17,7 @@ public class ChatPanel extends DialogBox
 	private final HTML chatWindow;
 	private final TextArea messageArea;
 	private final ScrollPanel scrollPanel;
+	private final Button close;
 
 	public ChatPanel(String recipienttext)
 	{
@@ -25,6 +29,7 @@ public class ChatPanel extends DialogBox
 		scrollPanel.add(chatWindow);
 		messageArea = new TextArea();
 		messageArea.setStyleName("chat-MessageArea");
+		close = new Button("Close");
 
 		addKeyPressHandler(new KeyPressHandler()
 		{
@@ -34,11 +39,20 @@ public class ChatPanel extends DialogBox
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
 					addChatMessage("me", messageArea.getText());
-					// messageArea.setText("");
+					messageArea.setCursorPos(0);
 				}
 
 			}
 
+		});
+
+		close.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				hide();
+			}
 		});
 
 		VerticalPanel panel = new VerticalPanel();
@@ -56,6 +70,11 @@ public class ChatPanel extends DialogBox
 		String temp = chatWindow.getHTML();
 		chatWindow.setHTML(temp + from + ":<BR/>" + message + "<BR/>");
 		scrollPanel.scrollToBottom();
+	}
+
+	public void clearMessageText()
+	{
+		messageArea.setText("");
 	}
 
 	public String getMessageText()
