@@ -22,6 +22,7 @@ import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
 import com.ryannadams.cheeonk.client.widgets.BuddyWidget;
 import com.ryannadams.cheeonk.client.widgets.ChatPanel;
+import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 /**
@@ -39,6 +40,7 @@ public class cheeonk implements EntryPoint
 	private final Label errorLabel;
 	private final AuthenticationWidget authenticationWidget;
 	private final BuddyList buddyList;
+	private final RegistrationWidget registrationWidget;
 
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
@@ -51,6 +53,34 @@ public class cheeonk implements EntryPoint
 		authenticationWidget = new AuthenticationWidget();
 		errorLabel = new Label();
 		buddyList = new BuddyList();
+		registrationWidget = new RegistrationWidget()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				super.onClick(event);
+
+				chatService.register(registrationWidget.getUsername(), registrationWidget.getPassword(), new AsyncCallback<Boolean>()
+				{
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						errorLabel.setText("Registration Failed");
+
+					}
+
+					@Override
+					public void onSuccess(Boolean result)
+					{
+						errorLabel.setText("Registration Successful");
+
+					}
+				});
+
+			}
+
+		};
 	}
 
 	private void pollChats()
@@ -73,7 +103,7 @@ public class cheeonk implements EntryPoint
 					{
 						for (final ClientChat chat : chats)
 						{
-							final ChatPanel chatPanel = new ChatPanel(chat.getThreadID());
+							final ChatPanel chatPanel = new ChatPanel(chat.getParticipant());
 							chatPanel.addKeyPressHandler(new KeyPressHandler()
 							{
 
@@ -265,6 +295,7 @@ public class cheeonk implements EntryPoint
 		RootPanel.get(signInContainer).add(authenticationWidget);
 		RootPanel.get("buddyListContainer").add(buddyList);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
+		RootPanel.get("RegistrationContainer").add(registrationWidget);
 
 	}
 

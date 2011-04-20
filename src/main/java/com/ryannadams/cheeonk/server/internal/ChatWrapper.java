@@ -23,11 +23,11 @@ public class ChatWrapper extends AbstractChat implements IChat
 		return chat;
 	}
 
-	// @Override
-	// public String getParticipant()
-	// {
-	// return chat.getParticipant();
-	// }
+	@Override
+	public String getParticipant()
+	{
+		return chat.getParticipant();
+	}
 
 	@Override
 	public String getThreadID()
@@ -37,6 +37,9 @@ public class ChatWrapper extends AbstractChat implements IChat
 
 	public ClientChat getClientChat()
 	{
+		ClientChat clientChat = new ClientChat(chat.getThreadID());
+		clientChat.setParticipant(chat.getParticipant());
+
 		return new ClientChat(chat.getThreadID());
 	}
 

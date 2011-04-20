@@ -118,6 +118,13 @@ body
 	border-radius: 20px;
 }
 
+#RegistrationContainer
+{
+	position: absolute;
+	left: 210px;
+}
+
+
 .buddy
 {
 	width: 100%;

@@ -22,11 +22,11 @@ public class ClientChat extends AbstractChat implements IsSerializable
 		this.participant = participant;
 	}
 
-	// @Override
-	// public String getParticipant()
-	// {
-	// return participant;
-	// }
+	@Override
+	public String getParticipant()
+	{
+		return participant;
+	}
 
 	@Override
 	public String getThreadID()
