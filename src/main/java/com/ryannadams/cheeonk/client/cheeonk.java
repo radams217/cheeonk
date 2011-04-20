@@ -241,6 +241,8 @@ public class cheeonk implements EntryPoint
 									}
 								});
 
+								RootPanel.get("buddyListContainer").add(buddyList);
+
 							}
 							else
 							{
@@ -293,7 +295,7 @@ public class cheeonk implements EntryPoint
 
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
 		RootPanel.get(signInContainer).add(authenticationWidget);
-		RootPanel.get("buddyListContainer").add(buddyList);
+
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 		RootPanel.get("RegistrationContainer").add(registrationWidget);
 
