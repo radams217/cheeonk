@@ -30,4 +30,5 @@ public interface ChatService extends RemoteService
 
 	ClientMessage[] getMessages(ChatServerKey connectionKey, ClientChat chat);
 
+	Boolean register(String username, String password);
 }

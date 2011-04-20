@@ -18,11 +18,10 @@ import com.ryannadams.cheeonk.client.chat.ClientMessage;
 import com.ryannadams.cheeonk.client.i18n.Messages;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
+import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.BuddyList;
 import com.ryannadams.cheeonk.client.widgets.BuddyWidget;
 import com.ryannadams.cheeonk.client.widgets.ChatPanel;
-import com.ryannadams.cheeonk.client.widgets.LoginWidget;
-import com.ryannadams.cheeonk.client.widgets.LogoutWidget;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 /**
@@ -30,17 +29,17 @@ import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
  */
 public class cheeonk implements EntryPoint
 {
-	private final int POLLING_INTERVAL = 2000;
+	private final int POLLING_INTERVAL = 1000;
 
 	private final String signInContainer = "bannerSignin";
 
 	private final ChatServiceAsync chatService;
 	private final Messages messages;
 	private final ChatServerKey key;
-	private final LoginWidget login;
-	private final LogoutWidget logout;
+	private final Label errorLabel;
+	private final AuthenticationWidget authenticationWidget;
+	private final BuddyList buddyList;
 
-	private BuddyList buddyList;
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
 
@@ -49,11 +48,12 @@ public class cheeonk implements EntryPoint
 		chatService = GWT.create(ChatService.class);
 		messages = GWT.create(Messages.class);
 		key = ChatServerKey.getCheeonkConnectionKey();
-		login = new LoginWidget();
-		logout = new LogoutWidget();
+		authenticationWidget = new AuthenticationWidget();
+		errorLabel = new Label();
+		buddyList = new BuddyList();
 	}
 
-	private void startPollingChats()
+	private void pollChats()
 	{
 		pollChats = new Timer()
 		{
@@ -62,7 +62,6 @@ public class cheeonk implements EntryPoint
 			{
 				chatService.getIncomingChats(key, new AsyncCallback<ClientChat[]>()
 				{
-
 					@Override
 					public void onFailure(Throwable caught)
 					{
@@ -89,20 +88,12 @@ public class cheeonk implements EntryPoint
 											@Override
 											public void onFailure(Throwable caught)
 											{
-												// TODO
-												// Auto-generated
-												// method
-												// stub
 
 											}
 
 											@Override
 											public void onSuccess(Void result)
 											{
-												// TODO
-												// Auto-generated
-												// method
-												// stub
 
 											}
 										});
@@ -141,7 +132,6 @@ public class cheeonk implements EntryPoint
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						// TODO: log this
 					}
 
 					@Override
@@ -151,7 +141,6 @@ public class cheeonk implements EntryPoint
 						{
 							chatPanel.addChatMessage(message.getFrom(), message.getBody());
 						}
-
 					}
 				});
 
@@ -161,101 +150,87 @@ public class cheeonk implements EntryPoint
 
 	}
 
-	/**
-	 * This is the entry point method.
-	 */
 	@Override
 	public void onModuleLoad()
 	{
-		// Temp for now to display errors
-		final Label errorLabel = new Label();
-
-		login.addClickHandler(new ClickHandler()
+		authenticationWidget.addGoClickHandler(new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				key.setUserName(login.getUsername());
-				key.setPassword(login.getPassword());
-
-				chatService.login(key, new AsyncCallback<String>()
+				if (authenticationWidget.validate())
 				{
+					key.setUserName(authenticationWidget.getUsername());
+					key.setPassword(authenticationWidget.getPassword());
 
-					@Override
-					public void onFailure(Throwable caught)
+					chatService.login(key, new AsyncCallback<String>()
 					{
-						errorLabel.setText("Login Unsuccessful.  Please Check your UserName and Password.");
-					}
 
-					@Override
-					public void onSuccess(String result)
-					{
-						if (result != null)
+						@Override
+						public void onFailure(Throwable caught)
 						{
-							// connectionKey.setConnectionID(result);
-							RootPanel.get(signInContainer).remove(login);
-							RootPanel.get(signInContainer).add(logout);
-							logout.setUserName(login.getUsername());
+							errorLabel.setText("Login Unsuccessful.  Please Check your Username and Password.");
+						}
 
-							startPollingChats();
-
-							chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
+						@Override
+						public void onSuccess(String result)
+						{
+							if (result != null)
 							{
+								// connectionKey.setConnectionID(result);
+								authenticationWidget.signedIn();
 
-								@Override
-								public void onFailure(Throwable caught)
+								pollChats();
+
+								chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
 								{
-									// TODO Auto-generated
-									// method stub
 
-								}
-
-								@Override
-								public void onSuccess(ClientBuddy[] result)
-								{
-									for (final ClientBuddy buddy : result)
+									@Override
+									public void onFailure(Throwable caught)
 									{
-										buddyList.addBuddy(new BuddyWidget(buddy)
-										{
-											@Override
-											public void onClick(ClickEvent event)
-											{
-												createChatPanel(buddy.getName()).show();
-											}
+										// TODO Auto-generated
+										// method stub
 
-										});
 									}
-								}
-							});
 
-						}
-						else
-						{
-							errorLabel.setText("login failed");
-						}
-					}
+									@Override
+									public void onSuccess(ClientBuddy[] result)
+									{
+										for (final ClientBuddy buddy : result)
+										{
+											buddyList.addBuddy(new BuddyWidget(buddy)
+											{
+												@Override
+												public void onClick(ClickEvent event)
+												{
+													createChatPanel(buddy.getName()).show();
+												}
 
-				});
+											});
+										}
+									}
+								});
+
+							}
+							else
+							{
+								errorLabel.setText("login failed");
+							}
+						}
+
+					});
+				}
 			}
 		});
 
-		buddyList = new BuddyList();
-
-		// Create the popup dialog box
-		// final DialogBox dialogBox = new DialogBox();
-		// dialogBox.setText("Remote Procedure Call");
-		// dialogBox.setAnimationEnabled(true);
-		// We can set the id of a widget by accessing its Element
-		// NOTE: closeButton.getElement().setId("closeButton");
-
-		logout.addClickHandler(new ClickHandler()
+		authenticationWidget.addSignoutClickHandler(new ClickHandler()
 		{
-
 			@Override
 			public void onClick(ClickEvent event)
 			{
-
 				pollChats.cancel();
+
+				buddyList.clearBuddyList();
 
 				chatService.logout(key, new AsyncCallback<Boolean>()
 				{
@@ -264,7 +239,6 @@ public class cheeonk implements EntryPoint
 					public void onFailure(Throwable caught)
 					{
 						errorLabel.setText("didn't work");
-
 					}
 
 					@Override
@@ -272,8 +246,7 @@ public class cheeonk implements EntryPoint
 					{
 						if (result)
 						{
-							RootPanel.get(signInContainer).remove(logout);
-							RootPanel.get(signInContainer).add(login);
+							authenticationWidget.signedOff();
 
 						}
 						else
@@ -289,14 +262,8 @@ public class cheeonk implements EntryPoint
 		});
 
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
-
-		RootPanel.get(signInContainer).add(login);
-
+		RootPanel.get(signInContainer).add(authenticationWidget);
 		RootPanel.get("buddyListContainer").add(buddyList);
-
-		// RootPanel.get("registrationFormContainer").add(new
-		// RegistrationWidget());
-
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
 	}
@@ -318,8 +285,17 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void onSuccess(final ClientChat chat)
 			{
-				Timer timer = pollMessages(chatPanel, chat);
+				final Timer timer = pollMessages(chatPanel, chat);
 				timer.scheduleRepeating(POLLING_INTERVAL);
+
+				chatPanel.addClickHandler(new ClickHandler()
+				{
+					@Override
+					public void onClick(ClickEvent event)
+					{
+						timer.cancel();
+					}
+				});
 
 				chatPanel.addKeyPressHandler(new KeyPressHandler()
 				{

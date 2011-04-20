@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -13,10 +12,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class RegistrationWidget extends Composite implements ClickHandler
 {
+	private TextBox usernameField;
+	private TextBox nameField;
 	private TextBox emailField;
-	private TextBox firstNameField;
-	private TextBox lastNameField;
-	private DatePickerTextBox birthDateField;
 	private PasswordTextBox passwordField;
 	private PasswordTextBox passwordConfirmField;
 	private Button registerButton;
@@ -26,14 +24,11 @@ public class RegistrationWidget extends Composite implements ClickHandler
 	{
 		VerticalPanel panel = new VerticalPanel();
 
+		usernameField = new TextBox();
+		nameField = new TextBox();
 		emailField = new TextBox();
-		firstNameField = new TextBox();
-		lastNameField = new TextBox();
-
 		passwordField = new PasswordTextBox();
 		passwordConfirmField = new PasswordTextBox();
-
-		birthDateField = new DatePickerTextBox();
 
 		registerButton = new Button("Register");
 		registerButton.addClickHandler(this);
@@ -42,20 +37,26 @@ public class RegistrationWidget extends Composite implements ClickHandler
 
 		clearButton.addClickHandler(new ClickHandler()
 		{
-
 			@Override
 			public void onClick(ClickEvent event)
 			{
+				usernameField.setText("");
+				nameField.setText("");
 				emailField.setText("");
-				firstNameField.setText("");
-				lastNameField.setText("");
 				passwordField.setText("");
 				passwordConfirmField.setText("");
 			}
 		});
 
 		panel.addStyleName("registrationWidget");
-		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+
+		panel.add(new HTML("Username:"));
+		panel.add(usernameField);
+
+		HorizontalPanel namePanel = new HorizontalPanel();
+		namePanel.add(new HTML("Full Name:"));
+		namePanel.add(nameField);
+		panel.add(namePanel);
 
 		panel.add(new HTML("Email:"));
 		panel.add(emailField);
@@ -65,16 +66,6 @@ public class RegistrationWidget extends Composite implements ClickHandler
 
 		panel.add(new HTML("Confirm Password:"));
 		panel.add(passwordConfirmField);
-
-		HorizontalPanel namePanel = new HorizontalPanel();
-		namePanel.add(new HTML("First Name:"));
-		namePanel.add(firstNameField);
-		namePanel.add(new HTML("Last Name:"));
-		namePanel.add(lastNameField);
-		panel.add(namePanel);
-
-		panel.add(new HTML("Birthdate:"));
-		panel.add(birthDateField);
 
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(registerButton);
@@ -94,9 +85,10 @@ public class RegistrationWidget extends Composite implements ClickHandler
 	@Override
 	public void onClick(ClickEvent event)
 	{
-		validate();
-
-		// return;
+		if (!validate())
+		{
+			return;
+		}
 
 	}
 

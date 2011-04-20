@@ -27,4 +27,6 @@ public interface ChatServiceAsync
 	void sendMessage(ChatServerKey connectionKey, ClientChat chat, String message, AsyncCallback<Void> callback);
 
 	void getMessages(ChatServerKey connectionKey, ClientChat chat, AsyncCallback<ClientMessage[]> callback);
+
+	void register(String username, String password, AsyncCallback<Boolean> callback);
 }

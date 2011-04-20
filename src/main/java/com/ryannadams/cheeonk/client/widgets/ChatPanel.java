@@ -23,6 +23,8 @@ public class ChatPanel extends DialogBox
 	{
 		super(false);
 
+		setModal(false);
+
 		chatWindow = new HTML();
 		chatWindow.setStyleName("chat-Window");
 		scrollPanel = new ScrollPanel();
@@ -59,10 +61,16 @@ public class ChatPanel extends DialogBox
 		panel.setStyleName("chat-Panel");
 		panel.add(scrollPanel);
 		panel.add(messageArea);
+		panel.add(close);
 
 		add(panel);
 
 		setText("Cheeonk with " + recipienttext);
+	}
+
+	public void addClickHandler(ClickHandler clickHandler)
+	{
+		close.addClickHandler(clickHandler);
 	}
 
 	public void addChatMessage(String from, String message)

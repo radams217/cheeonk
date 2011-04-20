@@ -28,6 +28,11 @@ public class BuddyList extends Composite
 		flowPanel.add(buddy);
 	}
 
+	public void clearBuddyList()
+	{
+		flowPanel.clear();
+	}
+
 	// public void setBuddyList(ClientBuddy[] buddyList)
 	// {
 	// for (ClientBuddy buddy : buddyList)

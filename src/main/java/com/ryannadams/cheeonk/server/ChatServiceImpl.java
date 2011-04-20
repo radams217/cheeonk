@@ -3,6 +3,7 @@ package com.ryannadams.cheeonk.server;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -42,6 +43,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 		{
 			connection.connect();
 			connection.login(key.getUserName(), key.getPassword());
+
 			chatServerInstances.get(key).addListeners();
 
 			for (RosterEntry rosterEntry : connection.getRoster().getEntries())
@@ -51,7 +53,17 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 		}
 		catch (XMPPException e)
 		{
-			e.printStackTrace();
+			// e.printStackTrace();
+
+			// Most likely this is a login error
+			// If the user credentials are incorrect it throws and exception
+			// which I think is stupid
+			// Disconnect something went wrong
+			if (connection.isConnected())
+			{
+				connection.disconnect();
+			}
+
 			return null;
 		}
 
@@ -127,4 +139,25 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 		return chatServerInstances.get(key).getChatContainer().getMessages(chatKey);
 	}
 
+	@Override
+	public Boolean register(String username, String password)
+	{
+		XMPPConnection connection = new XMPPConnection(new ConnectionConfiguration(ChatServerKey.getCheeonkConnectionKey().getHost(), ChatServerKey
+				.getCheeonkConnectionKey().getPort()));
+
+		try
+		{
+			connection.connect();
+			connection.getAccountManager().createAccount(username, password);
+			connection.disconnect();
+		}
+		catch (XMPPException e)
+		{
+			connection.disconnect();
+			return false;
+		}
+
+		return true;
+
+	}
 }
