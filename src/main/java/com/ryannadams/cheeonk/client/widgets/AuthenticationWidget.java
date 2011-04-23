@@ -2,6 +2,9 @@ package com.ryannadams.cheeonk.client.widgets;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -11,6 +14,18 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * @author radams217
+ * 
+ *         The AuthenticationWidget combines the login and logout tasks into one
+ *         widget. The elements on the panel can be cleared and reset based on
+ *         whether the user is signed in or sign out of the server. By Default
+ *         the panel is built and set to the sign in state. A sign in button
+ *         will appear on the panel and all credentials can be entered into a
+ *         pop up window. The logout state contains text indicating the user
+ *         name logged in and a logout button. All input in this class can be
+ *         validating by calling the validate method.
+ */
 public class AuthenticationWidget extends Composite
 {
 	private final HorizontalPanel panel;
@@ -20,49 +35,68 @@ public class AuthenticationWidget extends Composite
 	private final PasswordTextBox passwordField;
 	private final Button goButton;
 
+	// TODO: Add Remember Me CheckBox
+	// TODO: Add Forgot Password? Link
+
+	/**
+	 * Default Constructor the initiates the panel to the sign in state.
+	 */
 	public AuthenticationWidget()
 	{
-		panel = new HorizontalPanel();
-		signinButton = new Button("Sign in");
-		signoutButton = new Button("Sign out");
-		usernameField = new TextBox();
-		passwordField = new PasswordTextBox();
-		goButton = new Button("go");
-
-		signinButton.addClickHandler(new ClickHandler()
+		signinButton = new Button("Sign in", new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				final PopupPanel popup = new PopupPanel(true);
+				final SigninPopupPanel signinPopupPanel = new SigninPopupPanel();
 
-				popup.setPopupPositionAndShow(new PopupPanel.PositionCallback()
+				signinPopupPanel.setPopupPositionAndShow(new PopupPanel.PositionCallback()
 				{
 					@Override
 					public void setPosition(int offsetWidth, int offsetHeight)
 					{
-						// TODO: Take out the hardcoded 200
-						int left = (getAbsoluteLeft() + getOffsetWidth()) - 200;
+						int left = (getAbsoluteLeft() + getOffsetWidth()) - signinPopupPanel.getOffsetWidth();
 						int top = signinButton.getAbsoluteTop() + signinButton.getOffsetHeight();
-						popup.setPopupPosition(left, top);
+						signinPopupPanel.setPopupPosition(left, top);
 					}
 				});
 
-				popup.add(new SigninPanel()
-				{
-					@Override
-					public void onClick(ClickEvent event)
-					{
-						popup.hide();
-					}
-
-				});
-
-				popup.show();
+				signinPopupPanel.show();
+				usernameField.setFocus(true);
 			}
 		});
 
+		signoutButton = new Button("Sign out", new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				usernameField.setText("");
+				passwordField.setText("");
+			}
+		});
+
+		usernameField = new TextBox();
+		passwordField = new PasswordTextBox();
+		goButton = new Button("go");
+
+		passwordField.addKeyPressHandler(new KeyPressHandler()
+		{
+			@Override
+			public void onKeyPress(KeyPressEvent event)
+			{
+				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+				{
+					goButton.click();
+				}
+
+			}
+
+		});
+
+		panel = new HorizontalPanel();
 		panel.add(signinButton);
+
 		initWidget(panel);
 	}
 
@@ -109,11 +143,11 @@ public class AuthenticationWidget extends Composite
 		signoutButton.addClickHandler(clickHandler);
 	}
 
-	private abstract class SigninPanel extends Composite implements ClickHandler
+	private class SigninPopupPanel extends PopupPanel
 	{
-		public SigninPanel()
+		public SigninPopupPanel()
 		{
-			goButton.addClickHandler(this);
+			super(true);
 
 			VerticalPanel panel = new VerticalPanel();
 			panel.setStyleName("signinPanel");
@@ -123,10 +157,17 @@ public class AuthenticationWidget extends Composite
 			panel.add(passwordField);
 			panel.add(goButton);
 
-			initWidget(panel);
+			goButton.addClickHandler(new ClickHandler()
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					hide();
+				}
+			});
+
+			add(panel);
 		}
 
-		@Override
-		public abstract void onClick(ClickEvent event);
 	}
 }

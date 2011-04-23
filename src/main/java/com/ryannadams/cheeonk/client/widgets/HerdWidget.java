@@ -8,11 +8,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 
-public class BuddyList extends Composite
+public class HerdWidget extends Composite
 {
 	// Probably will want to change this later
 	private FlowPanel flowPanel;
@@ -21,7 +22,7 @@ public class BuddyList extends Composite
 	private final TextBox buddyName;
 	private final Button okButton;
 
-	public BuddyList()
+	public HerdWidget()
 	{
 		VerticalPanel panel = new VerticalPanel();
 
@@ -45,7 +46,6 @@ public class BuddyList extends Composite
 					@Override
 					public void setPosition(int offsetWidth, int offsetHeight)
 					{
-						// TODO: Take out the hardcoded 200
 						int left = getAbsoluteLeft();
 						int top = addButton.getAbsoluteTop() + addButton.getOffsetHeight();
 						popupPanel.setPopupPosition(left, top);
@@ -62,9 +62,7 @@ public class BuddyList extends Composite
 					@Override
 					public void onClick(ClickEvent event)
 					{
-						addBuddy(new BuddyWidget(new ClientBuddy(buddyName.getText(), buddyName.getText())));
 						popupPanel.hide();
-
 					}
 				});
 				popupPanel.add(panel);
@@ -79,19 +77,60 @@ public class BuddyList extends Composite
 
 		flowPanel.addStyleName("buddyList");
 
-		panel.add(flowPanel);
 		panel.add(addButton);
+		panel.add(flowPanel);
 
 		initWidget(panel);
 	}
 
-	public void addBuddy(BuddyWidget buddy)
+	public void addBuddy(ClientBuddy buddy, ClickHandler clickHandler)
 	{
-		flowPanel.add(buddy);
+		BuddyWidget buddyWidget = new BuddyWidget(buddy);
+		buddyWidget.addClickHandler(clickHandler);
+
+		flowPanel.add(buddyWidget);
 	}
 
 	public void clearBuddyList()
 	{
 		flowPanel.clear();
+	}
+
+	private class AddBuddyPopupPanel extends PopupPanel
+	{
+		public AddBuddyPopupPanel()
+		{
+			super(true);
+
+			VerticalPanel panel = new VerticalPanel();
+
+			add(panel);
+		}
+
+	}
+
+	private class BuddyWidget extends Composite
+	{
+		private final ClientBuddy buddy;
+		private final PushButton button;
+
+		public BuddyWidget(ClientBuddy buddy)
+		{
+			button = new PushButton(buddy.getName());
+			button.setStyleName("buddy");
+
+			this.buddy = buddy;
+
+			HorizontalPanel panel = new HorizontalPanel();
+
+			panel.add(button);
+			initWidget(panel);
+		}
+
+		public void addClickHandler(ClickHandler clickHandler)
+		{
+			button.addClickHandler(clickHandler);
+		}
+
 	}
 }

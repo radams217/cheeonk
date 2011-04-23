@@ -25,8 +25,6 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 
 	public ClientChat[] getIncomingChats()
 	{
-		// System.out.println("DEBUG: Polling for Incoming Chats");
-
 		List<ClientChat> newChatList = new ArrayList<ClientChat>();
 
 		for (ChatWrapper chat : chatMap.keySet())
@@ -82,8 +80,6 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 
 	public ClientMessage[] getMessages(ClientChat key)
 	{
-		// System.out.println("DEBUG: Polling for Incoming Messages");
-
 		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
 
 		// Do in reverse order, break when isTransmitted is true will save

@@ -52,18 +52,12 @@ public class RegistrationWidget extends Composite implements ClickHandler
 
 		panel.add(new HTML("Username:"));
 		panel.add(usernameField);
-
-		HorizontalPanel namePanel = new HorizontalPanel();
-		namePanel.add(new HTML("Full Name:"));
-		namePanel.add(nameField);
-		panel.add(namePanel);
-
+		panel.add(new HTML("Full Name:"));
+		panel.add(nameField);
 		panel.add(new HTML("Email:"));
 		panel.add(emailField);
-
 		panel.add(new HTML("Password:"));
 		panel.add(passwordField);
-
 		panel.add(new HTML("Confirm Password:"));
 		panel.add(passwordConfirmField);
 

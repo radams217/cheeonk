@@ -22,6 +22,16 @@ public class BuddyWrapper extends Transmitted
 		return buddy;
 	}
 
+	public String getUser()
+	{
+		return buddy.getUser();
+	}
+
+	public String getName()
+	{
+		return buddy.getName();
+	}
+
 	public ClientBuddy getClientBuddy()
 	{
 		return new ClientBuddy(buddy.getName(), buddy.getUser());

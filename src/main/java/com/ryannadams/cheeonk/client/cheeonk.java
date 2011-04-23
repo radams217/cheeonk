@@ -12,6 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
 import com.ryannadams.cheeonk.client.chat.ClientMessage;
@@ -19,9 +20,8 @@ import com.ryannadams.cheeonk.client.i18n.Messages;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
-import com.ryannadams.cheeonk.client.widgets.BuddyList;
-import com.ryannadams.cheeonk.client.widgets.BuddyWidget;
-import com.ryannadams.cheeonk.client.widgets.ChatPanel;
+import com.ryannadams.cheeonk.client.widgets.CheeonkWidget;
+import com.ryannadams.cheeonk.client.widgets.HerdWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
@@ -39,20 +39,22 @@ public class cheeonk implements EntryPoint
 	private final ChatServerKey key;
 	private final Label errorLabel;
 	private final AuthenticationWidget authenticationWidget;
-	private final BuddyList buddyList;
+	private final HerdWidget buddyList;
 	private final RegistrationWidget registrationWidget;
+	private final VerticalPanel cheeonkTabs;
 
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
 
 	public cheeonk()
 	{
+		cheeonkTabs = new VerticalPanel();
 		chatService = GWT.create(ChatService.class);
 		messages = GWT.create(Messages.class);
 		key = ChatServerKey.getCheeonkConnectionKey();
 		authenticationWidget = new AuthenticationWidget();
 		errorLabel = new Label();
-		buddyList = new BuddyList();
+		buddyList = new HerdWidget();
 		registrationWidget = new RegistrationWidget()
 		{
 			@Override
@@ -103,39 +105,13 @@ public class cheeonk implements EntryPoint
 					{
 						for (final ClientChat chat : chats)
 						{
-							final ChatPanel chatPanel = new ChatPanel(chat.getParticipant());
-							chatPanel.addKeyPressHandler(new KeyPressHandler()
-							{
+							final CheeonkWidget cheeonkWidget = createChatPanel(chat);
 
-								@Override
-								public void onKeyPress(KeyPressEvent event)
-								{
-									if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
-									{
-										chatService.sendMessage(key, chat, chatPanel.getMessageText(), new AsyncCallback<Void>()
-										{
-
-											@Override
-											public void onFailure(Throwable caught)
-											{
-
-											}
-
-											@Override
-											public void onSuccess(Void result)
-											{
-
-											}
-										});
-									}
-
-								}
-							});
-
-							Timer timer = pollMessages(chatPanel, chat);
+							Timer timer = pollMessages(cheeonkWidget, chat);
 							timer.scheduleRepeating(POLLING_INTERVAL);
 
-							chatPanel.show();
+							cheeonkTabs.add(cheeonkWidget);// ,
+															// chat.getParticipant());
 						}
 
 					}
@@ -149,7 +125,7 @@ public class cheeonk implements EntryPoint
 
 	}
 
-	private Timer pollMessages(final ChatPanel chatPanel, final ClientChat chat)
+	private Timer pollMessages(final CheeonkWidget cheeonkWidget, final ClientChat chat)
 	{
 		return new Timer()
 		{
@@ -169,7 +145,7 @@ public class cheeonk implements EntryPoint
 					{
 						for (ClientMessage message : messages)
 						{
-							chatPanel.addChatMessage(message.getFrom(), message.getBody());
+							cheeonkWidget.addCheeonk(message.getFrom(), message.getBody());
 						}
 					}
 				});
@@ -228,12 +204,36 @@ public class cheeonk implements EntryPoint
 									{
 										for (final ClientBuddy buddy : result)
 										{
-											buddyList.addBuddy(new BuddyWidget(buddy)
+											buddyList.addBuddy(buddy, new ClickHandler()
 											{
 												@Override
 												public void onClick(ClickEvent event)
 												{
-													createChatPanel(buddy.getName()).show();
+													chatService.createChat(key, buddy.getName() + "@ryannadams.com", new AsyncCallback<ClientChat>()
+													{
+
+														@Override
+														public void onFailure(Throwable caught)
+														{
+															// TODO
+															// Auto-generated
+															// method stub
+
+														}
+
+														@Override
+														public void onSuccess(final ClientChat chat)
+														{
+															final CheeonkWidget cheeonkWidget = createChatPanel(chat);
+
+															final Timer timer = pollMessages(cheeonkWidget, chat);
+															timer.scheduleRepeating(POLLING_INTERVAL);
+
+															cheeonkTabs.add(cheeonkWidget);// ,
+																							// chat.getParticipant());
+														}
+													});
+
 												}
 
 											});
@@ -297,72 +297,52 @@ public class cheeonk implements EntryPoint
 		RootPanel.get(signInContainer).add(authenticationWidget);
 
 		RootPanel.get("errorLabelContainer").add(errorLabel);
-		RootPanel.get("RegistrationContainer").add(registrationWidget);
+		RootPanel.get("chatContainer").add(cheeonkTabs);
 
 	}
 
-	public ChatPanel createChatPanel(String to)
+	public CheeonkWidget createChatPanel(final ClientChat chat)
 	{
-		final ChatPanel chatPanel = new ChatPanel(to + "@ryannadams.com");
-
-		chatService.createChat(key, to + "@ryannadams.com", new AsyncCallback<ClientChat>()
+		final CheeonkWidget cheeonkWidget = new CheeonkWidget();
+		cheeonkWidget.addKeyPressHandler(new KeyPressHandler()
 		{
-
 			@Override
-			public void onFailure(Throwable caught)
+			public void onKeyPress(KeyPressEvent event)
 			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onSuccess(final ClientChat chat)
-			{
-				final Timer timer = pollMessages(chatPanel, chat);
-				timer.scheduleRepeating(POLLING_INTERVAL);
-
-				chatPanel.addClickHandler(new ClickHandler()
+				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
-					@Override
-					public void onClick(ClickEvent event)
+					chatService.sendMessage(key, chat, cheeonkWidget.getMessage(), new AsyncCallback<Void>()
 					{
-						timer.cancel();
-					}
-				});
 
-				chatPanel.addKeyPressHandler(new KeyPressHandler()
-				{
-					@Override
-					public void onKeyPress(KeyPressEvent event)
-					{
-						if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+						@Override
+						public void onFailure(Throwable caught)
 						{
-							chatService.sendMessage(key, chat, chatPanel.getMessageText(), new AsyncCallback<Void>()
-							{
-
-								@Override
-								public void onFailure(Throwable caught)
-								{
-
-								}
-
-								@Override
-								public void onSuccess(Void result)
-								{
-									chatPanel.clearMessageText();
-
-								}
-							});
 
 						}
 
-					}
-				});
+						@Override
+						public void onSuccess(Void result)
+						{
+
+						}
+					});
+				}
 
 			}
 		});
 
-		return chatPanel;
+		// cheeonkWidget.addClickHandler(new
+		// ClickHandler()
+		// {
+		// @Override
+		// public void
+		// onClick(ClickEvent
+		// event)
+		// {
+		// timer.cancel();
+		// }
+		// });
 
+		return cheeonkWidget;
 	}
 }

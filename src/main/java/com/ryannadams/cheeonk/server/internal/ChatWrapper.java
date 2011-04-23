@@ -40,7 +40,7 @@ public class ChatWrapper extends AbstractChat implements IChat
 		ClientChat clientChat = new ClientChat(chat.getThreadID());
 		clientChat.setParticipant(chat.getParticipant());
 
-		return new ClientChat(chat.getThreadID());
+		return clientChat;
 	}
 
 	public boolean isTransmitted()
