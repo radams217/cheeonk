@@ -323,9 +323,12 @@ public class cheeonk implements EntryPoint
 						@Override
 						public void onSuccess(Void result)
 						{
-
+							cheeonkWidget.resetMessage();
 						}
 					});
+
+					// want to ignore enter key
+					// mb return?
 				}
 
 			}

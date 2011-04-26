@@ -24,10 +24,14 @@ public class CheeonkWidget extends Composite
 	public CheeonkWidget()
 	{
 		cheeonks = new VerticalPanel();
+		// scroll panel is set need to set the inner vertical pannel
+		// cheeonks.addStyleName("cheeonkWidget-Cheeonks");
 		scrollPanel = new ScrollPanel();
+		scrollPanel.addStyleName("cheeonkWidget-Cheeonks");
 		scrollPanel.add(cheeonks);
 
 		messageArea = new TextArea();
+		messageArea.addStyleName("cheeonkWidget-MessageArea");
 		messageArea.addKeyPressHandler(new KeyPressHandler()
 		{
 			@Override
@@ -37,7 +41,6 @@ public class CheeonkWidget extends Composite
 				{
 					addCheeonk("me", messageArea.getText());
 				}
-
 			}
 
 		});
@@ -52,11 +55,18 @@ public class CheeonkWidget extends Composite
 		});
 
 		VerticalPanel panel = new VerticalPanel();
-		panel.add(cheeonks);
+		panel.addStyleName("cheeonkWidget");
+		panel.add(scrollPanel);
 		panel.add(messageArea);
 		// panel.add(close);
 
 		initWidget(panel);
+	}
+
+	public void resetMessage()
+	{
+		messageArea.setCursorPos(0);
+		messageArea.setText("");
 	}
 
 	public String getMessage()

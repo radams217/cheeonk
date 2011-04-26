@@ -112,8 +112,11 @@ public class AuthenticationWidget extends Composite
 
 	public void signedIn()
 	{
+		HTML loggedinAs = new HTML("Logged in as " + usernameField.getText());
+		loggedinAs.addStyleName("authenticationWidget-LoggedIn");
+
 		panel.clear();
-		panel.add(new HTML("Logged in as " + usernameField.getText()));
+		panel.add(loggedinAs);
 		panel.add(signoutButton);
 	}
 
