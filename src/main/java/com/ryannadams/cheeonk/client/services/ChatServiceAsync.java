@@ -6,8 +6,18 @@ import com.ryannadams.cheeonk.client.chat.ClientChat;
 import com.ryannadams.cheeonk.client.chat.ClientMessage;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
+/**
+ * @author radams217
+ * 
+ */
 public interface ChatServiceAsync
 {
+	/**
+	 * @param connectionKey
+	 * @param callback
+	 * 
+	 *            Login to the XMPPServer using a predefined ChatServerKey
+	 */
 	void login(ChatServerKey connectionKey, AsyncCallback<String> callback);
 
 	void logout(ChatServerKey connectionKey, AsyncCallback<Boolean> callback);

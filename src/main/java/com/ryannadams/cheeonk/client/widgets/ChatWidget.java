@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -14,24 +14,33 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class CheeonkWidget extends Composite
+/**
+ * @author radams217
+ * 
+ *         The ChatWidget is essentially a chat window that a user can send and
+ *         receive messages from other users. The timer is used to poll messages
+ *         coming from the server. This widget can be added to a dialog box or
+ *         any type of panel.
+ */
+public class ChatWidget extends Composite
 {
 	private final VerticalPanel cheeonks;
 	private final TextArea messageArea;
 	private final ScrollPanel scrollPanel;
-	private final Button close;
 
-	public CheeonkWidget()
+	private Timer timer;
+
+	public ChatWidget()
 	{
 		cheeonks = new VerticalPanel();
 		// scroll panel is set need to set the inner vertical pannel
 		// cheeonks.addStyleName("cheeonkWidget-Cheeonks");
 		scrollPanel = new ScrollPanel();
-		scrollPanel.addStyleName("cheeonkWidget-Cheeonks");
+		scrollPanel.addStyleName("chatWidget-Cheeonks");
 		scrollPanel.add(cheeonks);
 
 		messageArea = new TextArea();
-		messageArea.addStyleName("cheeonkWidget-MessageArea");
+		messageArea.addStyleName("chatWidget-MessageArea");
 		messageArea.addKeyPressHandler(new KeyPressHandler()
 		{
 			@Override
@@ -45,49 +54,45 @@ public class CheeonkWidget extends Composite
 
 		});
 
-		close = new Button("Close", new ClickHandler()
-		{
-			@Override
-			public void onClick(ClickEvent event)
-			{
-				// hide();
-			}
-		});
-
 		VerticalPanel panel = new VerticalPanel();
-		panel.addStyleName("cheeonkWidget");
+		panel.addStyleName("chatWidget");
 		panel.add(scrollPanel);
 		panel.add(messageArea);
-		// panel.add(close);
 
 		initWidget(panel);
 	}
 
-	public void resetMessage()
+	public void addKeyPressHandler(KeyPressHandler handler)
 	{
-		messageArea.setCursorPos(0);
-		messageArea.setText("");
-	}
-
-	public String getMessage()
-	{
-		return messageArea.getText();
-	}
-
-	public void addClickHandler(ClickHandler clickHandler)
-	{
-		close.addClickHandler(clickHandler);
-	}
-
-	public void addKeyPressHandler(KeyPressHandler keyPressHandler)
-	{
-		messageArea.addKeyPressHandler(keyPressHandler);
+		messageArea.addKeyPressHandler(handler);
 	}
 
 	public void addCheeonk(String sender, String message)
 	{
 		cheeonks.add(new Cheeonk(sender, message));
 		scrollPanel.scrollToBottom();
+	}
+
+	public void resetMessageArea()
+	{
+		messageArea.setCursorPos(0);
+		messageArea.setText("");
+	}
+
+	public String getMessageAreaText()
+	{
+		return messageArea.getText();
+	}
+
+	public void setTimer(Timer timer, int periodMillis)
+	{
+		this.timer = timer;
+		this.timer.scheduleRepeating(periodMillis);
+	}
+
+	public void cancelTimer()
+	{
+		timer.cancel();
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler

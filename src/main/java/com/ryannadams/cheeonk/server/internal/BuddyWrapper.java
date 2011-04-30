@@ -1,6 +1,7 @@
 package com.ryannadams.cheeonk.server.internal;
 
 import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.packet.Presence;
 
 import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 
@@ -8,18 +9,14 @@ import com.ryannadams.cheeonk.client.chat.ClientBuddy;
 public class BuddyWrapper extends Transmitted
 {
 	private final RosterEntry buddy;
+	private Presence presence;
 
-	public BuddyWrapper(RosterEntry buddy)
+	public BuddyWrapper(RosterEntry buddy, Presence presence)
 	{
 		super();
 
 		this.buddy = buddy;
-	}
-
-	// TODO: don't do this, actually wrap the buddy object
-	public RosterEntry getBuddy()
-	{
-		return buddy;
+		this.presence = presence;
 	}
 
 	public String getUser()
@@ -32,9 +29,18 @@ public class BuddyWrapper extends Transmitted
 		return buddy.getName();
 	}
 
-	public ClientBuddy getClientBuddy()
+	public Presence getPresence()
 	{
-		return new ClientBuddy(buddy.getName(), buddy.getUser());
+		return presence;
 	}
 
+	public void setPresence(Presence presence)
+	{
+		this.presence = presence;
+	}
+
+	public ClientBuddy getClientBuddy()
+	{
+		return new ClientBuddy(buddy.getName(), buddy.getUser(), presence.isAvailable());
+	}
 }

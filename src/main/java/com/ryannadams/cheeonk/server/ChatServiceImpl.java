@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -44,11 +45,14 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 			connection.connect();
 			connection.login(key.getUserName(), key.getPassword());
 
+			// For now accept all suscription requests
+			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);
+
 			chatServerInstances.get(key).addListeners();
 
 			for (RosterEntry rosterEntry : connection.getRoster().getEntries())
 			{
-				chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry);
+				chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry, connection.getRoster().getPresence(rosterEntry.getUser()));
 			}
 		}
 		catch (XMPPException e)
@@ -81,6 +85,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 		XMPPConnection connection = instance.getConnection();
 		connection.disconnect();
 
+		chatServerInstances.remove(key);
+
 		return !connection.isConnected();
 	}
 
@@ -107,7 +113,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 	@Override
 	public ClientBuddy[] getBuddyUpdates(ChatServerKey key)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

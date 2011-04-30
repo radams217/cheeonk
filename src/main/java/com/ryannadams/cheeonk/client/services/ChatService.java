@@ -7,6 +7,9 @@ import com.ryannadams.cheeonk.client.chat.ClientChat;
 import com.ryannadams.cheeonk.client.chat.ClientMessage;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
+/**
+ * @author radams217 This interface specifies the Contract for a ChatService
+ */
 @RemoteServiceRelativePath("chat")
 public interface ChatService extends RemoteService
 {

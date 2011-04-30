@@ -6,16 +6,18 @@ public class ClientBuddy implements IsSerializable
 {
 	protected String name;
 	protected String user;
+	protected boolean isAvailable;
 
 	public ClientBuddy()
 	{
 
 	}
 
-	public ClientBuddy(String name, String user)
+	public ClientBuddy(String name, String user, boolean isAvailable)
 	{
 		this.name = name;
 		this.user = user;
+		this.isAvailable = isAvailable;
 	}
 
 	public void setName(String name)
@@ -36,6 +38,16 @@ public class ClientBuddy implements IsSerializable
 	public String getUser()
 	{
 		return user;
+	}
+
+	public boolean isAvailable()
+	{
+		return isAvailable;
+	}
+
+	public void setAvailable(boolean isAvailable)
+	{
+		this.isAvailable = isAvailable;
 	}
 
 }

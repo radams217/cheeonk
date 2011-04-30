@@ -21,9 +21,9 @@ public class BuddyContainer implements RosterListener
 		buddySet = new HashSet<BuddyWrapper>();
 	}
 
-	public void addBuddy(RosterEntry rosterEntry)
+	public void addBuddy(RosterEntry rosterEntry, Presence presence)
 	{
-		buddySet.add(new BuddyWrapper(rosterEntry));
+		buddySet.add(new BuddyWrapper(rosterEntry, presence));
 	}
 
 	public ClientBuddy[] getBuddyList()
@@ -45,28 +45,28 @@ public class BuddyContainer implements RosterListener
 	@Override
 	public void entriesAdded(Collection<String> arg0)
 	{
-		// TODO Auto-generated method stub
+		System.out.println("add");
 
 	}
 
 	@Override
 	public void entriesDeleted(Collection<String> arg0)
 	{
-		// TODO Auto-generated method stub
+		System.out.println("delete");
 
 	}
 
 	@Override
 	public void entriesUpdated(Collection<String> arg0)
 	{
-		// TODO Auto-generated method stub
+		System.out.println("update");
 
 	}
 
 	@Override
-	public void presenceChanged(Presence arg0)
+	public void presenceChanged(Presence presence)
 	{
-		// TODO Auto-generated method stub
+		System.out.println("TO " + presence.getTo() + ": " + presence.getFrom() + " is " + presence.isAvailable());
 
 	}
 
