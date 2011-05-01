@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.shared;
+package com.ryannadams.cheeonk.shared.validator;
 
 /**
  * <p>
@@ -20,7 +20,7 @@ package com.ryannadams.cheeonk.shared;
  * JavaScript (such as Widgets) cannot be run on the server.
  * </p>
  */
-public class FieldVerifier {
+public class FieldValidator {
 
   /**
    * Verifies that the specified name is valid for our service.
