@@ -3,8 +3,8 @@ package com.ryannadams.cheeonk.server.internal;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 
-import com.ryannadams.cheeonk.server.internal.container.BuddyContainer;
-import com.ryannadams.cheeonk.server.internal.container.ChatContainer;
+import com.ryannadams.cheeonk.server.internal.containers.BuddyContainer;
+import com.ryannadams.cheeonk.server.internal.containers.ChatContainer;
 import com.ryannadams.cheeonk.shared.ChatServerKey;
 
 public class ChatServerInstance

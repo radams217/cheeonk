@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.server.internal.wrapper;
+package com.ryannadams.cheeonk.server.internal.wrappers;
 
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.packet.Presence;

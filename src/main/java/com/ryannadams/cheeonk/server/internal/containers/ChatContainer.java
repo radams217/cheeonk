@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.server.internal.container;
+package com.ryannadams.cheeonk.server.internal.containers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
-import com.ryannadams.cheeonk.server.internal.wrapper.ChatWrapper;
-import com.ryannadams.cheeonk.server.internal.wrapper.MessageWrapper;
+import com.ryannadams.cheeonk.server.internal.wrappers.ChatWrapper;
+import com.ryannadams.cheeonk.server.internal.wrappers.MessageWrapper;
 import com.ryannadams.cheeonk.shared.chat.ClientChat;
 import com.ryannadams.cheeonk.shared.message.ClientMessage;
 

@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.shared.validator;
+package com.ryannadams.cheeonk.shared.validators;
 
 /**
  * <p>

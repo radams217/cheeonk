@@ -12,7 +12,7 @@ import org.jivesoftware.smack.XMPPException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.server.internal.ChatServerInstance;
-import com.ryannadams.cheeonk.server.internal.wrapper.ChatWrapper;
+import com.ryannadams.cheeonk.server.internal.wrappers.ChatWrapper;
 import com.ryannadams.cheeonk.shared.ChatServerKey;
 import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
 import com.ryannadams.cheeonk.shared.chat.ClientChat;

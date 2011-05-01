@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.server.internal.container;
+package com.ryannadams.cheeonk.server.internal.containers;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.packet.Presence;
 
-import com.ryannadams.cheeonk.server.internal.wrapper.BuddyWrapper;
+import com.ryannadams.cheeonk.server.internal.wrappers.BuddyWrapper;
 import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
 
 public class BuddyContainer implements RosterListener
