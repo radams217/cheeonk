@@ -10,7 +10,7 @@ import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.packet.Presence;
 
-import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
 
 public class BuddyContainer implements RosterListener
 {
@@ -32,34 +32,43 @@ public class BuddyContainer implements RosterListener
 
 		for (BuddyWrapper buddy : buddySet)
 		{
-			if (!buddy.isTransmitted())
-			{
-				buddyList.add(buddy.getClientBuddy());
-				buddy.setTransmitted(true);
-			}
+			// if (!buddy.isTransmitted())
+			// {
+			buddyList.add(buddy.getClientBuddy());
+			// buddy.setTransmitted(true);
+			// }
 		}
 
 		return buddyList.toArray(new ClientBuddy[buddyList.size()]);
 	}
 
 	@Override
-	public void entriesAdded(Collection<String> arg0)
+	public void entriesAdded(Collection<String> entries)
 	{
-		System.out.println("add");
+		for (String entry : entries)
+		{
+			System.out.println(entry + ": add");
+		}
 
 	}
 
 	@Override
-	public void entriesDeleted(Collection<String> arg0)
+	public void entriesDeleted(Collection<String> entries)
 	{
-		System.out.println("delete");
+		for (String entry : entries)
+		{
+			System.out.println(entry + ": deleted");
+		}
 
 	}
 
 	@Override
-	public void entriesUpdated(Collection<String> arg0)
+	public void entriesUpdated(Collection<String> entries)
 	{
-		System.out.println("update");
+		for (String entry : entries)
+		{
+			System.out.println(entry + ": update");
+		}
 
 	}
 
@@ -67,6 +76,8 @@ public class BuddyContainer implements RosterListener
 	public void presenceChanged(Presence presence)
 	{
 		System.out.println("TO " + presence.getTo() + ": " + presence.getFrom() + " is " + presence.isAvailable());
+
+		ClientBuddy buddy = new ClientBuddy();
 
 	}
 

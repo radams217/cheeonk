@@ -2,7 +2,7 @@ package com.ryannadams.cheeonk.client.chat;
 
 public interface IChat
 {
-	String getParticipant();
-
 	String getThreadID();
+
+	String getParticipant();
 }

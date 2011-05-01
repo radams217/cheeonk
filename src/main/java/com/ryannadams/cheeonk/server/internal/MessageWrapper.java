@@ -2,9 +2,10 @@ package com.ryannadams.cheeonk.server.internal;
 
 import org.jivesoftware.smack.packet.Message;
 
-import com.ryannadams.cheeonk.client.chat.ClientMessage;
+import com.ryannadams.cheeonk.client.message.ClientMessage;
+import com.ryannadams.cheeonk.client.message.IMessage;
 
-public class MessageWrapper extends Transmitted
+public class MessageWrapper implements IMessage
 {
 	private final Message message;
 
@@ -15,15 +16,26 @@ public class MessageWrapper extends Transmitted
 		this.message = message;
 	}
 
-	// TODO: don't do this, actually wrap the message object
-	public Message getMessage()
+	@Override
+	public String getBody()
 	{
-		return message;
+		return message.getBody();
+	}
+
+	@Override
+	public String getTo()
+	{
+		return message.getTo();
+	}
+
+	@Override
+	public String getFrom()
+	{
+		return message.getFrom();
 	}
 
 	public ClientMessage getClientMessage()
 	{
-		return new ClientMessage(message.getBody(), message.getTo(), message.getFrom());
+		return new ClientMessage(getBody(), getTo(), getFrom());
 	}
-
 }

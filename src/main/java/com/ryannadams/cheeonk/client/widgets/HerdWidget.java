@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
 
 public class HerdWidget extends Composite
 {

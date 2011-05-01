@@ -13,9 +13,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.chat.ClientMessage;
+import com.ryannadams.cheeonk.client.message.ClientMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
@@ -114,38 +114,6 @@ public class cheeonk implements EntryPoint
 								// connectionKey.setConnectionID(result);
 								authenticationWidget.signedIn();
 
-								pollBuddyUpdates = new Timer()
-								{
-
-									@Override
-									public void run()
-									{
-										chatService.getBuddyUpdates(key, new AsyncCallback<ClientBuddy[]>()
-										{
-
-											@Override
-											public void onFailure(Throwable caught)
-											{
-												// TODO Auto-generated method
-												// stub
-
-											}
-
-											@Override
-											public void onSuccess(ClientBuddy[] result)
-											{
-												// TODO Auto-generated method
-												// stub
-
-											}
-										});
-
-									}
-
-								};
-
-								pollBuddyUpdates.scheduleRepeating(POLLING_INTERVAL);
-
 								pollChats = new Timer()
 								{
 									@Override
@@ -199,7 +167,7 @@ public class cheeonk implements EntryPoint
 													@Override
 													public void onClick(ClickEvent event)
 													{
-														chatService.createChat(key, buddy.getName() + "@ryannadams.com", new AsyncCallback<ClientChat>()
+														chatService.createChat(key, buddy.getJID(), new AsyncCallback<ClientChat>()
 														{
 
 															@Override
@@ -223,6 +191,68 @@ public class cheeonk implements EntryPoint
 									}
 								});
 
+								pollBuddyUpdates = new Timer()
+								{
+
+									@Override
+									public void run()
+									{
+										System.out.println("POLLING BUDDIES");
+										chatService.getBuddyUpdates(key, new AsyncCallback<ClientBuddy[]>()
+										{
+
+											@Override
+											public void onFailure(Throwable caught)
+											{
+												// TODO Auto-generated method
+												// stub
+
+											}
+
+											@Override
+											public void onSuccess(ClientBuddy[] result)
+											{
+												for (final ClientBuddy buddy : result)
+												{
+													if (buddy.isAvailable())
+													{
+														buddyList.addBuddy(buddy, new ClickHandler()
+														{
+															@Override
+															public void onClick(ClickEvent event)
+															{
+																chatService.createChat(key, buddy.getJID(), new AsyncCallback<ClientChat>()
+																{
+
+																	@Override
+																	public void onFailure(Throwable caught)
+																	{
+
+																	}
+
+																	@Override
+																	public void onSuccess(final ClientChat chat)
+																	{
+																		cheeonkTabs.add(getChatWidget(key, chat));
+																	}
+																});
+
+															}
+
+														});
+													}
+
+												}
+
+											}
+										});
+
+									}
+
+								};
+
+								pollBuddyUpdates.scheduleRepeating(POLLING_INTERVAL * 3);
+
 								RootPanel.get("buddyListContainer").add(buddyList);
 
 							}
@@ -245,6 +275,7 @@ public class cheeonk implements EntryPoint
 				// TODO Need to cancel message timers
 
 				pollChats.cancel();
+				pollBuddyUpdates.cancel();
 
 				buddyList.clearBuddyList();
 

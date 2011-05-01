@@ -1,32 +1,20 @@
 package com.ryannadams.cheeonk.server.internal;
 
 import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.XMPPException;
 
 import com.ryannadams.cheeonk.client.chat.AbstractChat;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.chat.IChat;
 
-public class ChatWrapper extends AbstractChat implements IChat
+public class ChatWrapper extends AbstractChat
 {
 	private final Chat chat;
-	private final Transmitted transmitted;
+	private boolean isTransmitted;
 
 	public ChatWrapper(Chat chat)
 	{
 		this.chat = chat;
-		this.transmitted = new Transmitted();
-	}
-
-	// TODO: don't do this, actually wrap the chat object
-	public Chat getChat()
-	{
-		return chat;
-	}
-
-	@Override
-	public String getParticipant()
-	{
-		return chat.getParticipant();
+		this.isTransmitted = false;
 	}
 
 	@Override
@@ -35,22 +23,33 @@ public class ChatWrapper extends AbstractChat implements IChat
 		return chat.getThreadID();
 	}
 
-	public ClientChat getClientChat()
+	@Override
+	public String getParticipant()
 	{
-		ClientChat clientChat = new ClientChat(chat.getThreadID());
-		clientChat.setParticipant(chat.getParticipant());
-
-		return clientChat;
+		return chat.getParticipant();
 	}
 
 	public boolean isTransmitted()
 	{
-		return transmitted.isTransmitted();
+		return isTransmitted;
 	}
 
-	public void setTransmitted(boolean transmitted)
+	public void setTransmitted(boolean isTransmitted)
 	{
-		this.transmitted.setTransmitted(transmitted);
+		this.isTransmitted = isTransmitted;
+	}
+
+	public void sendMessage(String text) throws XMPPException
+	{
+		chat.sendMessage(text);
+	}
+
+	public ClientChat getClientChat()
+	{
+		ClientChat clientChat = new ClientChat(getThreadID());
+		clientChat.setParticipant(getParticipant());
+
+		return clientChat;
 	}
 
 }

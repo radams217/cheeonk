@@ -12,7 +12,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
 import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.chat.ClientMessage;
+import com.ryannadams.cheeonk.client.message.ClientMessage;
 
 public class ChatContainer implements ChatManagerListener, MessageListener
 {
@@ -65,7 +65,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 			{
 				try
 				{
-					chatWrapper.getChat().sendMessage(message);
+					chatWrapper.sendMessage(message);
 				}
 				catch (XMPPException e)
 				{
@@ -82,17 +82,12 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 	{
 		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
 
-		// Do in reverse order, break when isTransmitted is true will save
-		// looping through the entire array
 		for (MessageWrapper message : chatMap.get(key))
 		{
-			if (!message.isTransmitted())
-			{
-				System.out.println("DEBUG: Message from " + message.getMessage().getFrom() + " received. [" + message.getMessage().getBody() + "]");
-				newMessageList.add(message.getClientMessage());
+			System.out.println("DEBUG: Message from " + message.getFrom() + " received. [" + message.getBody() + "]");
+			newMessageList.add(message.getClientMessage());
 
-				message.setTransmitted(true);
-			}
+			chatMap.get(key).remove(message);
 		}
 
 		return newMessageList.toArray(new ClientMessage[newMessageList.size()]);

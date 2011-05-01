@@ -10,9 +10,9 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.chat.ClientMessage;
+import com.ryannadams.cheeonk.client.message.ClientMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.server.internal.ChatServerInstance;
 import com.ryannadams.cheeonk.server.internal.ChatWrapper;
@@ -113,8 +113,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 	@Override
 	public ClientBuddy[] getBuddyUpdates(ChatServerKey key)
 	{
-
-		return null;
+		return chatServerInstances.get(key).getBuddyContainer().getBuddyList();
 	}
 
 	@Override

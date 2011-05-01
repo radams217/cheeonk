@@ -2,9 +2,9 @@ package com.ryannadams.cheeonk.client.services;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.ryannadams.cheeonk.client.chat.ClientBuddy;
+import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
 import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.chat.ClientMessage;
+import com.ryannadams.cheeonk.client.message.ClientMessage;
 import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
 
 /**
