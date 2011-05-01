@@ -2,6 +2,17 @@ package com.ryannadams.cheeonk.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * @author radams217
+ *         <p>
+ *         This ChatServerKey is a key used to get Connection, Chat, and Buddy
+ *         information from a List on the server side. It compares the
+ *         connectID, host, port, and userName as specified in the equals and
+ *         hashcode method. A Key matching those criteria are considered equal,
+ *         when that is determined it will get the Containers and Connection
+ *         objects that it needs to complete the task.
+ *         </p>
+ */
 public class ChatServerKey implements IsSerializable
 {
 	private String connectionID;
@@ -11,11 +22,25 @@ public class ChatServerKey implements IsSerializable
 	private String domain;
 	private String password;
 
+	/**
+	 * Required by the GWT Framework.
+	 */
 	public ChatServerKey()
 	{
-
+		// Do Nothing
 	}
 
+	/**
+	 * @param host
+	 *            Most commonly localhost
+	 * @param port
+	 *            5222 for chat without SSL
+	 * @param userName
+	 *            UserName without domain or resource, unique to the domain
+	 * @param domain
+	 *            for example @cheeonk
+	 * @param password
+	 */
 	public ChatServerKey(String host, int port, String userName, String domain, String password)
 	{
 		this.host = host;
@@ -25,6 +50,11 @@ public class ChatServerKey implements IsSerializable
 		this.password = password;
 	}
 
+	/**
+	 * @param host
+	 * @param port
+	 * @param domain
+	 */
 	public ChatServerKey(String host, int port, String domain)
 	{
 		this.host = host;
@@ -32,6 +62,9 @@ public class ChatServerKey implements IsSerializable
 		this.domain = domain;
 	}
 
+	/**
+	 * @return unique connectionID from the server
+	 */
 	public String getConnectionID()
 	{
 		return connectionID;
@@ -159,12 +192,9 @@ public class ChatServerKey implements IsSerializable
 	 */
 	public static ChatServerKey getCheeonkConnectionKey()
 	{
-		return new ChatServerKey("localhost", 5222, "ryannadams.com");
+		return new ChatServerKey("localhost", 5222, "cheeonk.com");
 	}
 
-	public static ChatServerKey getGChatConnectionKey()
-	{
-		return new ChatServerKey("gchat.google.com", 5222, "google.com");
-	}
+	// TODO: Add Gchat information here
 
 }
