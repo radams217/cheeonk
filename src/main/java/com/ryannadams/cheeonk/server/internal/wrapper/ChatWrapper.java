@@ -1,10 +1,10 @@
-package com.ryannadams.cheeonk.server.internal;
+package com.ryannadams.cheeonk.server.internal.wrapper;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPException;
 
-import com.ryannadams.cheeonk.client.chat.AbstractChat;
-import com.ryannadams.cheeonk.client.chat.ClientChat;
+import com.ryannadams.cheeonk.shared.chat.AbstractChat;
+import com.ryannadams.cheeonk.shared.chat.ClientChat;
 
 public class ChatWrapper extends AbstractChat
 {

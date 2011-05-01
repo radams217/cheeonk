@@ -1,10 +1,10 @@
 package com.ryannadams.cheeonk.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
-import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.message.ClientMessage;
-import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
+import com.ryannadams.cheeonk.shared.ChatServerKey;
+import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
+import com.ryannadams.cheeonk.shared.chat.ClientChat;
+import com.ryannadams.cheeonk.shared.message.ClientMessage;
 
 /**
  * @author radams217

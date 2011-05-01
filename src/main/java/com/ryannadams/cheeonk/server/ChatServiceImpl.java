@@ -10,13 +10,13 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
-import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.message.ClientMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.server.internal.ChatServerInstance;
-import com.ryannadams.cheeonk.server.internal.ChatWrapper;
-import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
+import com.ryannadams.cheeonk.server.internal.wrapper.ChatWrapper;
+import com.ryannadams.cheeonk.shared.ChatServerKey;
+import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
+import com.ryannadams.cheeonk.shared.chat.ClientChat;
+import com.ryannadams.cheeonk.shared.message.ClientMessage;
 
 @SuppressWarnings("serial")
 public class ChatServiceImpl extends RemoteServiceServlet implements ChatService

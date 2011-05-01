@@ -1,9 +1,9 @@
-package com.ryannadams.cheeonk.server.internal;
+package com.ryannadams.cheeonk.server.internal.wrapper;
 
 import org.jivesoftware.smack.packet.Message;
 
-import com.ryannadams.cheeonk.client.message.ClientMessage;
-import com.ryannadams.cheeonk.client.message.IMessage;
+import com.ryannadams.cheeonk.shared.message.ClientMessage;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 
 public class MessageWrapper implements IMessage
 {

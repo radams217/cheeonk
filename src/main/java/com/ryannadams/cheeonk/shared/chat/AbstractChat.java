@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client.chat;
+package com.ryannadams.cheeonk.shared.chat;
 
 public abstract class AbstractChat implements IChat
 {

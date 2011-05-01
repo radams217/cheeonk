@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client.message;
+package com.ryannadams.cheeonk.shared.message;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

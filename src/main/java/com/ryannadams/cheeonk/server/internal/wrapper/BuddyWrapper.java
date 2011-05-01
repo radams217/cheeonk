@@ -1,10 +1,10 @@
-package com.ryannadams.cheeonk.server.internal;
+package com.ryannadams.cheeonk.server.internal.wrapper;
 
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.packet.Presence;
 
-import com.ryannadams.cheeonk.client.buddy.AbstractBuddy;
-import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
+import com.ryannadams.cheeonk.shared.buddy.AbstractBuddy;
+import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
 
 // Wraps the RosterEntry object, but I hate that naming so I am changing it to buddy
 public class BuddyWrapper extends AbstractBuddy

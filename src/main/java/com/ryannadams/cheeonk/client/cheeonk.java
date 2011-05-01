@@ -13,16 +13,16 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.buddy.ClientBuddy;
-import com.ryannadams.cheeonk.client.chat.ClientChat;
-import com.ryannadams.cheeonk.client.message.ClientMessage;
 import com.ryannadams.cheeonk.client.services.ChatService;
 import com.ryannadams.cheeonk.client.services.ChatServiceAsync;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.ChatWidget;
 import com.ryannadams.cheeonk.client.widgets.HerdWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
-import com.ryannadams.cheeonk.shared.chat.ChatServerKey;
+import com.ryannadams.cheeonk.shared.ChatServerKey;
+import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
+import com.ryannadams.cheeonk.shared.chat.ClientChat;
+import com.ryannadams.cheeonk.shared.message.ClientMessage;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
