@@ -144,61 +144,12 @@ public class cheeonk implements EntryPoint
 
 								pollChats.scheduleRepeating(POLLING_INTERVAL);
 
-								chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
-								{
-
-									@Override
-									public void onFailure(Throwable caught)
-									{
-										// TODO Auto-generated
-										// method stub
-
-									}
-
-									@Override
-									public void onSuccess(ClientBuddy[] result)
-									{
-										for (final ClientBuddy buddy : result)
-										{
-											if (buddy.isAvailable())
-											{
-												buddyList.addBuddy(buddy, new ClickHandler()
-												{
-													@Override
-													public void onClick(ClickEvent event)
-													{
-														chatService.createChat(key, buddy.getJID(), new AsyncCallback<ClientChat>()
-														{
-
-															@Override
-															public void onFailure(Throwable caught)
-															{
-
-															}
-
-															@Override
-															public void onSuccess(final ClientChat chat)
-															{
-																cheeonkTabs.add(getChatWidget(key, chat));
-															}
-														});
-
-													}
-
-												});
-											}
-										}
-									}
-								});
-
 								pollBuddyUpdates = new Timer()
 								{
-
 									@Override
 									public void run()
 									{
-										System.out.println("POLLING BUDDIES");
-										chatService.getBuddyUpdates(key, new AsyncCallback<ClientBuddy[]>()
+										chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
 										{
 
 											@Override
@@ -214,8 +165,15 @@ public class cheeonk implements EntryPoint
 											{
 												for (final ClientBuddy buddy : result)
 												{
+													if (!buddy.isAvailable())
+													{
+														System.out.println(buddy.getName() + " has been removed");
+														buddyList.removeBuddy(buddy);
+													}
+
 													if (buddy.isAvailable())
 													{
+														System.out.println(buddy.getName() + " has been added");
 														buddyList.addBuddy(buddy, new ClickHandler()
 														{
 															@Override

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-  <!-- Inherit our applications main module.                      -->
-  <inherits name='com.ryannadams.cheeonk.cheeonk'/>
+	<!-- Inherit our applications main module. -->
+	<inherits name='com.ryannadams.cheeonk.cheeonk' />
 
-  <!-- Specify the path to any remote services.                   -->
-  <servlet path="/cheeonk/chat" class="com.ryannadams.cheeonk.server.ChatServiceImpl" />
+	<!-- Specify the path to any remote services. -->
+	<servlet path="/cheeonk/chat" class="com.ryannadams.cheeonk.server.ChatServiceImpl" />
 </module>

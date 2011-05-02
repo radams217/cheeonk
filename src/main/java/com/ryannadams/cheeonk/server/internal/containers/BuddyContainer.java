@@ -2,9 +2,9 @@ package com.ryannadams.cheeonk.server.internal.containers;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
@@ -15,29 +15,29 @@ import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
 
 public class BuddyContainer implements RosterListener
 {
-	private final Set<BuddyWrapper> buddySet;
+	private final Map<String, BuddyWrapper> buddyMap;
 
 	public BuddyContainer()
 	{
-		buddySet = new HashSet<BuddyWrapper>();
+		buddyMap = new HashMap<String, BuddyWrapper>();
 	}
 
 	public void addBuddy(RosterEntry rosterEntry, Presence presence)
 	{
-		buddySet.add(new BuddyWrapper(rosterEntry, presence));
+		buddyMap.put(rosterEntry.getUser(), new BuddyWrapper(rosterEntry, presence));
 	}
 
 	public ClientBuddy[] getBuddyList()
 	{
 		List<ClientBuddy> buddyList = new ArrayList<ClientBuddy>();
 
-		for (BuddyWrapper buddy : buddySet)
+		for (BuddyWrapper buddy : buddyMap.values())
 		{
-			// if (!buddy.isTransmitted())
-			// {
-			buddyList.add(buddy.getClientBuddy());
-			// buddy.setTransmitted(true);
-			// }
+			if (!buddy.isTransmitted())
+			{
+				buddyList.add(buddy.getClientBuddy());
+				buddy.setTransmitted(true);
+			}
 		}
 
 		return buddyList.toArray(new ClientBuddy[buddyList.size()]);
@@ -78,8 +78,11 @@ public class BuddyContainer implements RosterListener
 	{
 		System.out.println("TO " + presence.getTo() + ": " + presence.getFrom() + " is " + presence.isAvailable());
 
-		ClientBuddy buddy = new ClientBuddy();
+		String jID = presence.getFrom().substring(0, presence.getFrom().indexOf('/'));
 
+		BuddyWrapper buddy = buddyMap.get(jID);
+		buddy.setPresence(presence);
+		buddy.setTransmitted(false);
 	}
 
 }

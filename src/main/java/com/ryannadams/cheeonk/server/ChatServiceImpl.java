@@ -53,6 +53,8 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 			for (RosterEntry rosterEntry : connection.getRoster().getEntries())
 			{
 				chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry, connection.getRoster().getPresence(rosterEntry.getUser()));
+				System.out.println(key.getUserName() + " just signed in adding " + rosterEntry.getUser() + " isAvailable = "
+						+ connection.getRoster().getPresence(rosterEntry.getUser()).isAvailable());
 			}
 		}
 		catch (XMPPException e)
@@ -99,8 +101,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 	@Override
 	public void addBuddy(ChatServerKey key, ClientBuddy buddy)
 	{
-		// TODO Auto-generated method stub
-
+		// chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry);
 	}
 
 	@Override
@@ -108,12 +109,6 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 	{
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public ClientBuddy[] getBuddyUpdates(ChatServerKey key)
-	{
-		return chatServerInstances.get(key).getBuddyContainer().getBuddyList();
 	}
 
 	@Override

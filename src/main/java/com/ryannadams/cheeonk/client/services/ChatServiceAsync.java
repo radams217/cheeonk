@@ -28,8 +28,6 @@ public interface ChatServiceAsync
 
 	void removeBuddy(ChatServerKey connectionKey, ClientBuddy buddy, AsyncCallback<Void> callback);
 
-	void getBuddyUpdates(ChatServerKey connectionKey, AsyncCallback<ClientBuddy[]> callback);
-
 	void createChat(ChatServerKey connectionKey, String username, AsyncCallback<ClientChat> callback);
 
 	void getIncomingChats(ChatServerKey connectionKey, AsyncCallback<ClientChat[]> callback);

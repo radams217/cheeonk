@@ -11,6 +11,7 @@ public class BuddyWrapper extends AbstractBuddy
 {
 	private final RosterEntry buddy;
 	private Presence presence;
+	private boolean isTransmitted;
 
 	public BuddyWrapper(RosterEntry buddy, Presence presence)
 	{
@@ -18,6 +19,17 @@ public class BuddyWrapper extends AbstractBuddy
 
 		this.buddy = buddy;
 		this.presence = presence;
+		this.isTransmitted = false;
+	}
+
+	public boolean isTransmitted()
+	{
+		return isTransmitted;
+	}
+
+	public void setTransmitted(boolean isTransmitted)
+	{
+		this.isTransmitted = isTransmitted;
 	}
 
 	public void setPresence(Presence presence)

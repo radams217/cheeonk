@@ -91,6 +91,13 @@ public class HerdWidget extends Composite
 		flowPanel.add(buddyWidget);
 	}
 
+	public void removeBuddy(ClientBuddy buddy)
+	{
+		BuddyWidget buddyWidget = new BuddyWidget(buddy);
+
+		flowPanel.remove(buddyWidget);
+	}
+
 	public void clearBuddyList()
 	{
 		flowPanel.clear();
@@ -130,6 +137,37 @@ public class HerdWidget extends Composite
 		public void addClickHandler(ClickHandler clickHandler)
 		{
 			button.addClickHandler(clickHandler);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((buddy == null) ? 0 : buddy.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			BuddyWidget other = (BuddyWidget) obj;
+
+			if (buddy == null)
+			{
+				if (other.buddy != null)
+					return false;
+			}
+			else
+				if (!buddy.equals(other.buddy))
+					return false;
+			return true;
 		}
 
 	}
