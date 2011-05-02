@@ -1,5 +1,8 @@
 package com.ryannadams.cheeonk.client;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -9,6 +12,8 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -38,16 +43,17 @@ public class cheeonk implements EntryPoint
 	private final AuthenticationWidget authenticationWidget;
 	private final HerdWidget buddyList;
 	private final RegistrationWidget registrationWidget;
-	private final VerticalPanel cheeonkTabs;
 
 	private Timer pollBuddyUpdates;
 	private Timer pollChats;
 
 	// private final Hashmap<String, ChatWidget>chats;
+	private final Logger rootLogger;
 
 	public cheeonk()
 	{
-		cheeonkTabs = new VerticalPanel();
+		rootLogger = Logger.getLogger("");
+
 		chatService = GWT.create(ChatService.class);
 		// messages = GWT.create(Messages.class);
 		key = ChatServerKey.getCheeonkConnectionKey();
@@ -67,7 +73,7 @@ public class cheeonk implements EntryPoint
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						errorLabel.setText("Registration Failed");
+						rootLogger.log(Level.SEVERE, "Registration Failed");
 
 					}
 
@@ -103,7 +109,7 @@ public class cheeonk implements EntryPoint
 						@Override
 						public void onFailure(Throwable caught)
 						{
-							errorLabel.setText("Login Unsuccessful.  Please Check your Username and Password.");
+							rootLogger.log(Level.SEVERE, "Login Unsuccessful.  Please Check your Username and Password.");
 						}
 
 						@Override
@@ -119,12 +125,14 @@ public class cheeonk implements EntryPoint
 									@Override
 									public void run()
 									{
+										rootLogger.log(Level.FINER, "Polling for Incoming Chats");
+
 										chatService.getIncomingChats(key, new AsyncCallback<ClientChat[]>()
 										{
 											@Override
 											public void onFailure(Throwable caught)
 											{
-
+												rootLogger.log(Level.SEVERE, "Failed to get Incoming Chats");
 											}
 
 											@Override
@@ -132,7 +140,30 @@ public class cheeonk implements EntryPoint
 											{
 												for (final ClientChat chat : chats)
 												{
-													cheeonkTabs.add(getChatWidget(key, chat));
+													final DialogBox dialog = new DialogBox(false);
+													final ChatWidget chatWidget = getChatWidget(key, chat);
+
+													Button button = new Button("Close");
+													dialog.setModal(false);
+													VerticalPanel panel = new VerticalPanel();
+													panel.add(chatWidget);
+													panel.add(button);
+
+													dialog.add(panel);
+
+													button.addClickHandler(new ClickHandler()
+													{
+
+														@Override
+														public void onClick(ClickEvent event)
+														{
+															dialog.hide();
+															chatWidget.cancelTimer();
+
+														}
+													});
+
+													dialog.show();
 												}
 
 											}
@@ -149,15 +180,15 @@ public class cheeonk implements EntryPoint
 									@Override
 									public void run()
 									{
+										rootLogger.log(Level.FINER, "Polling for Buddy Updates");
+
 										chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
 										{
 
 											@Override
 											public void onFailure(Throwable caught)
 											{
-												// TODO Auto-generated method
-												// stub
-
+												rootLogger.log(Level.SEVERE, "Failed to get BuddyList");
 											}
 
 											@Override
@@ -167,13 +198,13 @@ public class cheeonk implements EntryPoint
 												{
 													if (!buddy.isAvailable())
 													{
-														System.out.println(buddy.getName() + " has been removed");
+														rootLogger.log(Level.FINE, buddy.getName() + " has been removed");
 														buddyList.removeBuddy(buddy);
 													}
 
 													if (buddy.isAvailable())
 													{
-														System.out.println(buddy.getName() + " has been added");
+														rootLogger.log(Level.FINE, buddy.getName() + " has been added");
 														buddyList.addBuddy(buddy, new ClickHandler()
 														{
 															@Override
@@ -185,13 +216,36 @@ public class cheeonk implements EntryPoint
 																	@Override
 																	public void onFailure(Throwable caught)
 																	{
-
+																		rootLogger.log(Level.SEVERE, "Failed to Add Buddy");
 																	}
 
 																	@Override
 																	public void onSuccess(final ClientChat chat)
 																	{
-																		cheeonkTabs.add(getChatWidget(key, chat));
+																		final DialogBox dialog = new DialogBox(false);
+																		final ChatWidget chatWidget = getChatWidget(key, chat);
+
+																		Button button = new Button("Close");
+																		dialog.setModal(false);
+																		VerticalPanel panel = new VerticalPanel();
+																		panel.add(chatWidget);
+																		panel.add(button);
+
+																		dialog.add(panel);
+
+																		button.addClickHandler(new ClickHandler()
+																		{
+
+																			@Override
+																			public void onClick(ClickEvent event)
+																			{
+																				dialog.hide();
+																				chatWidget.cancelTimer();
+
+																			}
+																		});
+
+																		dialog.show();
 																	}
 																});
 
@@ -243,7 +297,7 @@ public class cheeonk implements EntryPoint
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						errorLabel.setText("didn't work");
+						rootLogger.log(Level.SEVERE, "Failed to Logout");
 					}
 
 					@Override
@@ -256,7 +310,7 @@ public class cheeonk implements EntryPoint
 						}
 						else
 						{
-							errorLabel.setText("logout failed");
+							rootLogger.log(Level.SEVERE, "Failed to Logout");
 						}
 
 					}
@@ -269,7 +323,6 @@ public class cheeonk implements EntryPoint
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
 		RootPanel.get("bannerSignin").add(authenticationWidget);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
-		RootPanel.get("chatContainer").add(cheeonkTabs);
 	}
 
 	private ChatWidget getChatWidget(final ChatServerKey key, final ClientChat chat)
@@ -289,8 +342,7 @@ public class cheeonk implements EntryPoint
 						@Override
 						public void onFailure(Throwable caught)
 						{
-							// Keep text in area and highlight it or something
-
+							rootLogger.log(Level.SEVERE, "Failed to Send Message");
 						}
 
 						@Override
@@ -310,11 +362,14 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void run()
 			{
+				rootLogger.log(Level.FINER, "Polling for Incoming Messages with " + chat.getParticipant());
+
 				chatService.getMessages(key, chat, new AsyncCallback<ClientMessage[]>()
 				{
 					@Override
 					public void onFailure(Throwable caught)
 					{
+						rootLogger.log(Level.SEVERE, "Failed to get Message");
 					}
 
 					@Override

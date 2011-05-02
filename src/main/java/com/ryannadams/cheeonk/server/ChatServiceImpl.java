@@ -2,6 +2,8 @@ package com.ryannadams.cheeonk.server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.Roster.SubscriptionMode;
@@ -18,15 +20,20 @@ import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
 import com.ryannadams.cheeonk.shared.chat.ClientChat;
 import com.ryannadams.cheeonk.shared.message.ClientMessage;
 
+/**
+ * @author radams217
+ * 
+ */
 @SuppressWarnings("serial")
 public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 {
-	// private final Logger logger;
+	private final Logger logger;
+
 	private final Map<ChatServerKey, ChatServerInstance> chatServerInstances;
 
 	public ChatServiceImpl()
 	{
-		// logger = LoggerFactory.getLogger(ChatServiceImpl.class);
+		logger = Logger.getLogger("ChatLogger");
 		chatServerInstances = new HashMap<ChatServerKey, ChatServerInstance>();
 	}
 
@@ -44,6 +51,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 		{
 			connection.connect();
 			connection.login(key.getUserName(), key.getPassword());
+			logger.log(Level.FINE, key.getUserName() + " has logged in.");
 
 			// For now accept all suscription requests
 			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);
@@ -53,8 +61,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 			for (RosterEntry rosterEntry : connection.getRoster().getEntries())
 			{
 				chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry, connection.getRoster().getPresence(rosterEntry.getUser()));
-				System.out.println(key.getUserName() + " just signed in adding " + rosterEntry.getUser() + " isAvailable = "
-						+ connection.getRoster().getPresence(rosterEntry.getUser()).isAvailable());
+				logger.log(Level.FINE, rosterEntry.getUser() + " has been added to their buddy list.");
 			}
 		}
 		catch (XMPPException e)
@@ -88,6 +95,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 		connection.disconnect();
 
 		chatServerInstances.remove(key);
+		logger.log(Level.FINE, key.getUserName() + " has logged off.");
 
 		return !connection.isConnected();
 	}
@@ -128,7 +136,7 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 	@Override
 	public void sendMessage(ChatServerKey key, ClientChat chat, String message)
 	{
-		System.out.println("DEBUG: Sending Outgoing Message to " + chat.getThreadID() + ". [" + message + "]");
+		logger.log(Level.FINE, "Sending Outgoing Message to " + chat.getParticipant() + ": " + message);
 
 		chatServerInstances.get(key).getChatContainer().sendMessage(chat, message);
 	}

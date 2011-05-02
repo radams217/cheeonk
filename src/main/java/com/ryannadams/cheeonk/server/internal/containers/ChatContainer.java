@@ -88,9 +88,12 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		{
 			System.out.println("DEBUG: Message from " + message.getFrom() + " received. [" + message.getBody() + "]");
 			newMessageList.add(message.getClientMessage());
-
-			chatMap.get(key).remove(message);
 		}
+
+		// TODO: I'm worried this may cause messages not transmitted to be
+		// deleted.
+		// This should only clear out sent messages.
+		chatMap.get(key).clear();
 
 		return newMessageList.toArray(new ClientMessage[newMessageList.size()]);
 	}
