@@ -246,24 +246,22 @@ a:hover
 /* CheeonkWidget */
 .chatWidget
 {
-	width: 300px;
+	width: 400px;
 	height: 400px;
-	background-color: #FFFFFF;
 }
 
 .chatWidget-Cheeonks
 {
-	width: 300px;
+	width: 400px;
 	height: 300px;
 	font-family: Verdana, sans-serif;
 	font-size: 10pt;
-	background-color: #FFFFFF;
 }
 
 .chatWidget-MessageArea
 {
-	width: 300px;
-	height: 100px;
+	width: 390px;
+	min-height:100px;
 	font-family: Verdana, sans-serif;
 	font-size: 10pt;		
 }

@@ -55,7 +55,7 @@ public class ChatWidget extends Composite
 		});
 
 		VerticalPanel panel = new VerticalPanel();
-		// panel.addStyleName("chatWidget");
+		panel.addStyleName("chatWidget");
 		panel.add(scrollPanel);
 		panel.add(messageArea);
 

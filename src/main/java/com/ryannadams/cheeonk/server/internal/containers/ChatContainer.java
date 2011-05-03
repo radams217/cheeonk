@@ -92,7 +92,8 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 
 		// TODO: I'm worried this may cause messages not transmitted to be
 		// deleted.
-		// This should only clear out sent messages.
+		// This should only clear out sent messages. Low Latency on the server
+		// may cause problems.
 		chatMap.get(key).clear();
 
 		return newMessageList.toArray(new ClientMessage[newMessageList.size()]);

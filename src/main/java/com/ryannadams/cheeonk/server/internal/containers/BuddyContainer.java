@@ -33,6 +33,19 @@ public class BuddyContainer implements RosterListener
 
 		for (BuddyWrapper buddy : buddyMap.values())
 		{
+			buddyList.add(buddy.getClientBuddy());
+			buddy.setTransmitted(true);
+		}
+
+		return buddyList.toArray(new ClientBuddy[buddyList.size()]);
+	}
+
+	public ClientBuddy[] getBuddyListUpdates()
+	{
+		List<ClientBuddy> buddyList = new ArrayList<ClientBuddy>();
+
+		for (BuddyWrapper buddy : buddyMap.values())
+		{
 			if (!buddy.isTransmitted())
 			{
 				buddyList.add(buddy.getClientBuddy());

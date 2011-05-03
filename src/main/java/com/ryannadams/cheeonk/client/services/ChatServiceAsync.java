@@ -24,6 +24,8 @@ public interface ChatServiceAsync
 
 	void getBuddyList(ChatServerKey connectionKey, AsyncCallback<ClientBuddy[]> callback);
 
+	void getBuddyListUpdates(ChatServerKey connectionKey, AsyncCallback<ClientBuddy[]> callback);
+
 	void addBuddy(ChatServerKey connectionKey, ClientBuddy buddy, AsyncCallback<Void> callback);
 
 	void removeBuddy(ChatServerKey connectionKey, ClientBuddy buddy, AsyncCallback<Void> callback);

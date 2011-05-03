@@ -120,6 +120,75 @@ public class cheeonk implements EntryPoint
 								// connectionKey.setConnectionID(result);
 								authenticationWidget.signedIn();
 
+								chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
+								{
+
+									@Override
+									public void onFailure(Throwable caught)
+									{
+										rootLogger.log(Level.SEVERE, "Failed to get BuddyList");
+									}
+
+									@Override
+									public void onSuccess(ClientBuddy[] result)
+									{
+										for (final ClientBuddy buddy : result)
+										{
+											rootLogger.log(Level.FINE, buddy.getName() + " has been added");
+											buddyList.addBuddy(buddy, new ClickHandler()
+											{
+												@Override
+												public void onClick(ClickEvent event)
+												{
+													chatService.createChat(key, buddy.getJID(), new AsyncCallback<ClientChat>()
+													{
+
+														@Override
+														public void onFailure(Throwable caught)
+														{
+															rootLogger.log(Level.SEVERE, "Failed to Add Buddy");
+														}
+
+														@Override
+														public void onSuccess(final ClientChat chat)
+														{
+															final DialogBox dialog = new DialogBox(false);
+															final ChatWidget chatWidget = getChatWidget(key, chat);
+
+															Button button = new Button("Close");
+															dialog.setModal(false);
+															VerticalPanel panel = new VerticalPanel();
+															panel.add(chatWidget);
+															panel.add(button);
+
+															dialog.setText(chat.getParticipant());
+															dialog.setWidget(panel);
+
+															button.addClickHandler(new ClickHandler()
+															{
+
+																@Override
+																public void onClick(ClickEvent event)
+																{
+																	dialog.hide();
+																	chatWidget.cancelTimer();
+
+																}
+															});
+
+															dialog.show();
+														}
+													});
+
+												}
+
+											});
+
+										}
+
+									}
+								});
+
 								pollChats = new Timer()
 								{
 									@Override
@@ -149,7 +218,8 @@ public class cheeonk implements EntryPoint
 													panel.add(chatWidget);
 													panel.add(button);
 
-													dialog.add(panel);
+													dialog.setText(chat.getParticipant());
+													dialog.setWidget(panel);
 
 													button.addClickHandler(new ClickHandler()
 													{
@@ -182,76 +252,29 @@ public class cheeonk implements EntryPoint
 									{
 										rootLogger.log(Level.FINER, "Polling for Buddy Updates");
 
-										chatService.getBuddyList(key, new AsyncCallback<ClientBuddy[]>()
+										chatService.getBuddyListUpdates(key, new AsyncCallback<ClientBuddy[]>()
 										{
 
 											@Override
 											public void onFailure(Throwable caught)
 											{
-												rootLogger.log(Level.SEVERE, "Failed to get BuddyList");
+												// TODO Auto-generated method
+												// stub
+
 											}
 
 											@Override
 											public void onSuccess(ClientBuddy[] result)
 											{
-												for (final ClientBuddy buddy : result)
+												for (ClientBuddy buddy : result)
 												{
-													if (!buddy.isAvailable())
-													{
-														rootLogger.log(Level.FINE, buddy.getName() + " has been removed");
-														buddyList.removeBuddy(buddy);
-													}
-
 													if (buddy.isAvailable())
 													{
-														rootLogger.log(Level.FINE, buddy.getName() + " has been added");
-														buddyList.addBuddy(buddy, new ClickHandler()
-														{
-															@Override
-															public void onClick(ClickEvent event)
-															{
-																chatService.createChat(key, buddy.getJID(), new AsyncCallback<ClientChat>()
-																{
-
-																	@Override
-																	public void onFailure(Throwable caught)
-																	{
-																		rootLogger.log(Level.SEVERE, "Failed to Add Buddy");
-																	}
-
-																	@Override
-																	public void onSuccess(final ClientChat chat)
-																	{
-																		final DialogBox dialog = new DialogBox(false);
-																		final ChatWidget chatWidget = getChatWidget(key, chat);
-
-																		Button button = new Button("Close");
-																		dialog.setModal(false);
-																		VerticalPanel panel = new VerticalPanel();
-																		panel.add(chatWidget);
-																		panel.add(button);
-
-																		dialog.add(panel);
-
-																		button.addClickHandler(new ClickHandler()
-																		{
-
-																			@Override
-																			public void onClick(ClickEvent event)
-																			{
-																				dialog.hide();
-																				chatWidget.cancelTimer();
-
-																			}
-																		});
-
-																		dialog.show();
-																	}
-																});
-
-															}
-
-														});
+														rootLogger.log(Level.FINE, buddy.getName() + "is available");
+													}
+													else
+													{
+														rootLogger.log(Level.FINE, buddy.getName() + "is not available");
 													}
 
 												}

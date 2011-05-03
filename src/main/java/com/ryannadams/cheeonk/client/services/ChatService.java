@@ -19,6 +19,8 @@ public interface ChatService extends RemoteService
 
 	ClientBuddy[] getBuddyList(ChatServerKey connectionKey);
 
+	ClientBuddy[] getBuddyListUpdates(ChatServerKey connectionKey);
+
 	void addBuddy(ChatServerKey connectionKey, ClientBuddy buddy);
 
 	void removeBuddy(ChatServerKey connectionKey, ClientBuddy buddy);

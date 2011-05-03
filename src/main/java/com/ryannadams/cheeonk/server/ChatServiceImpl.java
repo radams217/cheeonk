@@ -107,6 +107,12 @@ public class ChatServiceImpl extends RemoteServiceServlet implements ChatService
 	}
 
 	@Override
+	public ClientBuddy[] getBuddyListUpdates(ChatServerKey key)
+	{
+		return chatServerInstances.get(key).getBuddyContainer().getBuddyListUpdates();
+	}
+
+	@Override
 	public void addBuddy(ChatServerKey key, ClientBuddy buddy)
 	{
 		// chatServerInstances.get(key).getBuddyContainer().addBuddy(rosterEntry);
