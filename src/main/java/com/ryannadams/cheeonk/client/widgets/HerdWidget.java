@@ -4,8 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
@@ -15,19 +13,16 @@ import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
 
 public class HerdWidget extends Composite
 {
-	// Probably will want to change this later
-	private FlowPanel flowPanel;
-	private FlexTable flexTable;
+	private final VerticalPanel panel;
+
 	private final Button addButton;
 	private final TextBox buddyName;
 	private final Button okButton;
 
 	public HerdWidget()
 	{
-		VerticalPanel panel = new VerticalPanel();
-
-		flexTable = new FlexTable();
-		flowPanel = new FlowPanel();
+		panel = new VerticalPanel();
+		panel.addStyleName("buddyListWidget");
 
 		buddyName = new TextBox();
 		okButton = new Button("ok");
@@ -72,15 +67,11 @@ public class HerdWidget extends Composite
 			}
 		});
 
-		flexTable.clear();
-		flexTable.setWidget(3, 0, flowPanel);
+		VerticalPanel mainPanel = new VerticalPanel();
+		mainPanel.add(addButton);
+		mainPanel.add(panel);
 
-		flowPanel.addStyleName("buddyList");
-
-		panel.add(addButton);
-		panel.add(flowPanel);
-
-		initWidget(panel);
+		initWidget(mainPanel);
 	}
 
 	public void addBuddy(ClientBuddy buddy, ClickHandler clickHandler)
@@ -88,19 +79,29 @@ public class HerdWidget extends Composite
 		BuddyWidget buddyWidget = new BuddyWidget(buddy);
 		buddyWidget.addClickHandler(clickHandler);
 
-		flowPanel.add(buddyWidget);
+		panel.add(buddyWidget);
 	}
 
 	public void removeBuddy(ClientBuddy buddy)
 	{
 		BuddyWidget buddyWidget = new BuddyWidget(buddy);
 
-		flowPanel.remove(buddyWidget);
+		panel.remove(buddyWidget);
+	}
+
+	public void setBuddyUnavailable(ClientBuddy buddy)
+	{
+		panel.getWidget(panel.getWidgetIndex(new BuddyWidget(buddy))).setStyleName("buddyListWidget-Available");
+	}
+
+	public void setBuddyAvailable(ClientBuddy buddy)
+	{
+		panel.getWidget(panel.getWidgetIndex(new BuddyWidget(buddy))).setStyleName("buddyListWidget-Unavailable");
 	}
 
 	public void clearBuddyList()
 	{
-		flowPanel.clear();
+		panel.clear();
 	}
 
 	private class AddBuddyPopupPanel extends PopupPanel

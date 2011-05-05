@@ -271,10 +271,12 @@ public class cheeonk implements EntryPoint
 													if (buddy.isAvailable())
 													{
 														rootLogger.log(Level.FINE, buddy.getName() + "is available");
+														buddyList.setBuddyAvailable(buddy);
 													}
 													else
 													{
 														rootLogger.log(Level.FINE, buddy.getName() + "is not available");
+														buddyList.setBuddyUnavailable(buddy);
 													}
 
 												}

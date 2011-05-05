@@ -227,9 +227,27 @@ a:hover
 
 
 
+/* buddyListWidget */
+.buddyListWidget
+{
+	
+	
+	
+}
 
+.buddyListWidget-Available
+{
+	background-color: #FFFF88;
+	
+	
+}
 
-
+.buddyListWidget-Unavailable
+{
+	background-color: #66FFFF;
+	
+	
+}
 
 
 
@@ -243,7 +261,7 @@ a:hover
 }
 
 
-/* CheeonkWidget */
+/* ChatWidget */
 .chatWidget
 {
 	width: 400px;
