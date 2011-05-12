@@ -1,18 +1,17 @@
 package com.ryannadams.cheeonk.shared.chat;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class ClientChat extends AbstractChat implements IsSerializable
+public class CheeonkChat extends AbstractChat
 {
 	private String threadID;
 	private String participant;
 
-	public ClientChat()
+	@Deprecated
+	public CheeonkChat()
 	{
 
 	}
 
-	public ClientChat(String threadID)
+	public CheeonkChat(String threadID)
 	{
 		this.threadID = threadID;
 	}

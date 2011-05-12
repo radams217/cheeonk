@@ -53,4 +53,10 @@ public abstract class AbstractChat implements IChat
 		result = prime * result + ((getThreadID() == null) ? 0 : getThreadID().hashCode());
 		return result;
 	}
+
+	@Override
+	public abstract String getThreadID();
+
+	@Override
+	public abstract String getParticipant();
 }

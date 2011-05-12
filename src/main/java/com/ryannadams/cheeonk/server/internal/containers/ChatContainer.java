@@ -13,8 +13,8 @@ import org.jivesoftware.smack.packet.Message;
 
 import com.ryannadams.cheeonk.server.internal.wrappers.ChatWrapper;
 import com.ryannadams.cheeonk.server.internal.wrappers.MessageWrapper;
-import com.ryannadams.cheeonk.shared.chat.ClientChat;
-import com.ryannadams.cheeonk.shared.message.ClientMessage;
+import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
+import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 
 public class ChatContainer implements ChatManagerListener, MessageListener
 {
@@ -25,9 +25,9 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
 	}
 
-	public ClientChat[] getIncomingChats()
+	public CheeonkChat[] getIncomingChats()
 	{
-		List<ClientChat> newChatList = new ArrayList<ClientChat>();
+		List<CheeonkChat> newChatList = new ArrayList<CheeonkChat>();
 
 		for (ChatWrapper chat : chatMap.keySet())
 		{
@@ -39,7 +39,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 			}
 		}
 
-		return newChatList.toArray(new ClientChat[newChatList.size()]);
+		return newChatList.toArray(new CheeonkChat[newChatList.size()]);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		chatMap.put(chat, new ArrayList<MessageWrapper>());
 	}
 
-	public void sendMessage(ClientChat chat, String message)
+	public void sendMessage(CheeonkChat chat, CheeonkMessage message)
 	{
 		// Store local message sent to message list?
 		for (ChatWrapper chatWrapper : chatMap.keySet())
@@ -67,7 +67,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 			{
 				try
 				{
-					chatWrapper.sendMessage(message);
+					chatWrapper.sendMessage(message.getBody());
 				}
 				catch (XMPPException e)
 				{
@@ -80,9 +80,9 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 
 	}
 
-	public ClientMessage[] getMessages(ClientChat key)
+	public CheeonkMessage[] getMessages(CheeonkChat key)
 	{
-		List<ClientMessage> newMessageList = new ArrayList<ClientMessage>();
+		List<CheeonkMessage> newMessageList = new ArrayList<CheeonkMessage>();
 
 		for (MessageWrapper message : chatMap.get(key))
 		{
@@ -96,7 +96,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		// may cause problems.
 		chatMap.get(key).clear();
 
-		return newMessageList.toArray(new ClientMessage[newMessageList.size()]);
+		return newMessageList.toArray(new CheeonkMessage[newMessageList.size()]);
 	}
 
 	@Override

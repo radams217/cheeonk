@@ -1,5 +1,7 @@
 package com.ryannadams.cheeonk.shared.message;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * @author radams217
  *         <p>
@@ -7,7 +9,7 @@ package com.ryannadams.cheeonk.shared.message;
  *         for the class to be considered a Message within this framework.
  *         </p>
  */
-public interface IMessage
+public interface IMessage extends IsSerializable
 {
 	/**
 	 * @return the body of the message.

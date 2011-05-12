@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 
 /**
  * @author radams217
@@ -79,9 +80,9 @@ public class ChatWidget extends Composite
 		messageArea.setText("");
 	}
 
-	public String getMessageAreaText()
+	public CheeonkMessage getMessageAreaText()
 	{
-		return messageArea.getText();
+		return new CheeonkMessage(messageArea.getText(), "", "");
 	}
 
 	public void setTimer(Timer timer, int periodMillis)

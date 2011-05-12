@@ -1,7 +1,5 @@
 package com.ryannadams.cheeonk.shared.message;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * @author radams217
  *         <p>
@@ -11,16 +9,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *         serialized and sent over the wire to the client.
  *         </p>
  */
-public class ClientMessage implements IMessage, IsSerializable
+public class CheeonkMessage implements IMessage
 {
 	protected String body;
 	protected String to;
 	protected String from;
 
-	/**
-	 * Necessary for the GWT framework
-	 */
-	public ClientMessage()
+	@Deprecated
+	public CheeonkMessage()
 	{
 		// Do Nothing
 	}
@@ -30,7 +26,7 @@ public class ClientMessage implements IMessage, IsSerializable
 	 * @param to
 	 * @param from
 	 */
-	public ClientMessage(String body, String to, String from)
+	public CheeonkMessage(String body, String to, String from)
 	{
 		this.body = body;
 		this.to = to;

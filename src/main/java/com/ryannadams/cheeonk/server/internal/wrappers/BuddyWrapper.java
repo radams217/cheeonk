@@ -4,32 +4,19 @@ import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.packet.Presence;
 
 import com.ryannadams.cheeonk.shared.buddy.AbstractBuddy;
-import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 
 // Wraps the RosterEntry object, but I hate that naming so I am changing it to buddy
 public class BuddyWrapper extends AbstractBuddy
 {
 	private final RosterEntry buddy;
 	private Presence presence;
-	private boolean isTransmitted;
 
-	public BuddyWrapper(RosterEntry buddy, Presence presence)
+	public BuddyWrapper(RosterEntry buddy)
 	{
 		super();
 
 		this.buddy = buddy;
-		this.presence = presence;
-		this.isTransmitted = false;
-	}
-
-	public boolean isTransmitted()
-	{
-		return isTransmitted;
-	}
-
-	public void setTransmitted(boolean isTransmitted)
-	{
-		this.isTransmitted = isTransmitted;
 	}
 
 	public void setPresence(Presence presence)
@@ -61,9 +48,9 @@ public class BuddyWrapper extends AbstractBuddy
 		return presence.isAway();
 	}
 
-	public ClientBuddy getClientBuddy()
+	public CheeonkBuddy getClientBuddy()
 	{
-		return new ClientBuddy(getJID(), getName(), isAvailable());
+		return new CheeonkBuddy(getJID(), getName(), isAvailable());
 	}
 
 }

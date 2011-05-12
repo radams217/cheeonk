@@ -13,7 +13,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *         objects that it needs to complete the task.
  *         </p>
  */
-public class ChatServerKey implements IsSerializable
+public class ConnectionKey implements IsSerializable
 {
 	private String connectionID;
 	private String host;
@@ -25,7 +25,7 @@ public class ChatServerKey implements IsSerializable
 	/**
 	 * Required by the GWT Framework.
 	 */
-	public ChatServerKey()
+	public ConnectionKey()
 	{
 		// Do Nothing
 	}
@@ -41,7 +41,7 @@ public class ChatServerKey implements IsSerializable
 	 *            for example @cheeonk
 	 * @param password
 	 */
-	public ChatServerKey(String host, int port, String userName, String domain, String password)
+	public ConnectionKey(String host, int port, String userName, String domain, String password)
 	{
 		this.host = host;
 		this.port = port;
@@ -55,7 +55,7 @@ public class ChatServerKey implements IsSerializable
 	 * @param port
 	 * @param domain
 	 */
-	public ChatServerKey(String host, int port, String domain)
+	public ConnectionKey(String host, int port, String domain)
 	{
 		this.host = host;
 		this.port = port;
@@ -147,7 +147,7 @@ public class ChatServerKey implements IsSerializable
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ChatServerKey other = (ChatServerKey) obj;
+		ConnectionKey other = (ConnectionKey) obj;
 		if (connectionID == null)
 		{
 			if (other.connectionID != null)
@@ -190,9 +190,10 @@ public class ChatServerKey implements IsSerializable
 	 * 
 	 * @return ConnectionKey
 	 */
-	public static ChatServerKey getCheeonkConnectionKey()
+	public static ConnectionKey getCheeonkConnectionKey()
 	{
-		return new ChatServerKey("localhost", 5222, "cheeonk.com");
+		// gtalk.google.com
+		return new ConnectionKey("localhost", 5222, "cheeonk.com");
 	}
 
 	// TODO: Add Gchat information here

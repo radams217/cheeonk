@@ -2,7 +2,7 @@ package com.ryannadams.cheeonk.server.internal.wrappers;
 
 import org.jivesoftware.smack.packet.Message;
 
-import com.ryannadams.cheeonk.shared.message.ClientMessage;
+import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 
 public class MessageWrapper implements IMessage
@@ -34,8 +34,8 @@ public class MessageWrapper implements IMessage
 		return message.getFrom();
 	}
 
-	public ClientMessage getClientMessage()
+	public CheeonkMessage getClientMessage()
 	{
-		return new ClientMessage(getBody(), getTo(), getFrom());
+		return new CheeonkMessage(getBody(), getTo(), getFrom());
 	}
 }

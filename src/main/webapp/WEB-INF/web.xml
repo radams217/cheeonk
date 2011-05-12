@@ -7,33 +7,14 @@
 
 	<!-- Servlets -->
 	<servlet>
-		<servlet-name>chatServlet</servlet-name>
-		<servlet-class>com.ryannadams.cheeonk.server.ChatServiceImpl</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+		<servlet-name>dispatch</servlet-name>
+		<servlet-class>com.ryannadams.cheeonk.server.ChatDispatchServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>chatServlet</servlet-name>
-		<url-pattern>/cheeonk/chat</url-pattern>
+		<servlet-name>dispatch</servlet-name>
+		<url-pattern>/cheeonk/dispatch</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<url-pattern>/cheeonk/junithost/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>chatServlet</servlet-name>
-		<url-pattern>/com.ryannadams.cheeonk.cheeonkJUnit/cheeonk/chat</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<url-pattern>/com.ryannadams.cheeonk.cheeonkJUnit/junithost/*</url-pattern>
-	</servlet-mapping>
-
-
 
 	<!-- Default page to serve -->
 	<welcome-file-list>

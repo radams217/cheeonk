@@ -1,5 +1,7 @@
 package com.ryannadams.cheeonk.shared.buddy;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * @author radams217
  *         <p>
@@ -7,7 +9,7 @@ package com.ryannadams.cheeonk.shared.buddy;
  *         in order to be considered a buddy.
  *         </p>
  */
-public interface IBuddy
+public interface IBuddy extends IsSerializable
 {
 	/**
 	 * @return the unique Jabber ID user@domain.com/resource

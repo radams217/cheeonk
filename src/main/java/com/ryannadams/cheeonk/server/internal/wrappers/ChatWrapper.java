@@ -4,7 +4,7 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPException;
 
 import com.ryannadams.cheeonk.shared.chat.AbstractChat;
-import com.ryannadams.cheeonk.shared.chat.ClientChat;
+import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
 
 public class ChatWrapper extends AbstractChat
 {
@@ -44,9 +44,9 @@ public class ChatWrapper extends AbstractChat
 		chat.sendMessage(text);
 	}
 
-	public ClientChat getClientChat()
+	public CheeonkChat getClientChat()
 	{
-		ClientChat clientChat = new ClientChat(getThreadID());
+		CheeonkChat clientChat = new CheeonkChat(getThreadID());
 		clientChat.setParticipant(getParticipant());
 
 		return clientChat;

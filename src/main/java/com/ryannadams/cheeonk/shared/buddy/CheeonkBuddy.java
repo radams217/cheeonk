@@ -1,20 +1,21 @@
 package com.ryannadams.cheeonk.shared.buddy;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class ClientBuddy extends AbstractBuddy implements IsSerializable
+public class CheeonkBuddy extends AbstractBuddy
 {
 	private String jID;
 	private String name;
+	// private Presence presence;
+
 	private boolean isAvailable;
 	private boolean isAway;
 
-	public ClientBuddy()
+	@Deprecated
+	public CheeonkBuddy()
 	{
 
 	}
 
-	public ClientBuddy(String jID, String name, boolean isAvailable)
+	public CheeonkBuddy(String jID, String name, boolean isAvailable)
 	{
 		this.jID = jID;
 		this.name = name;

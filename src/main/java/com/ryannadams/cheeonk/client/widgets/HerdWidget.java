@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.shared.buddy.ClientBuddy;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 
 public class HerdWidget extends Composite
 {
@@ -74,7 +74,7 @@ public class HerdWidget extends Composite
 		initWidget(mainPanel);
 	}
 
-	public void addBuddy(ClientBuddy buddy, ClickHandler clickHandler)
+	public void addBuddy(CheeonkBuddy buddy, ClickHandler clickHandler)
 	{
 		BuddyWidget buddyWidget = new BuddyWidget(buddy);
 		buddyWidget.addClickHandler(clickHandler);
@@ -82,19 +82,19 @@ public class HerdWidget extends Composite
 		panel.add(buddyWidget);
 	}
 
-	public void removeBuddy(ClientBuddy buddy)
+	public void removeBuddy(CheeonkBuddy buddy)
 	{
 		BuddyWidget buddyWidget = new BuddyWidget(buddy);
 
 		panel.remove(buddyWidget);
 	}
 
-	public void setBuddyUnavailable(ClientBuddy buddy)
+	public void setBuddyUnavailable(CheeonkBuddy buddy)
 	{
 		panel.getWidget(panel.getWidgetIndex(new BuddyWidget(buddy))).setStyleName("buddyListWidget-Available");
 	}
 
-	public void setBuddyAvailable(ClientBuddy buddy)
+	public void setBuddyAvailable(CheeonkBuddy buddy)
 	{
 		panel.getWidget(panel.getWidgetIndex(new BuddyWidget(buddy))).setStyleName("buddyListWidget-Unavailable");
 	}
@@ -119,10 +119,10 @@ public class HerdWidget extends Composite
 
 	private class BuddyWidget extends Composite
 	{
-		private final ClientBuddy buddy;
+		private final CheeonkBuddy buddy;
 		private final PushButton button;
 
-		public BuddyWidget(ClientBuddy buddy)
+		public BuddyWidget(CheeonkBuddy buddy)
 		{
 			button = new PushButton(buddy.getName());
 			button.setStyleName("buddy");
