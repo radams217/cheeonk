@@ -8,8 +8,8 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 
 import org.jivesoftware.smack.RosterEntry;
 
-import com.ryannadams.cheeonk.server.ConnectionPool;
 import com.ryannadams.cheeonk.server.internal.Connection;
+import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.server.internal.wrappers.BuddyWrapper;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetBuddyList;
@@ -28,7 +28,7 @@ public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddy
 	public GetBuddyListResult execute(GetBuddyList action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
-		Connection connection = ConnectionPool.getInstance().getConnection(key);
+		Connection connection = ConnectionDriver.getConnection(key);
 
 		ArrayList<CheeonkBuddy> buddyList = new ArrayList<CheeonkBuddy>();
 

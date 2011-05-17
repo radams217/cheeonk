@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.callback.GotBuddyList;
 import com.ryannadams.cheeonk.client.callback.GotChat;
 import com.ryannadams.cheeonk.client.callback.GotMessages;
 import com.ryannadams.cheeonk.client.callback.Registered;
@@ -32,12 +33,14 @@ import com.ryannadams.cheeonk.client.widgets.HerdWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.JabberId;
+import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.action.GetChat;
 import com.ryannadams.cheeonk.shared.action.GetMessages;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.action.SendMessage;
 import com.ryannadams.cheeonk.shared.action.Signin;
 import com.ryannadams.cheeonk.shared.action.Signout;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 
@@ -55,10 +58,9 @@ public class cheeonk implements EntryPoint
 	private final HerdWidget buddyList;
 	private final RegistrationWidget registrationWidget;
 
-	private Timer pollBuddyUpdates;
 	private Timer pollChats;
 
-	// private final Hashmap<String, ChatWidget>chats;
+	// private final Set<ChatWidget> chats;
 	private final Logger rootLogger;
 
 	private final DispatchAsync dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
@@ -98,7 +100,6 @@ public class cheeonk implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
-
 		authenticationWidget.addGoClickHandler(new ClickHandler()
 		{
 			@Override
@@ -112,120 +113,46 @@ public class cheeonk implements EntryPoint
 					dispatchAsync.execute(new Signin(key), new Signedin()
 					{
 						@Override
-						public void got(boolean isSignedin)
+						public void got(boolean isSignedin, String connectionId)
 						{
 							if (isSignedin)
 							{
+								key.setConnectionID(connectionId);
+								authenticationWidget.signedIn();
 
+								pollChats = getChatTimer();
+								pollChats.scheduleRepeating(POLLING_INTERVAL);
+
+								// Load BuddyList
+								dispatchAsync.execute(new GetBuddyList(key), new GotBuddyList()
+								{
+
+									@Override
+									public void got(CheeonkBuddy[] buddies)
+									{
+										for (CheeonkBuddy buddy : buddies)
+										{
+											buddyList.addBuddy(buddy, new ClickHandler()
+											{
+												@Override
+												public void onClick(ClickEvent event)
+												{
+													rootLogger.log(Level.INFO, "Click bitch");
+
+												}
+
+											});
+
+										}
+
+									}
+								});
 							}
 						}
 					});
 				}
 			}
 		});
-
-		pollChats = new Timer()
-		{
-			@Override
-			public void run()
-			{
-				rootLogger.log(Level.FINER, "Polling for Incoming Chats");
-
-				dispatchAsync.execute(new GetChat(key, new JabberId("")), new GotChat()
-				{
-
-					@Override
-					public void got(CheeonkChat[] chats)
-					{
-						for (final CheeonkChat chat : chats)
-						{
-							final DialogBox dialog = new DialogBox(false);
-							final ChatWidget chatWidget = getChatWidget(key, chat);
-
-							Button button = new Button("Close");
-							dialog.setModal(false);
-							VerticalPanel panel = new VerticalPanel();
-							panel.add(chatWidget);
-							panel.add(button);
-
-							dialog.setText(chat.getParticipant());
-							dialog.setWidget(panel);
-
-							button.addClickHandler(new ClickHandler()
-							{
-
-								@Override
-								public void onClick(ClickEvent event)
-								{
-									dialog.hide();
-									chatWidget.cancelTimer();
-
-								}
-							});
-
-							dialog.show();
-						}
-
-					}
-
-				});
-
-			}
-		};
-
-		// pollChats.scheduleRepeating(POLLING_INTERVAL);
-		//
-		// pollBuddyUpdates = new Timer()
-		// {
-		// @Override
-		// public void run()
-		// {
-		// rootLogger.log(Level.FINER,
-		// "Polling for Buddy Updates");
-		//
-		// chatService.getBuddyListUpdates(key, new
-		// AsyncCallback<ClientBuddy[]>()
-		// {
-		//
-		// @Override
-		// public void onFailure(Throwable caught)
-		// {
-		// // TODO Auto-generated method
-		// // stub
-		//
-		// }
-		//
-		// @Override
-		// public void onSuccess(ClientBuddy[] result)
-		// {
-		// for (ClientBuddy buddy : result)
-		// {
-		// if (buddy.isAvailable())
-		// {
-		// rootLogger.log(Level.FINE, buddy.getName() +
-		// "is available");
-		// buddyList.setBuddyAvailable(buddy);
-		// }
-		// else
-		// {
-		// rootLogger.log(Level.FINE, buddy.getName() +
-		// "is not available");
-		// buddyList.setBuddyUnavailable(buddy);
-		// }
-		//
-		// }
-		//
-		// }
-		// });
-		//
-		// }
-		//
-		// };
-		//
-		// pollBuddyUpdates.scheduleRepeating(POLLING_INTERVAL
-		// * 3);
-
-		RootPanel.get("buddyListContainer").add(buddyList);
 
 		authenticationWidget.addSignoutClickHandler(new ClickHandler()
 		{
@@ -234,8 +161,8 @@ public class cheeonk implements EntryPoint
 			{
 				// TODO Need to cancel message timers
 
-				pollChats.cancel();
-				pollBuddyUpdates.cancel();
+				// pollChats.cancel();
+				// pollBuddyUpdates.cancel();
 
 				buddyList.clearBuddyList();
 
@@ -257,6 +184,7 @@ public class cheeonk implements EntryPoint
 
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
 		RootPanel.get("bannerSignin").add(authenticationWidget);
+		RootPanel.get("buddyListContainer").add(buddyList);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 	}
 
@@ -315,4 +243,55 @@ public class cheeonk implements EntryPoint
 		return chatWidget;
 
 	}
+
+	public Timer getChatTimer()
+	{
+		return new Timer()
+		{
+			@Override
+			public void run()
+			{
+				rootLogger.log(Level.FINER, "Polling for Incoming Chats");
+
+				dispatchAsync.execute(new GetChat(key, new JabberId("")), new GotChat()
+				{
+
+					@Override
+					public void got(CheeonkChat[] chats)
+					{
+						for (final CheeonkChat chat : chats)
+						{
+							final DialogBox dialog = new DialogBox(false);
+							final ChatWidget chatWidget = getChatWidget(key, chat);
+
+							Button close = new Button("Close");
+							dialog.setModal(false);
+							VerticalPanel panel = new VerticalPanel();
+							panel.add(chatWidget);
+							panel.add(close);
+
+							dialog.setText(chat.getParticipant());
+							dialog.setWidget(panel);
+
+							close.addClickHandler(new ClickHandler()
+							{
+								@Override
+								public void onClick(ClickEvent event)
+								{
+									dialog.hide();
+									chatWidget.cancelTimer();
+								}
+							});
+
+							dialog.show();
+						}
+
+					}
+
+				});
+
+			}
+		};
+	}
+
 }

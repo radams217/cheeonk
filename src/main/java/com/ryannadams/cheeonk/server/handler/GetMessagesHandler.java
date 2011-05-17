@@ -4,8 +4,8 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
-import com.ryannadams.cheeonk.server.ConnectionPool;
 import com.ryannadams.cheeonk.server.internal.Connection;
+import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetMessages;
 import com.ryannadams.cheeonk.shared.result.GetMessagesResult;
@@ -22,7 +22,7 @@ public class GetMessagesHandler implements ActionHandler<GetMessages, GetMessage
 	public GetMessagesResult execute(GetMessages action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
-		Connection connection = ConnectionPool.getInstance().getConnection(key);
+		Connection connection = ConnectionDriver.getConnection(key);
 
 		return new GetMessagesResult(connection.getChatContainer().getMessages(action.getChat()));
 	}

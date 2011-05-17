@@ -10,8 +10,8 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.XMPPException;
 
-import com.ryannadams.cheeonk.server.ConnectionPool;
 import com.ryannadams.cheeonk.server.internal.Connection;
+import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.Signin;
 import com.ryannadams.cheeonk.shared.result.SigninResult;
@@ -28,12 +28,12 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 	public SigninResult execute(Signin action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
-		Connection connection = ConnectionPool.getInstance().getConnection(key);
+		Connection connection = ConnectionDriver.getConnection(key);
 
 		try
 		{
-			connection.connect();
-			Logger.getLogger("").log(Level.FINE, "Client connected to " + connection.getServiceName() + ":" + connection.getPort());
+			// Logger.getLogger("").log(Level.FINE, "Client connected to " +
+			// connection.getServiceName() + ":" + connection.getPort());
 
 			connection.login(key.getUserName(), key.getPassword());
 			Logger.getLogger("").log(Level.FINE, "Client logged in as " + connection.getUser());

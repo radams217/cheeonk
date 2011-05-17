@@ -2,6 +2,7 @@ package com.ryannadams.cheeonk.client.widgets;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -18,6 +19,8 @@ public class HerdWidget extends Composite
 	private final Button addButton;
 	private final TextBox buddyName;
 	private final Button okButton;
+
+	private Timer timer;
 
 	public HerdWidget()
 	{
@@ -72,6 +75,17 @@ public class HerdWidget extends Composite
 		mainPanel.add(panel);
 
 		initWidget(mainPanel);
+	}
+
+	public void setTimer(Timer timer, int periodMillis)
+	{
+		this.timer = timer;
+		this.timer.scheduleRepeating(periodMillis);
+	}
+
+	public void cancelTimer()
+	{
+		timer.cancel();
 	}
 
 	public void addBuddy(CheeonkBuddy buddy, ClickHandler clickHandler)

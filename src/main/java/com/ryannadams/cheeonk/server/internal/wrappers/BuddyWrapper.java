@@ -50,7 +50,7 @@ public class BuddyWrapper extends AbstractBuddy
 
 	public CheeonkBuddy getClientBuddy()
 	{
-		return new CheeonkBuddy(getJID(), getName(), isAvailable());
+		return new CheeonkBuddy(getJID(), getName(), true);
 	}
 
 }

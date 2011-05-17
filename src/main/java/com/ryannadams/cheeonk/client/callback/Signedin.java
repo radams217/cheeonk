@@ -17,8 +17,8 @@ public abstract class Signedin implements AsyncCallback<SigninResult>
 	@Override
 	public void onSuccess(SigninResult result)
 	{
-		got(result.isSignedin());
+		got(result.isSignedin(), result.getConnectionId());
 	}
 
-	public abstract void got(boolean isSignedin);
+	public abstract void got(boolean isSignedin, String connectionId);
 }

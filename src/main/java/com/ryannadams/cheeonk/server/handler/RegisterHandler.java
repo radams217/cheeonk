@@ -4,10 +4,10 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
+import com.ryannadams.cheeonk.server.internal.Connection;
+import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.result.RegisterResult;
@@ -23,8 +23,7 @@ public class RegisterHandler implements ActionHandler<Register, RegisterResult>
 	@Override
 	public RegisterResult execute(Register action, ExecutionContext context) throws DispatchException
 	{
-		XMPPConnection connection = new XMPPConnection(new ConnectionConfiguration(ConnectionKey.getCheeonkConnectionKey().getHost(), ConnectionKey
-				.getCheeonkConnectionKey().getPort()));
+		Connection connection = ConnectionDriver.getConnection(ConnectionKey.getCheeonkConnectionKey());
 
 		try
 		{

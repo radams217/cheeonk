@@ -7,8 +7,8 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
-import com.ryannadams.cheeonk.server.ConnectionPool;
 import com.ryannadams.cheeonk.server.internal.Connection;
+import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.Signout;
 import com.ryannadams.cheeonk.shared.result.SignoutResult;
@@ -25,7 +25,7 @@ public class SignoutHandler implements ActionHandler<Signout, SignoutResult>
 	public SignoutResult execute(Signout action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
-		Connection connection = ConnectionPool.getInstance().getConnection(key);
+		Connection connection = ConnectionDriver.getConnection(key);
 
 		connection.removeListeners();
 		connection.disconnect();
