@@ -1,8 +1,10 @@
 package com.ryannadams.cheeonk.shared.buddy;
 
+import com.ryannadams.cheeonk.shared.JabberId;
+
 public class CheeonkBuddy extends AbstractBuddy
 {
-	private String jID;
+	private JabberId jID;
 	private String name;
 	// private Presence presence;
 
@@ -15,7 +17,7 @@ public class CheeonkBuddy extends AbstractBuddy
 
 	}
 
-	public CheeonkBuddy(String jID, String name, boolean isAvailable)
+	public CheeonkBuddy(JabberId jID, String name, boolean isAvailable)
 	{
 		this.jID = jID;
 		this.name = name;
@@ -24,7 +26,7 @@ public class CheeonkBuddy extends AbstractBuddy
 	}
 
 	@Override
-	public String getJID()
+	public JabberId getJID()
 	{
 		return jID;
 	}

@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -13,6 +14,9 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.event.SignedinEvent;
+import com.ryannadams.cheeonk.client.event.SignedoutEvent;
+import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 
 /**
  * @author radams217
@@ -26,7 +30,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  *         name logged in and a logout button. All input in this class can be
  *         validating by calling the validate method.
  */
-public class AuthenticationWidget extends Composite
+public class AuthenticationWidget extends Composite implements AuthenticationEventHandler
 {
 	private final HorizontalPanel panel;
 	private final Button signinButton;
@@ -40,9 +44,14 @@ public class AuthenticationWidget extends Composite
 
 	/**
 	 * Default Constructor the initiates the panel to the sign in state.
+	 * 
+	 * @param eventBus
 	 */
-	public AuthenticationWidget()
+	public AuthenticationWidget(SimpleEventBus eventBus)
 	{
+		eventBus.addHandler(SignedinEvent.TYPE, this);
+		eventBus.addHandler(SignedoutEvent.TYPE, this);
+
 		signinButton = new Button("Sign in", new ClickHandler()
 		{
 			@Override
@@ -110,22 +119,6 @@ public class AuthenticationWidget extends Composite
 		return true;
 	}
 
-	public void signedIn()
-	{
-		HTML loggedinAs = new HTML("Logged in as " + usernameField.getText());
-		loggedinAs.addStyleName("authenticationWidget-LoggedIn");
-
-		panel.clear();
-		panel.add(loggedinAs);
-		panel.add(signoutButton);
-	}
-
-	public void signedOff()
-	{
-		panel.clear();
-		panel.add(signinButton);
-	}
-
 	public String getUsername()
 	{
 		return usernameField.getText();
@@ -173,4 +166,23 @@ public class AuthenticationWidget extends Composite
 		}
 
 	}
+
+	@Override
+	public void onSignedin(SignedinEvent event)
+	{
+		HTML loggedinAs = new HTML("Logged in as " + event.getConnectionKey().getUserName());
+		loggedinAs.addStyleName("authenticationWidget-LoggedIn");
+
+		panel.clear();
+		panel.add(loggedinAs);
+		panel.add(signoutButton);
+	}
+
+	@Override
+	public void onSignedout(SignedoutEvent event)
+	{
+		panel.clear();
+		panel.add(signinButton);
+	}
+
 }

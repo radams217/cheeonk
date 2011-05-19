@@ -8,19 +8,19 @@ import com.ryannadams.cheeonk.server.internal.Connection;
 import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.server.internal.wrappers.ChatWrapper;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.action.GetChat;
+import com.ryannadams.cheeonk.shared.action.CreateChat;
 import com.ryannadams.cheeonk.shared.result.GetChatResult;
 
-public class CreateChatHandler implements ActionHandler<GetChat, GetChatResult>
+public class CreateChatHandler implements ActionHandler<CreateChat, GetChatResult>
 {
 	@Override
-	public Class<GetChat> getActionType()
+	public Class<CreateChat> getActionType()
 	{
-		return GetChat.class;
+		return CreateChat.class;
 	}
 
 	@Override
-	public GetChatResult execute(GetChat action, ExecutionContext context) throws DispatchException
+	public GetChatResult execute(CreateChat action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
@@ -30,7 +30,7 @@ public class CreateChatHandler implements ActionHandler<GetChat, GetChatResult>
 	}
 
 	@Override
-	public void rollback(GetChat action, GetChatResult result, ExecutionContext context) throws DispatchException
+	public void rollback(CreateChat action, GetChatResult result, ExecutionContext context) throws DispatchException
 	{
 		// TODO Auto-generated method stub
 

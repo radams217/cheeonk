@@ -1,18 +1,40 @@
 package com.ryannadams.cheeonk.client.widgets;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.callback.CreatedChat;
+import com.ryannadams.cheeonk.client.callback.GotBuddyList;
+import com.ryannadams.cheeonk.client.event.AddBuddyEvent;
+import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
+import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
+import com.ryannadams.cheeonk.client.event.SignedinEvent;
+import com.ryannadams.cheeonk.client.event.SignedoutEvent;
+import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
+import com.ryannadams.cheeonk.client.handler.BuddyListEventHandler;
+import com.ryannadams.cheeonk.shared.ConnectionKey;
+import com.ryannadams.cheeonk.shared.action.CreateChat;
+import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
 
-public class HerdWidget extends Composite
+public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyListEventHandler
 {
 	private final VerticalPanel panel;
 
@@ -22,8 +44,20 @@ public class HerdWidget extends Composite
 
 	private Timer timer;
 
-	public HerdWidget()
+	private final DispatchAsync dispatchAsync;
+
+	private final SimpleEventBus eventBus;
+
+	public BuddyListWidget(SimpleEventBus eventBus)
 	{
+		this.eventBus = eventBus;
+
+		this.eventBus.addHandler(SignedinEvent.TYPE, this);
+		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
+		this.eventBus.addHandler(AddBuddyEvent.TYPE, this);
+
+		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+
 		panel = new VerticalPanel();
 		panel.addStyleName("buddyListWidget");
 
@@ -184,6 +218,106 @@ public class HerdWidget extends Composite
 					return false;
 			return true;
 		}
+
+	}
+
+	@Override
+	public void onSignedin(SignedinEvent event)
+	{
+		final ConnectionKey key = event.getConnectionKey();
+
+		dispatchAsync.execute(new GetBuddyList(key), new GotBuddyList()
+		{
+			@Override
+			public void got(CheeonkBuddy[] buddies)
+			{
+				for (final CheeonkBuddy buddy : buddies)
+				{
+					eventBus.fireEvent(new AddBuddyEvent(key, buddy));
+				}
+
+			}
+		});
+
+		// Set Timer to poll for buddy updates
+
+	}
+
+	@Override
+	public void onSignedout(SignedoutEvent event)
+	{
+		// Cancel Timer and clear list
+
+		clearBuddyList();
+	}
+
+	@Override
+	public void onAddBuddy(AddBuddyEvent event)
+	{
+		// Need to add Buddy Information
+		Logger.getLogger("").log(Level.INFO, "Added Buddy");
+
+		final CheeonkBuddy buddy = event.getBuddy();
+		final ConnectionKey key = event.getConnectionKey();
+
+		addBuddy(buddy, new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+
+				dispatchAsync.execute(new CreateChat(key, buddy.getJID()), new CreatedChat()
+				{
+
+					@Override
+					public void got(CheeonkChat[] chats)
+					{
+						// Do a call to the dispatch to create the
+						// chat
+						// fire event with the chat object
+						for (CheeonkChat chat : chats)
+						{
+							// Create chat object and fire event
+							final DialogBox dialog = new DialogBox(false);
+
+							final ChatWidget chatWidget = new ChatWidget(eventBus);
+
+							Button button = new Button("Close");
+							dialog.setModal(false);
+							VerticalPanel panel = new VerticalPanel();
+							panel.add(chatWidget);
+							panel.add(button);
+
+							dialog.add(panel);
+
+							button.addClickHandler(new ClickHandler()
+							{
+
+								@Override
+								public void onClick(ClickEvent event)
+								{
+									dialog.hide();
+									chatWidget.cancelTimer();
+								}
+							});
+
+							eventBus.fireEvent(new ChatCreatedEvent(key, chat));
+
+							dialog.show();
+						}
+					}
+				});
+
+			}
+
+		});
+
+	}
+
+	@Override
+	public void onRemoveBuddy(RemoveBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
 
 	}
 }

@@ -3,6 +3,7 @@ package com.ryannadams.cheeonk.server.internal.wrappers;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.packet.Presence;
 
+import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.buddy.AbstractBuddy;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 
@@ -25,9 +26,9 @@ public class BuddyWrapper extends AbstractBuddy
 	}
 
 	@Override
-	public String getJID()
+	public JabberId getJID()
 	{
-		return buddy.getUser();
+		return new JabberId(buddy.getUser());
 	}
 
 	@Override

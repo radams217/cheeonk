@@ -1,6 +1,7 @@
 package com.ryannadams.cheeonk.shared.buddy;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.ryannadams.cheeonk.shared.JabberId;
 
 /**
  * @author radams217
@@ -14,7 +15,7 @@ public interface IBuddy extends IsSerializable
 	/**
 	 * @return the unique Jabber ID user@domain.com/resource
 	 */
-	String getJID();
+	JabberId getJID();
 
 	/**
 	 * @return the name of the user.
