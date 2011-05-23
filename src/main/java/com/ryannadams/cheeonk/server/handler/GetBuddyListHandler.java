@@ -1,6 +1,8 @@
 package com.ryannadams.cheeonk.server.handler;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -37,6 +39,7 @@ public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddy
 			buddyList.add(new BuddyWrapper(rosterEntry).getClientBuddy());
 		}
 
+		Logger.getLogger("").log(Level.FINER, "Getting BuddyList for " + key.getUsername());
 		return new GetBuddyResult(buddyList);
 	}
 

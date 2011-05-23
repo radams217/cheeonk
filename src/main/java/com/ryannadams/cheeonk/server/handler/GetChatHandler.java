@@ -1,5 +1,8 @@
 package com.ryannadams.cheeonk.server.handler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -23,6 +26,7 @@ public class GetChatHandler implements ActionHandler<GetChat, GetChatResult>
 	{
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
+		Logger.getLogger("").log(Level.FINER, "Getting Chats for " + key.getUsername());
 
 		return new GetChatResult(connection.getChatContainer().getChats());
 	}

@@ -1,5 +1,8 @@
 package com.ryannadams.cheeonk.server.handler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -25,6 +28,7 @@ public class SendMessageHandler implements ActionHandler<SendMessage, SendMessag
 		Connection connection = ConnectionDriver.getConnection(key);
 
 		connection.getChatContainer().sendMessage(action.getChat(), action.getMessage());
+		Logger.getLogger("").log(Level.FINER, connection.getUser() + " sending message \"" + action.getMessage() + "\"");
 
 		return new SendMessageResult(true);
 	}

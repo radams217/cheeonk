@@ -30,7 +30,7 @@ public class SignoutHandler implements ActionHandler<Signout, SignoutResult>
 		connection.removeListeners();
 		connection.disconnect();
 
-		Logger.getLogger("").log(Level.FINE, "Client logged out as " + connection.getUser());
+		Logger.getLogger("").log(Level.FINER, "Client logged out as " + connection.getUser());
 
 		return new SignoutResult(!connection.isConnected());
 	}

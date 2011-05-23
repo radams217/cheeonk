@@ -170,7 +170,7 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 	@Override
 	public void onSignedin(SignedinEvent event)
 	{
-		HTML loggedinAs = new HTML("Logged in as " + event.getConnectionKey().getUserName());
+		HTML loggedinAs = new HTML("Logged in as " + event.getConnectionKey().getUsername());
 		loggedinAs.addStyleName("authenticationWidget-LoggedIn");
 
 		panel.clear();

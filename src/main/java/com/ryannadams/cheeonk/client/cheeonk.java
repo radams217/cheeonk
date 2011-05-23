@@ -14,11 +14,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.GotChat;
 import com.ryannadams.cheeonk.client.callback.Registered;
 import com.ryannadams.cheeonk.client.callback.Signedin;
@@ -28,7 +25,7 @@ import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.BuddyListWidget;
-import com.ryannadams.cheeonk.client.widgets.ChatWidget;
+import com.ryannadams.cheeonk.client.widgets.ChatWidgetDialog;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetChat;
@@ -104,7 +101,7 @@ public class cheeonk implements EntryPoint
 			{
 				if (authenticationWidget.validate())
 				{
-					key.setUserName(authenticationWidget.getUsername());
+					key.setUsername(authenticationWidget.getUsername());
 					key.setPassword(authenticationWidget.getPassword());
 
 					dispatchAsync.execute(new Signin(key), new Signedin()
@@ -114,7 +111,7 @@ public class cheeonk implements EntryPoint
 						{
 							if (isSignedin)
 							{
-								key.setConnectionID(connectionId);
+								key.setConnectionId(connectionId);
 
 								pollChats = getChatTimer();
 								pollChats.scheduleRepeating(POLLING_INTERVAL);
@@ -142,6 +139,7 @@ public class cheeonk implements EntryPoint
 						if (isSignedout)
 						{
 							eventBus.fireEvent(new SignedoutEvent());
+							key.reset();
 						}
 
 					}
@@ -172,31 +170,11 @@ public class cheeonk implements EntryPoint
 					{
 						for (final CheeonkChat chat : chats)
 						{
-							final DialogBox dialog = new DialogBox(false);
-							final ChatWidget chatWidget = new ChatWidget(eventBus);
-
-							Button close = new Button("Close");
-							dialog.setModal(false);
-							VerticalPanel panel = new VerticalPanel();
-							panel.add(chatWidget);
-							panel.add(close);
-
-							dialog.setText(chat.getParticipant());
-							dialog.setWidget(panel);
-
-							close.addClickHandler(new ClickHandler()
-							{
-								@Override
-								public void onClick(ClickEvent event)
-								{
-									dialog.hide();
-									chatWidget.cancelTimer();
-								}
-							});
+							final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus);
 
 							eventBus.fireEvent(new ChatCreatedEvent(key, chat));
 
-							dialog.show();
+							chatWidget.show();
 						}
 
 					}

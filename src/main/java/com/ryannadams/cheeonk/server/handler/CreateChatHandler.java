@@ -1,5 +1,8 @@
 package com.ryannadams.cheeonk.server.handler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -28,6 +31,7 @@ public class CreateChatHandler implements ActionHandler<CreateChat, GetChatResul
 		GetChatResult chatResult = new GetChatResult();
 		chatResult.addChat(new ChatWrapper(connection.getChatManager().createChat(action.getRecipient().getJabberId(), connection.getChatContainer()))
 				.getClientChat());
+		Logger.getLogger("").log(Level.FINER, "Creating Chat for " + key.getUsername() + " to " + action.getRecipient().getJabberId());
 
 		return chatResult;
 	}

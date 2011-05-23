@@ -32,11 +32,8 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 
 		try
 		{
-			// Logger.getLogger("").log(Level.FINE, "Client connected to " +
-			// connection.getServiceName() + ":" + connection.getPort());
-
-			connection.login(key.getUserName(), key.getPassword());
-			Logger.getLogger("").log(Level.FINE, "Client logged in as " + connection.getUser());
+			connection.login(key.getUsername(), key.getPassword());
+			Logger.getLogger("").log(Level.FINER, "Client logged in as " + connection.getUser());
 
 			// For now accept all subscription requests
 			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);

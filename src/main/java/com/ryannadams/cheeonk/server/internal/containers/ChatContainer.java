@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
@@ -21,10 +23,12 @@ import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 public class ChatContainer implements ChatManagerListener, MessageListener
 {
 	private final Map<ChatWrapper, List<MessageWrapper>> chatMap;
+	private final Logger logger;
 
 	public ChatContainer()
 	{
 		chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
+		logger = Logger.getLogger("");
 	}
 
 	public synchronized ArrayList<CheeonkChat> getChats()
@@ -35,8 +39,8 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		{
 			if (!chat.isTransmitted())
 			{
-				System.out.println("DEBUG: Chat with " + chat.getThreadID() + " found.");
 				newChatList.add(chat.getClientChat());
+				logger.log(Level.FINEST, "Chat " + chat.getThreadID() + " with " + chat.getParticipant() + " to be transmitted.");
 				chat.setTransmitted(true);
 			}
 		}
@@ -50,7 +54,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		ChatWrapper chat = new ChatWrapper(key);
 		chat.setTransmitted(createdLocally);
 
-		System.out.println("DEBUG: Chat Created ThreadID: " + chat.getThreadID());
+		logger.log(Level.FINEST, "Chat Created " + chat.getThreadID() + " with " + chat.getParticipant());
 
 		if (!createdLocally)
 		{
@@ -70,6 +74,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 				try
 				{
 					chatWrapper.sendMessage(message.getBody());
+					logger.log(Level.FINEST, "Sending Message in Chat " + chat.getThreadID() + " to " + chat.getParticipant());
 				}
 				catch (XMPPException e)
 				{
@@ -89,7 +94,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		for (Iterator<MessageWrapper> it = chatMap.get(key).iterator(); it.hasNext();)
 		{
 			newMessageList.add(it.next().getClientMessage());
-
+			logger.log(Level.FINEST, "Getting Message on Chat " + key.getThreadID() + " to " + key.getParticipant());
 			it.remove();
 		}
 
@@ -102,8 +107,8 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		switch (message.getType())
 		{
 			case chat:
-				System.out.println("DEBUG: Adding Message from " + message.getFrom() + " to " + message.getTo() + " to the Queue. [" + message.getBody() + "]");
 				chatMap.get(new ChatWrapper(key)).add(new MessageWrapper(message));
+				logger.log(Level.FINEST, "Adding Message from " + message.getFrom() + " to " + message.getTo() + " cheeonking \"" + message.getBody() + "\"");
 				break;
 
 			case groupchat:
@@ -116,7 +121,8 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 				break;
 
 			case error:
-				System.err.println("ERROR: Message to " + message.getTo() + " from " + message.getFrom() + " wasn't sent. " + message.getError());
+				logger.log(Level.SEVERE, "Error sending Message from " + message.getFrom() + " to " + message.getTo() + " cheeonking \"" + message.getBody()
+						+ "\"");
 				break;
 		}
 

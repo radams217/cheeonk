@@ -15,10 +15,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ConnectionKey implements IsSerializable
 {
-	private String connectionID;
+	private String connectionId;
 	private String host;
 	private int port;
-	private String userName;
+	private String username;
 	private String domain;
 	private String password;
 
@@ -41,11 +41,11 @@ public class ConnectionKey implements IsSerializable
 	 *            for example @cheeonk
 	 * @param password
 	 */
-	public ConnectionKey(String host, int port, String userName, String domain, String password)
+	public ConnectionKey(String host, int port, String username, String domain, String password)
 	{
 		this.host = host;
 		this.port = port;
-		this.userName = userName;
+		this.username = username;
 		this.domain = domain;
 		this.password = password;
 	}
@@ -62,17 +62,24 @@ public class ConnectionKey implements IsSerializable
 		this.domain = domain;
 	}
 
+	public void reset()
+	{
+		connectionId = "";
+		username = "";
+		password = "";
+	}
+
 	/**
 	 * @return unique connectionID from the server
 	 */
-	public String getConnectionID()
+	public String getConnectionId()
 	{
-		return connectionID;
+		return connectionId;
 	}
 
-	public void setConnectionID(String connectionID)
+	public void setConnectionId(String connectionId)
 	{
-		this.connectionID = connectionID;
+		this.connectionId = connectionId;
 	}
 
 	public String getHost()
@@ -95,14 +102,14 @@ public class ConnectionKey implements IsSerializable
 		this.port = port;
 	}
 
-	public String getUserName()
+	public String getUsername()
 	{
-		return userName;
+		return username;
 	}
 
-	public void setUserName(String userName)
+	public void setUsername(String username)
 	{
-		this.userName = userName;
+		this.username = username;
 	}
 
 	public String getDomain()
@@ -130,11 +137,11 @@ public class ConnectionKey implements IsSerializable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((connectionID == null) ? 0 : connectionID.hashCode());
+		result = prime * result + ((connectionId == null) ? 0 : connectionId.hashCode());
 		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		result = prime * result + ((host == null) ? 0 : host.hashCode());
 		result = prime * result + port;
-		result = prime * result + ((userName == null) ? 0 : userName.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
@@ -148,13 +155,13 @@ public class ConnectionKey implements IsSerializable
 		if (getClass() != obj.getClass())
 			return false;
 		ConnectionKey other = (ConnectionKey) obj;
-		if (connectionID == null)
+		if (connectionId == null)
 		{
-			if (other.connectionID != null)
+			if (other.connectionId != null)
 				return false;
 		}
 		else
-			if (!connectionID.equals(other.connectionID))
+			if (!connectionId.equals(other.connectionId))
 				return false;
 		if (domain == null)
 		{
@@ -174,13 +181,13 @@ public class ConnectionKey implements IsSerializable
 				return false;
 		if (port != other.port)
 			return false;
-		if (userName == null)
+		if (username == null)
 		{
-			if (other.userName != null)
+			if (other.username != null)
 				return false;
 		}
 		else
-			if (!userName.equals(other.userName))
+			if (!username.equals(other.username))
 				return false;
 		return true;
 	}

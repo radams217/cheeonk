@@ -1,5 +1,8 @@
 package com.ryannadams.cheeonk.server.handler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -29,6 +32,7 @@ public class RegisterHandler implements ActionHandler<Register, RegisterResult>
 		{
 			connection.connect();
 			connection.getAccountManager().createAccount(action.getUsername(), action.getPassword());
+			Logger.getLogger("").log(Level.FINER, "Account Created for " + action.getUsername());
 		}
 		catch (XMPPException e)
 		{

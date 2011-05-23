@@ -2,6 +2,8 @@ package com.ryannadams.cheeonk.server.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPException;
 
@@ -11,20 +13,25 @@ public class ConnectionPool
 {
 	private final Map<ConnectionKey, Connection> connections;
 	private final ConnectionReaper reaper;
+	private final Logger logger;
 
 	public ConnectionPool()
 	{
 		connections = new HashMap<ConnectionKey, Connection>();
 		reaper = new ConnectionReaper(this);
+		logger = Logger.getLogger("");
 	}
 
 	public synchronized void reapConnections()
 	{
+		logger.log(Level.FINEST, "Reaping Connections");
+
 		for (ConnectionKey key : connections.keySet())
 		{
 			if (!connections.get(key).isConnected())
 			{
 				removeConnection(key);
+				logger.log(Level.FINEST, "Removing: " + key.getUsername() + "@" + key.getHost());
 			}
 		}
 
@@ -60,9 +67,10 @@ public class ConnectionPool
 				connection = new Connection(key);
 				connection.connect();
 
-				key.setConnectionID(connection.getConnectionID());
+				key.setConnectionId(connection.getConnectionID());
 
 				connections.put(key, connection);
+				logger.log(Level.FINEST, "Creating Connection for " + key.getUsername() + "@" + key.getHost());
 			}
 			catch (XMPPException e)
 			{

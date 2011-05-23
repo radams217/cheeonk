@@ -13,7 +13,6 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
@@ -277,33 +276,11 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 						// fire event with the chat object
 						for (CheeonkChat chat : chats)
 						{
-							// Create chat object and fire event
-							final DialogBox dialog = new DialogBox(false);
-
-							final ChatWidget chatWidget = new ChatWidget(eventBus);
-
-							Button button = new Button("Close");
-							dialog.setModal(false);
-							VerticalPanel panel = new VerticalPanel();
-							panel.add(chatWidget);
-							panel.add(button);
-
-							dialog.add(panel);
-
-							button.addClickHandler(new ClickHandler()
-							{
-
-								@Override
-								public void onClick(ClickEvent event)
-								{
-									dialog.hide();
-									chatWidget.cancelTimer();
-								}
-							});
+							final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus);
 
 							eventBus.fireEvent(new ChatCreatedEvent(key, chat));
 
-							dialog.show();
+							chatWidget.show();
 						}
 					}
 				});
