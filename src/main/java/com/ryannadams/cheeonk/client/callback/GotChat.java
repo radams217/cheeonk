@@ -17,7 +17,7 @@ public abstract class GotChat implements AsyncCallback<GetChatResult>
 	@Override
 	public void onSuccess(GetChatResult result)
 	{
-		got(result.getChats());
+		got(result.getChats().toArray(new CheeonkChat[result.getChats().size()]));
 	}
 
 	public abstract void got(CheeonkChat[] chats);

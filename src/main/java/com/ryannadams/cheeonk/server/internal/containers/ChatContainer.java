@@ -2,6 +2,8 @@ package com.ryannadams.cheeonk.server.internal.containers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +27,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 		chatMap = new HashMap<ChatWrapper, List<MessageWrapper>>();
 	}
 
-	public CheeonkChat[] getIncomingChats()
+	public synchronized ArrayList<CheeonkChat> getChats()
 	{
 		List<CheeonkChat> newChatList = new ArrayList<CheeonkChat>();
 
@@ -39,7 +41,7 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 			}
 		}
 
-		return newChatList.toArray(new CheeonkChat[newChatList.size()]);
+		return new ArrayList<CheeonkChat>(newChatList);
 	}
 
 	@Override
@@ -55,12 +57,12 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 			key.addMessageListener(this);
 		}
 
-		chatMap.put(chat, new ArrayList<MessageWrapper>());
+		chatMap.put(chat, new LinkedList<MessageWrapper>());
 	}
 
-	public void sendMessage(CheeonkChat chat, CheeonkMessage message)
+	public synchronized void sendMessage(CheeonkChat chat, CheeonkMessage message)
 	{
-		// Store local message sent to message list?
+		// Store local message sent to message list
 		for (ChatWrapper chatWrapper : chatMap.keySet())
 		{
 			if (chat.getThreadID().equals(chat.getThreadID()))
@@ -80,23 +82,18 @@ public class ChatContainer implements ChatManagerListener, MessageListener
 
 	}
 
-	public CheeonkMessage[] getMessages(CheeonkChat key)
+	public synchronized ArrayList<CheeonkMessage> getMessages(CheeonkChat key)
 	{
 		List<CheeonkMessage> newMessageList = new ArrayList<CheeonkMessage>();
 
-		for (MessageWrapper message : chatMap.get(key))
+		for (Iterator<MessageWrapper> it = chatMap.get(key).iterator(); it.hasNext();)
 		{
-			System.out.println("DEBUG: Message from " + message.getFrom() + " received. [" + message.getBody() + "]");
-			newMessageList.add(message.getClientMessage());
+			newMessageList.add(it.next().getClientMessage());
+
+			it.remove();
 		}
 
-		// TODO: I'm worried this may cause messages not transmitted to be
-		// deleted.
-		// This should only clear out sent messages. Low Latency on the server
-		// may cause problems.
-		chatMap.get(key).clear();
-
-		return newMessageList.toArray(new CheeonkMessage[newMessageList.size()]);
+		return new ArrayList<CheeonkMessage>(newMessageList);
 	}
 
 	@Override

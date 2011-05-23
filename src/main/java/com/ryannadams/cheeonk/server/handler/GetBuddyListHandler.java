@@ -14,9 +14,9 @@ import com.ryannadams.cheeonk.server.internal.wrappers.BuddyWrapper;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
-import com.ryannadams.cheeonk.shared.result.GetBuddyListResult;
+import com.ryannadams.cheeonk.shared.result.GetBuddyResult;
 
-public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddyListResult>
+public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddyResult>
 {
 	@Override
 	public Class<GetBuddyList> getActionType()
@@ -25,7 +25,7 @@ public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddy
 	}
 
 	@Override
-	public GetBuddyListResult execute(GetBuddyList action, ExecutionContext context) throws DispatchException
+	public GetBuddyResult execute(GetBuddyList action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
@@ -37,11 +37,11 @@ public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddy
 			buddyList.add(new BuddyWrapper(rosterEntry).getClientBuddy());
 		}
 
-		return new GetBuddyListResult(buddyList);
+		return new GetBuddyResult(buddyList);
 	}
 
 	@Override
-	public void rollback(GetBuddyList action, GetBuddyListResult result, ExecutionContext context) throws DispatchException
+	public void rollback(GetBuddyList action, GetBuddyResult result, ExecutionContext context) throws DispatchException
 	{
 		// TODO Auto-generated method stub
 

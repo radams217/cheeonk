@@ -4,13 +4,13 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.ChatEventHandler;
 import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
 
-public class ChatIncomingEvent extends GwtEvent<ChatEventHandler>
+public class ChatReceivedEvent extends GwtEvent<ChatEventHandler>
 {
 	public static final GwtEvent.Type<ChatEventHandler> TYPE = new GwtEvent.Type<ChatEventHandler>();
 
 	private CheeonkChat chat;
 
-	public ChatIncomingEvent(CheeonkChat chat)
+	public ChatReceivedEvent(CheeonkChat chat)
 	{
 		this.chat = chat;
 	}
@@ -29,7 +29,7 @@ public class ChatIncomingEvent extends GwtEvent<ChatEventHandler>
 	@Override
 	protected void dispatch(ChatEventHandler handler)
 	{
-		handler.onChatIncoming(this);
+		handler.onChatReceived(this);
 	}
 
 }

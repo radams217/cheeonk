@@ -1,26 +1,32 @@
 package com.ryannadams.cheeonk.shared.result;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 
 public class GetBuddyResult implements Result
 {
-	private CheeonkBuddy buddy;
+	private ArrayList<CheeonkBuddy> buddies;
 
-	@Deprecated
 	public GetBuddyResult()
 	{
-
+		this.buddies = new ArrayList<CheeonkBuddy>();
 	}
 
-	public GetBuddyResult(CheeonkBuddy buddy)
+	public GetBuddyResult(ArrayList<CheeonkBuddy> buddies)
 	{
-		this.buddy = buddy;
+		this.buddies = buddies;
 	}
 
-	public CheeonkBuddy getBuddy()
+	public void addBuddy(CheeonkBuddy buddy)
 	{
-		return buddy;
+		buddies.add(buddy);
+	}
+
+	public ArrayList<CheeonkBuddy> getBuddyList()
+	{
+		return new ArrayList<CheeonkBuddy>(buddies);
 	}
 }

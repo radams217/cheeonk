@@ -24,9 +24,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.GotMessages;
 import com.ryannadams.cheeonk.client.callback.SentMessage;
 import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
-import com.ryannadams.cheeonk.client.event.ChatIncomingEvent;
+import com.ryannadams.cheeonk.client.event.ChatReceivedEvent;
 import com.ryannadams.cheeonk.client.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.client.event.MessageSentEvent;
+import com.ryannadams.cheeonk.client.event.SignedinEvent;
+import com.ryannadams.cheeonk.client.event.SignedoutEvent;
+import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 import com.ryannadams.cheeonk.client.handler.ChatEventHandler;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
@@ -43,7 +46,7 @@ import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
  *         coming from the server. This widget can be added to a dialog box or
  *         any type of panel.
  */
-public class ChatWidget extends Composite implements MessageEventHandler, ChatEventHandler
+public class ChatWidget extends Composite implements MessageEventHandler, ChatEventHandler, AuthenticationEventHandler
 {
 	private final VerticalPanel cheeonks;
 	private final TextArea messageArea;
@@ -58,7 +61,8 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 		eventBus.addHandler(MessageSentEvent.TYPE, this);
 		eventBus.addHandler(ChatCreatedEvent.TYPE, this);
-		eventBus.addHandler(ChatIncomingEvent.TYPE, this);
+		eventBus.addHandler(ChatReceivedEvent.TYPE, this);
+		eventBus.addHandler(SignedoutEvent.TYPE, this);
 
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
@@ -187,7 +191,6 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 				{
 					dispatchAsync.execute(new SendMessage(key, chat, getMessageAreaText()), new SentMessage()
 					{
-
 						@Override
 						public void got(boolean isSent)
 						{
@@ -195,9 +198,7 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 							{
 								resetMessageArea();
 							}
-
 						}
-
 					});
 
 				}
@@ -228,10 +229,23 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 
 	}
 
+	@Deprecated
 	@Override
-	public void onChatIncoming(ChatIncomingEvent event)
+	public void onChatReceived(ChatReceivedEvent event)
 	{
-
+		// TODO I might not need this in here
 	}
 
+	@Deprecated
+	@Override
+	public void onSignedin(SignedinEvent event)
+	{
+		// Not used
+	}
+
+	@Override
+	public void onSignedout(SignedoutEvent event)
+	{
+		cancelTimer();
+	}
 }

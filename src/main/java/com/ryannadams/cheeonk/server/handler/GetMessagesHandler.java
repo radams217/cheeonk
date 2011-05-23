@@ -8,9 +8,9 @@ import com.ryannadams.cheeonk.server.internal.Connection;
 import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetMessages;
-import com.ryannadams.cheeonk.shared.result.GetMessagesResult;
+import com.ryannadams.cheeonk.shared.result.GetMessageResult;
 
-public class GetMessagesHandler implements ActionHandler<GetMessages, GetMessagesResult>
+public class GetMessagesHandler implements ActionHandler<GetMessages, GetMessageResult>
 {
 	@Override
 	public Class<GetMessages> getActionType()
@@ -19,16 +19,16 @@ public class GetMessagesHandler implements ActionHandler<GetMessages, GetMessage
 	}
 
 	@Override
-	public GetMessagesResult execute(GetMessages action, ExecutionContext context) throws DispatchException
+	public GetMessageResult execute(GetMessages action, ExecutionContext context) throws DispatchException
 	{
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
-		return new GetMessagesResult(connection.getChatContainer().getMessages(action.getChat()));
+		return new GetMessageResult(connection.getChatContainer().getMessages(action.getChat()));
 	}
 
 	@Override
-	public void rollback(GetMessages action, GetMessagesResult result, ExecutionContext context) throws DispatchException
+	public void rollback(GetMessages action, GetMessageResult result, ExecutionContext context) throws DispatchException
 	{
 		// TODO Auto-generated method stub
 

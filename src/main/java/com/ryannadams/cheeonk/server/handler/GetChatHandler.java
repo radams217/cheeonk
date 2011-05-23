@@ -24,7 +24,7 @@ public class GetChatHandler implements ActionHandler<GetChat, GetChatResult>
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
-		return new GetChatResult(connection.getChatContainer().getIncomingChats());
+		return new GetChatResult(connection.getChatContainer().getChats());
 	}
 
 	@Override

@@ -25,8 +25,11 @@ public class CreateChatHandler implements ActionHandler<CreateChat, GetChatResul
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
-		return new GetChatResult(
-				new ChatWrapper(connection.getChatManager().createChat(action.getRecipient().getJabberId(), connection.getChatContainer())).getClientChat());
+		GetChatResult chatResult = new GetChatResult();
+		chatResult.addChat(new ChatWrapper(connection.getChatManager().createChat(action.getRecipient().getJabberId(), connection.getChatContainer()))
+				.getClientChat());
+
+		return chatResult;
 	}
 
 	@Override

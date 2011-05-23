@@ -3,13 +3,11 @@ package com.ryannadams.cheeonk.shared.action;
 import net.customware.gwt.dispatch.shared.Action;
 
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.result.GetChatResult;
 
 public class GetChat implements Action<GetChatResult>
 {
 	private ConnectionKey key;
-	private JabberId recipient;
 
 	@Deprecated
 	public GetChat()
@@ -17,10 +15,9 @@ public class GetChat implements Action<GetChatResult>
 
 	}
 
-	public GetChat(ConnectionKey key, JabberId recipient)
+	public GetChat(ConnectionKey key)
 	{
 		this.key = key;
-		this.recipient = recipient;
 	}
 
 	public ConnectionKey getConnectionKey()
@@ -28,8 +25,4 @@ public class GetChat implements Action<GetChatResult>
 		return key;
 	}
 
-	public JabberId getRecipient()
-	{
-		return recipient;
-	}
 }

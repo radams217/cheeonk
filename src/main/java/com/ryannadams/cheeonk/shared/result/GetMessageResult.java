@@ -1,36 +1,33 @@
 package com.ryannadams.cheeonk.shared.result;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 
-/**
- * @author radams217
- *         <p>
- *         GetMessageResult implements IMessage and Result. This class is
- *         intended to be used on both the client and server side as a way to
- *         transmit Messages from the server to the client. All messages are
- *         serialized and sent over the wire to the client.
- *         </p>
- */
 public class GetMessageResult implements Result
 {
-	private CheeonkMessage message;
+	private ArrayList<CheeonkMessage> messages;
 
-	@Deprecated
 	public GetMessageResult()
 	{
-
+		this.messages = new ArrayList<CheeonkMessage>();
 	}
 
-	public GetMessageResult(CheeonkMessage message)
+	public GetMessageResult(ArrayList<CheeonkMessage> messages)
 	{
-		this.message = message;
+		this.messages = messages;
 	}
 
-	public CheeonkMessage getMessage(CheeonkMessage message)
+	public void addMessage(CheeonkMessage message)
 	{
-		return message;
+		messages.add(message);
+	}
+
+	public ArrayList<CheeonkMessage> getMessages()
+	{
+		return new ArrayList<CheeonkMessage>(messages);
 	}
 
 }

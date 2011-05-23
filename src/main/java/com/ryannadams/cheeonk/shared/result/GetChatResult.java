@@ -1,31 +1,32 @@
 package com.ryannadams.cheeonk.shared.result;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
 
 public class GetChatResult implements Result
 {
-	private CheeonkChat[] chats;
+	private ArrayList<CheeonkChat> chats;
 
-	@Deprecated
 	public GetChatResult()
 	{
-
+		this.chats = new ArrayList<CheeonkChat>();
 	}
 
-	public GetChatResult(CheeonkChat[] chatList)
+	public GetChatResult(ArrayList<CheeonkChat> chats)
 	{
-		this.chats = chatList;
+		this.chats = chats;
 	}
 
-	public GetChatResult(CheeonkChat chat)
+	public void addChat(CheeonkChat chat)
 	{
-		this.chats = new CheeonkChat[] { chat };
+		chats.add(chat);
 	}
 
-	public CheeonkChat[] getChats()
+	public ArrayList<CheeonkChat> getChats()
 	{
-		return chats;
+		return new ArrayList<CheeonkChat>(chats);
 	}
 }
