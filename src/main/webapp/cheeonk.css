@@ -225,31 +225,22 @@ a:hover
 	background-color: #FFFFFF;	
 }
 
+/* buddyWidget */
+.buddyWidget-Available
+{
+	background-color: #00FF00;
+}
 
+.buddyWidget-Unavailable
+{
+	background-color: #FF0000;
+}
 
 /* buddyListWidget */
 .buddyListWidget
 {
-	
-	
-	
+		
 }
-
-.buddyListWidget-Available
-{
-	background-color: #FFFF88;
-	
-	
-}
-
-.buddyListWidget-Unavailable
-{
-	background-color: #66FFFF;
-	
-	
-}
-
-
 
 /* AuthenticationWidget */
 

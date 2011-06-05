@@ -180,7 +180,6 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 		Logger.getLogger("").log(Level.INFO, "Chat Created");
 
 		final CheeonkChat chat = event.getChat();
-		final ConnectionKey key = event.getConnectionKey();
 
 		addKeyPressHandler(new KeyPressHandler()
 		{
@@ -189,7 +188,7 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 			{
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
-					dispatchAsync.execute(new SendMessage(key, chat, getMessageAreaText()), new SentMessage()
+					dispatchAsync.execute(new SendMessage(ConnectionKey.get(), chat, getMessageAreaText()), new SentMessage()
 					{
 						@Override
 						public void got(boolean isSent)
@@ -211,7 +210,7 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 			@Override
 			public void run()
 			{
-				dispatchAsync.execute(new GetMessages(key, chat), new GotMessages()
+				dispatchAsync.execute(new GetMessages(ConnectionKey.get(), chat), new GotMessages()
 				{
 					@Override
 					public void got(CheeonkMessage[] messages)
@@ -225,7 +224,7 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 				});
 
 			}
-		}, 1000);
+		}, 5000);
 
 	}
 

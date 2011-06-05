@@ -10,12 +10,10 @@ import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.CreatedChat;
@@ -28,6 +26,7 @@ import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 import com.ryannadams.cheeonk.client.handler.BuddyListEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
+import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.action.CreateChat;
 import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
@@ -41,13 +40,11 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	private final TextBox buddyName;
 	private final Button okButton;
 
-	private Timer timer;
-
 	private final DispatchAsync dispatchAsync;
 
 	private final SimpleEventBus eventBus;
 
-	public BuddyListWidget(SimpleEventBus eventBus)
+	public BuddyListWidget(final SimpleEventBus eventBus)
 	{
 		this.eventBus = eventBus;
 
@@ -89,10 +86,13 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 				okButton.addClickHandler(new ClickHandler()
 				{
-
 					@Override
 					public void onClick(ClickEvent event)
 					{
+						CheeonkBuddy buddy = new CheeonkBuddy(new JabberId(buddyName.getText()), buddyName.getText());
+
+						eventBus.fireEvent(new AddBuddyEvent(buddy));
+
 						popupPanel.hide();
 					}
 				});
@@ -110,20 +110,9 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		initWidget(mainPanel);
 	}
 
-	public void setTimer(Timer timer, int periodMillis)
+	public void addBuddy(final CheeonkBuddy buddy, ClickHandler clickHandler)
 	{
-		this.timer = timer;
-		this.timer.scheduleRepeating(periodMillis);
-	}
-
-	public void cancelTimer()
-	{
-		timer.cancel();
-	}
-
-	public void addBuddy(CheeonkBuddy buddy, ClickHandler clickHandler)
-	{
-		BuddyWidget buddyWidget = new BuddyWidget(buddy);
+		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
 		buddyWidget.addClickHandler(clickHandler);
 
 		panel.add(buddyWidget);
@@ -131,19 +120,9 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 	public void removeBuddy(CheeonkBuddy buddy)
 	{
-		BuddyWidget buddyWidget = new BuddyWidget(buddy);
+		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
 
 		panel.remove(buddyWidget);
-	}
-
-	public void setBuddyUnavailable(CheeonkBuddy buddy)
-	{
-		panel.getWidget(panel.getWidgetIndex(new BuddyWidget(buddy))).setStyleName("buddyListWidget-Available");
-	}
-
-	public void setBuddyAvailable(CheeonkBuddy buddy)
-	{
-		panel.getWidget(panel.getWidgetIndex(new BuddyWidget(buddy))).setStyleName("buddyListWidget-Unavailable");
 	}
 
 	public void clearBuddyList()
@@ -164,89 +143,26 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 	}
 
-	private class BuddyWidget extends Composite
-	{
-		private final CheeonkBuddy buddy;
-		private final PushButton button;
-
-		public BuddyWidget(CheeonkBuddy buddy)
-		{
-			button = new PushButton(buddy.getName());
-			button.setStyleName("buddy");
-
-			this.buddy = buddy;
-
-			HorizontalPanel panel = new HorizontalPanel();
-
-			panel.add(button);
-			initWidget(panel);
-		}
-
-		public void addClickHandler(ClickHandler clickHandler)
-		{
-			button.addClickHandler(clickHandler);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((buddy == null) ? 0 : buddy.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			BuddyWidget other = (BuddyWidget) obj;
-
-			if (buddy == null)
-			{
-				if (other.buddy != null)
-					return false;
-			}
-			else
-				if (!buddy.equals(other.buddy))
-					return false;
-			return true;
-		}
-
-	}
-
 	@Override
 	public void onSignedin(SignedinEvent event)
 	{
-		final ConnectionKey key = event.getConnectionKey();
-
-		dispatchAsync.execute(new GetBuddyList(key), new GotBuddyList()
+		dispatchAsync.execute(new GetBuddyList(ConnectionKey.get()), new GotBuddyList()
 		{
 			@Override
 			public void got(CheeonkBuddy[] buddies)
 			{
 				for (final CheeonkBuddy buddy : buddies)
 				{
-					eventBus.fireEvent(new AddBuddyEvent(key, buddy));
+					eventBus.fireEvent(new AddBuddyEvent(buddy));
 				}
 
 			}
 		});
-
-		// Set Timer to poll for buddy updates
-
 	}
 
 	@Override
 	public void onSignedout(SignedoutEvent event)
 	{
-		// Cancel Timer and clear list
-
 		clearBuddyList();
 	}
 
@@ -257,17 +173,14 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		Logger.getLogger("").log(Level.INFO, "Added Buddy");
 
 		final CheeonkBuddy buddy = event.getBuddy();
-		final ConnectionKey key = event.getConnectionKey();
 
 		addBuddy(buddy, new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-
-				dispatchAsync.execute(new CreateChat(key, buddy.getJID()), new CreatedChat()
+				dispatchAsync.execute(new CreateChat(ConnectionKey.get(), buddy.getJID()), new CreatedChat()
 				{
-
 					@Override
 					public void got(CheeonkChat[] chats)
 					{
@@ -277,8 +190,9 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 						for (CheeonkChat chat : chats)
 						{
 							final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus);
+							chatWidget.setText(buddy.getJID().getJabberId());
 
-							eventBus.fireEvent(new ChatCreatedEvent(key, chat));
+							eventBus.fireEvent(new ChatCreatedEvent(chat));
 
 							chatWidget.show();
 						}

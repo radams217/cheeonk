@@ -26,7 +26,7 @@ public class RegisterHandler implements ActionHandler<Register, RegisterResult>
 	@Override
 	public RegisterResult execute(Register action, ExecutionContext context) throws DispatchException
 	{
-		Connection connection = ConnectionDriver.getConnection(ConnectionKey.getCheeonkConnectionKey());
+		Connection connection = ConnectionDriver.getConnection(ConnectionKey.get());
 
 		try
 		{

@@ -39,10 +39,9 @@ import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
  */
 public class cheeonk implements EntryPoint
 {
-	private final int POLLING_INTERVAL = 1000;
+	private final int POLLING_INTERVAL = 5000;
 
 	private final SimpleEventBus eventBus;
-	private final ConnectionKey key;
 	private final Messages messages;
 
 	private final AuthenticationWidget authenticationWidget;
@@ -62,8 +61,6 @@ public class cheeonk implements EntryPoint
 
 		rootLogger = Logger.getLogger("");
 		messages = GWT.create(Messages.class);
-
-		key = ConnectionKey.getCheeonkConnectionKey();
 
 		authenticationWidget = new AuthenticationWidget(eventBus);
 		buddyList = new BuddyListWidget(eventBus);
@@ -101,22 +98,22 @@ public class cheeonk implements EntryPoint
 			{
 				if (authenticationWidget.validate())
 				{
-					key.setUsername(authenticationWidget.getUsername());
-					key.setPassword(authenticationWidget.getPassword());
+					ConnectionKey.get().setUsername(authenticationWidget.getUsername());
+					ConnectionKey.get().setPassword(authenticationWidget.getPassword());
 
-					dispatchAsync.execute(new Signin(key), new Signedin()
+					dispatchAsync.execute(new Signin(ConnectionKey.get()), new Signedin()
 					{
 						@Override
 						public void got(boolean isSignedin, String connectionId)
 						{
 							if (isSignedin)
 							{
-								key.setConnectionId(connectionId);
+								ConnectionKey.get().setConnectionId(connectionId);
 
 								pollChats = getChatTimer();
 								pollChats.scheduleRepeating(POLLING_INTERVAL);
 
-								eventBus.fireEvent(new SignedinEvent(key));
+								eventBus.fireEvent(new SignedinEvent());
 							}
 						}
 					});
@@ -129,17 +126,16 @@ public class cheeonk implements EntryPoint
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				pollChats.cancel();
-
-				dispatchAsync.execute(new Signout(key), new Signedout()
+				dispatchAsync.execute(new Signout(ConnectionKey.get()), new Signedout()
 				{
 					@Override
 					public void got(boolean isSignedout)
 					{
 						if (isSignedout)
 						{
+							pollChats.cancel();
 							eventBus.fireEvent(new SignedoutEvent());
-							key.reset();
+							ConnectionKey.get().reset();
 						}
 
 					}
@@ -163,7 +159,7 @@ public class cheeonk implements EntryPoint
 			{
 				rootLogger.log(Level.FINER, "Polling for Incoming Chats");
 
-				dispatchAsync.execute(new GetChat(key), new GotChat()
+				dispatchAsync.execute(new GetChat(ConnectionKey.get()), new GotChat()
 				{
 					@Override
 					public void got(CheeonkChat[] chats)
@@ -171,8 +167,9 @@ public class cheeonk implements EntryPoint
 						for (final CheeonkChat chat : chats)
 						{
 							final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus);
+							chatWidget.setText(chat.getParticipant());
 
-							eventBus.fireEvent(new ChatCreatedEvent(key, chat));
+							eventBus.fireEvent(new ChatCreatedEvent(chat));
 
 							chatWidget.show();
 						}

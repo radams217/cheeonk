@@ -15,6 +15,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ConnectionKey implements IsSerializable
 {
+	private static ConnectionKey instance;
+
+	public static ConnectionKey get()
+	{
+		if (instance == null)
+		{
+			// Abstract this out to a config file
+			instance = new ConnectionKey("localhost", 5222, "cheeonk.com");
+		}
+
+		return instance;
+	}
+
 	private String connectionId;
 	private String host;
 	private int port;
@@ -22,9 +35,7 @@ public class ConnectionKey implements IsSerializable
 	private String domain;
 	private String password;
 
-	/**
-	 * Required by the GWT Framework.
-	 */
+	@Deprecated
 	public ConnectionKey()
 	{
 		// Do Nothing
@@ -191,18 +202,5 @@ public class ConnectionKey implements IsSerializable
 				return false;
 		return true;
 	}
-
-	/**
-	 * Generate Built in connection keys
-	 * 
-	 * @return ConnectionKey
-	 */
-	public static ConnectionKey getCheeonkConnectionKey()
-	{
-		// gtalk.google.com
-		return new ConnectionKey("localhost", 5222, "cheeonk.com");
-	}
-
-	// TODO: Add Gchat information here
 
 }
