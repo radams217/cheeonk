@@ -70,7 +70,7 @@ public class BuddyWidget extends Composite implements AuthenticationEventHandler
 
 		VerticalPanel panel = new VerticalPanel();
 		panel.add(button);
-		panel.add(new HTML("[Status Here]"));
+		panel.add(new HTML("[Status]"));
 		initWidget(panel);
 	}
 
