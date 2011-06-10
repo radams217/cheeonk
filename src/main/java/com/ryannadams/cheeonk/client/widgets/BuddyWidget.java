@@ -136,6 +136,7 @@ public class BuddyWidget extends Composite implements AuthenticationEventHandler
 			VerticalPanel panel = new VerticalPanel();
 			panel.setStyleName("signinPanel");
 			panel.add(new HTML(buddy.getName()));
+			panel.add(new HTML(buddy.getJID().getJabberId()));
 
 			add(panel);
 		}
