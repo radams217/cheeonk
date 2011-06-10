@@ -103,11 +103,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 			}
 		});
 
-		VerticalPanel mainPanel = new VerticalPanel();
-		mainPanel.add(addButton);
-		mainPanel.add(panel);
-
-		initWidget(mainPanel);
+		initWidget(panel);
 	}
 
 	public void addBuddy(final CheeonkBuddy buddy, ClickHandler clickHandler)
@@ -123,11 +119,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
 
 		panel.remove(buddyWidget);
-	}
-
-	public void clearBuddyList()
-	{
-		panel.clear();
 	}
 
 	private class AddBuddyPopupPanel extends PopupPanel
@@ -146,6 +137,8 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	@Override
 	public void onSignedin(SignedinEvent event)
 	{
+		panel.add(addButton);
+
 		dispatchAsync.execute(new GetBuddyList(ConnectionKey.get()), new GotBuddyList()
 		{
 			@Override
@@ -163,7 +156,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	@Override
 	public void onSignedout(SignedoutEvent event)
 	{
-		clearBuddyList();
+		panel.clear();
 	}
 
 	@Override
