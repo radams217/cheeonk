@@ -27,14 +27,16 @@ body
 	background-color:#ffffff;
 	text-align: center;
 	width: 100%;
-	margin: auto;
+	margin: 5px auto;
 }
+
+
 
 .header
 {
 	position: relative;
-	background-color: #3377bb;
-	width: 100%;
+	
+	width: 1022px;
 	margin: auto;
 }
 
@@ -43,9 +45,18 @@ body
 	position: relative;
 	background-color: #ffffff;
 	width: 1024px;
-	height: 100%;
 	margin: auto;
 }
+
+.panel
+{
+	background-color:#f2f2f2;
+	width: 100%;
+	height: 300px;
+	border-style:solid;
+	border-color:#f8f8f8;
+}
+
 
 .footer
 {
@@ -56,58 +67,74 @@ body
 	margin: auto;
 }
 
-#banner
+
+
+
+.banner
 {
 	position: relative;
-	width: 1280px;
+	width: 1024px;
 	margin: auto;
 }
 
 .bannerNavigation
 {
-	position: absolute;
-	top: 10px;
-	left: 138px;
+	position: relative;
+	text-align: right;
 }
 
-#bannerSignin
+.bannerSignin
 {
 	position: absolute;
 	top: 10px;
 	right: 138px;
+	width: 80px;
+	height: 20px;
+	background-color: #D80000;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #000000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+
+.buddy
+{
+
+	width: 100%;
+	border-style: solid;
+	border-color: #000000;
+	border-width: 1px;
 	font-family:  Verdana;
 	font-size: 10pt;
-	color: #ffffff;
+	text-align: left;
+
 }
 
-.logoutWidget-userNameField
+.tabs
 {
-	margin-right: 10px;
+	position: absolute;
+	width: 100%;
+	bottom: -4px;
+	text-align: right;
 }
-
-#errorLabelContainer
-{
-	font-family:  Verdana;
-	font-size: 10pt;
-	color: #ffffff;	
-}
-
 .menubar
 {
 	position: absolute;
 	width: 100%;
-	height: 35px;
+	height: 3px;
 	background-color: #000000;
 	bottom: 0px;
 }
 
-#buddyListContainer
+.signup
 {
 	position: absolute;
 	width: 200px;
 	height: 400px;
 	background-color: #b9d1e8;
-	top: 130px;
+	top: -130px;
 	left: 0px;
 	border-style: solid;
 	border-width: 10px;
@@ -118,23 +145,6 @@ body
 	border-radius: 20px;
 }
 
-#RegistrationContainer
-{
-	position: absolute;
-	left: 230px;
-}
-
-
-.buddy
-{
-	width: 100%;
-	border-style: solid;
-	border-color: #000000;
-	border-width: 1px;
-	font-family:  Verdana;
-	font-size: 10pt;
-	text-align: left;
-}
 
 .textfield
 {
@@ -183,7 +193,7 @@ label
 
 .navigationLink
 {
-	color:#FFFFFF;
+	color:#000000;
 	font-size: 10pt;
 }
 

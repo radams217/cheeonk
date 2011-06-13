@@ -145,6 +145,7 @@ public class cheeonk implements EntryPoint
 		});
 
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
+		RootPanel.get("tab").add(new Image(ImageResources.INSTANCE.getTab()));
 		RootPanel.get("bannerSignin").add(authenticationWidget);
 		RootPanel.get("buddyListContainer").add(buddyList);
 

@@ -14,4 +14,7 @@ public interface ImageResources extends ClientBundle
 	@Source("com/ryannadams/cheeonk/client/images/calendar.png")
 	public ImageResource getCalendar();
 
+	@Source("com/ryannadams/cheeonk/client/images/tab.png")
+	public ImageResource getTab();
+
 }
