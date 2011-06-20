@@ -43,14 +43,12 @@ body
 .content
 {
 	position: relative;
-	background-color: #ffffff;
 	width: 1024px;
 	margin: auto;
 }
 
 .panel
 {
-	background-color:#f2f2f2;
 	width: 100%;
 	height: 300px;
 	border-style:solid;
@@ -225,6 +223,24 @@ a:hover
 {
 	text-decoration:none;
 	font-family:Verdana, sans-serif;
+}
+
+
+#buddyListContainer
+{
+	position: absolute;
+	width: 150px;
+	height: 200px;
+	background-color: #b9d1e8;
+	top: 200px;
+	left: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #ffffff;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-khtml-border-radius: 20px;
+	border-radius: 20px;
 }
 
 #chatContainer

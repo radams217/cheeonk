@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.ryannadams.cheeonk.client.callback.GotChat;
@@ -148,6 +149,8 @@ public class cheeonk implements EntryPoint
 		RootPanel.get("tab").add(new Image(ImageResources.INSTANCE.getTab()));
 		RootPanel.get("bannerSignin").add(authenticationWidget);
 		RootPanel.get("buddyListContainer").add(buddyList);
+
+		DockPanel panel;
 
 	}
 
