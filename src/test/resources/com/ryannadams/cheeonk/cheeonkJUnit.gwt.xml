@@ -4,5 +4,5 @@
 	<inherits name='com.ryannadams.cheeonk.client.cheeonk' />
 
 	<!-- Specify the path to any remote services. -->
-	<servlet path="/cheeonk/chat" class="com.ryannadams.cheeonk.server.ChatDispatchServiceImpl" />
+	<servlet path="/cheeonk/dispatch" class="com.ryannadams.cheeonk.server.ChatDispatchServiceImpl" />
 </module>
