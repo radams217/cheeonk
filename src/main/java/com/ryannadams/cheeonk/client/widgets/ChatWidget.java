@@ -18,12 +18,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.SentMessage;
-import com.ryannadams.cheeonk.client.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.client.event.MessageSentEvent;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.action.SendMessage;
+import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 
@@ -43,9 +43,9 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	private final DispatchAsync dispatchAsync;
 
-	private final JabberId participant;
+	private final IBuddy participant;
 
-	public ChatWidget(final SimpleEventBus eventBus, JabberId participant)
+	public ChatWidget(final SimpleEventBus eventBus, final IBuddy participant)
 	{
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 		eventBus.addHandler(MessageSentEvent.TYPE, this);
@@ -55,7 +55,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
 		cheeonks = new VerticalPanel();
-		// scroll panel is set need to set the inner vertical pannel
+		// scroll panel is set need to set the inner vertical panel
 		// cheeonks.addStyleName("cheeonkWidget-Cheeonks");
 		scrollPanel = new ScrollPanel();
 		scrollPanel.addStyleName("chatWidget-Cheeonks");
@@ -76,7 +76,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 			{
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
-					dispatchAsync.execute(new SendMessage(ConnectionKey.get(), getMessageAreaText()), new SentMessage()
+					dispatchAsync.execute(new SendMessage(ConnectionKey.get(), getMessage()), new SentMessage()
 					{
 						@Override
 						public void got(IMessage message)
@@ -110,10 +110,9 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		messageArea.setText("");
 	}
 
-	public IMessage getMessageAreaText()
+	public IMessage getMessage()
 	{
-		// TODO fix from
-		return new CheeonkMessage(participant, new JabberId(""), messageArea.getText());
+		return new CheeonkMessage(participant.getJID(), null, messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler
@@ -127,7 +126,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		{
 			this.message = message;
 
-			cheeonk = new HTML(message.getTo() + ": " + message);
+			cheeonk = new HTML(message.getTo().getJabberId() + ": " + message.getBody());
 			cheeonkCastButton = new PushButton("C", this);
 
 			HorizontalPanel panel = new HorizontalPanel();
@@ -155,6 +154,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	@Override
 	public void onMessageSent(MessageSentEvent event)
 	{
+
 		resetMessageArea();
 		addCheeonk(event.getMessage());
 	}

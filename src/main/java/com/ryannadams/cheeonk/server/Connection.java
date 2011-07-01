@@ -14,24 +14,24 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
+import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.JabberId;
-import com.ryannadams.cheeonk.shared.event.CheeonkEvent;
-import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent2;
+import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 
 public class Connection extends XMPPConnection implements RosterListener, ChatManagerListener, MessageListener
 {
-	private final BlockingDeque<CheeonkEvent> eventDeque;
+	private final BlockingDeque<GwtEvent> eventDeque;
 
 	public Connection(ConnectionKey key)
 	{
 		super(new ConnectionConfiguration(key.getHost(), key.getPort()));
-		this.eventDeque = new LinkedBlockingDeque<CheeonkEvent>();
+		this.eventDeque = new LinkedBlockingDeque<GwtEvent>();
 	}
 
-	public BlockingDeque<CheeonkEvent> getEventDeque()
+	public BlockingDeque<GwtEvent> getEventDeque()
 	{
 		return eventDeque;
 	}
@@ -80,7 +80,6 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	public void chatCreated(Chat chat, boolean createdLocally)
 	{
 		chat.addMessageListener(this);
-
 	}
 
 	public void sendMessage(IMessage message)
@@ -102,7 +101,7 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 		{
 			case chat:
 				CheeonkMessage cheeonkMessage = new CheeonkMessage(new JabberId(message.getTo()), new JabberId(message.getFrom()), message.getBody());
-				eventDeque.add(new MessageReceivedEvent2(cheeonkMessage));
+				eventDeque.add(new MessageReceivedEvent(cheeonkMessage));
 				break;
 
 			case groupchat:

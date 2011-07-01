@@ -11,6 +11,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Timer;
@@ -20,7 +21,6 @@ import com.ryannadams.cheeonk.client.callback.GotEvent;
 import com.ryannadams.cheeonk.client.callback.Registered;
 import com.ryannadams.cheeonk.client.callback.Signedin;
 import com.ryannadams.cheeonk.client.callback.Signedout;
-import com.ryannadams.cheeonk.client.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
@@ -31,8 +31,6 @@ import com.ryannadams.cheeonk.shared.action.GetEvent;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.action.Signin;
 import com.ryannadams.cheeonk.shared.action.Signout;
-import com.ryannadams.cheeonk.shared.event.CheeonkEvent;
-import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent2;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -164,17 +162,14 @@ public class cheeonk implements EntryPoint
 		dispatchAsync.execute(new GetEvent(ConnectionKey.get()), new GotEvent()
 		{
 			@Override
-			public void got(CheeonkEvent[] events)
+			public void got(GwtEvent[] events)
 			{
-				for (CheeonkEvent event : events)
+				for (GwtEvent event : events)
 				{
-					// TODO change this
-					if (event instanceof MessageReceivedEvent2)
-					{
-						eventBus.fireEvent(new MessageReceivedEvent(((MessageReceivedEvent2) event).getMessage()));
-					}
-
+					eventBus.fireEvent(event);
 				}
+
+				chatTimer.schedule(1);
 			}
 
 		});

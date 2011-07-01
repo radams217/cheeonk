@@ -18,18 +18,19 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.GotBuddyList;
 import com.ryannadams.cheeonk.client.event.AddBuddyEvent;
+import com.ryannadams.cheeonk.client.event.PresenceChangeEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
-import com.ryannadams.cheeonk.client.handler.BuddyListEventHandler;
+import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 
-public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyListEventHandler
+public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
 {
 	private final VerticalPanel panel;
 
@@ -49,6 +50,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 		this.eventBus.addHandler(AddBuddyEvent.TYPE, this);
 		this.eventBus.addHandler(RemoveBuddyEvent.TYPE, this);
+		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
@@ -170,7 +172,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus, buddy.getJID());
+				final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus, buddy);
 				chatWidget.setText(buddy.getJID().getJabberId());
 				chatWidget.show();
 			}
@@ -181,6 +183,13 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 	@Override
 	public void onRemoveBuddy(RemoveBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPresenceChange(PresenceChangeEvent event)
 	{
 		// TODO Auto-generated method stub
 

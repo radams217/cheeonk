@@ -1,14 +1,20 @@
-package com.ryannadams.cheeonk.client.event;
+package com.ryannadams.cheeonk.shared.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 
-public class MessageReceivedEvent extends GwtEvent<MessageEventHandler>
+public class MessageReceivedEvent extends GwtEvent<MessageEventHandler> implements IEvent
 {
 	public static final GwtEvent.Type<MessageEventHandler> TYPE = new GwtEvent.Type<MessageEventHandler>();
 
-	private final CheeonkMessage message;
+	private CheeonkMessage message;
+
+	@Deprecated
+	public MessageReceivedEvent()
+	{
+
+	}
 
 	public MessageReceivedEvent(CheeonkMessage message)
 	{

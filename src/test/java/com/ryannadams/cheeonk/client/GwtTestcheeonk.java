@@ -16,7 +16,7 @@ public class GwtTestcheeonk extends GWTTestCase
 	@Override
 	public String getModuleName()
 	{
-		return "com.ryannadams.cheeonk.client.cheeonk";
+		return "com.ryannadams.cheeonk.cheeonk";
 	}
 
 	/**

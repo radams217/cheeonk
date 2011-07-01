@@ -7,11 +7,11 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
+import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.server.Connection;
 import com.ryannadams.cheeonk.server.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetEvent;
-import com.ryannadams.cheeonk.shared.event.CheeonkEvent;
 import com.ryannadams.cheeonk.shared.result.GetEventResult;
 
 public class GetEventHandler implements ActionHandler<GetEvent, GetEventResult>
@@ -28,9 +28,9 @@ public class GetEventHandler implements ActionHandler<GetEvent, GetEventResult>
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
-		BlockingDeque<CheeonkEvent> eventDeque = connection.getEventDeque();
+		BlockingDeque<GwtEvent> eventDeque = connection.getEventDeque();
 
-		final ArrayList<CheeonkEvent> events = new ArrayList<CheeonkEvent>();
+		final ArrayList<GwtEvent> events = new ArrayList<GwtEvent>();
 
 		do
 		{

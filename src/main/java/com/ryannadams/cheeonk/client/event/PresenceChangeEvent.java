@@ -4,13 +4,13 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 
-public class AddBuddyEvent extends GwtEvent<BuddyEventHandler>
+public class PresenceChangeEvent extends GwtEvent<BuddyEventHandler>
 {
 	public static final GwtEvent.Type<BuddyEventHandler> TYPE = new GwtEvent.Type<BuddyEventHandler>();
 
 	private IBuddy buddy;
 
-	public AddBuddyEvent(IBuddy buddy)
+	public PresenceChangeEvent(IBuddy buddy)
 	{
 		this.buddy = buddy;
 	}
@@ -29,7 +29,7 @@ public class AddBuddyEvent extends GwtEvent<BuddyEventHandler>
 	@Override
 	protected void dispatch(BuddyEventHandler handler)
 	{
-		handler.onAddBuddy(this);
+		handler.onPresenceChange(this);
 	}
 
 }

@@ -4,25 +4,25 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import com.ryannadams.cheeonk.shared.event.CheeonkEvent;
+import com.google.gwt.event.shared.GwtEvent;
 
 public class GetEventResult implements Result
 {
-	private ArrayList<CheeonkEvent> events;
+	private ArrayList<GwtEvent> events;
 
 	public GetEventResult()
 	{
-		events = new ArrayList<CheeonkEvent>();
+		events = new ArrayList<GwtEvent>();
 	}
 
-	public GetEventResult(ArrayList<CheeonkEvent> events)
+	public GetEventResult(ArrayList<GwtEvent> events)
 	{
 		this.events = events;
 	}
 
-	public ArrayList<CheeonkEvent> getEvents()
+	public ArrayList<GwtEvent> getEvents()
 	{
-		return new ArrayList<CheeonkEvent>(events);
+		return new ArrayList<GwtEvent>(events);
 	}
 
 }
