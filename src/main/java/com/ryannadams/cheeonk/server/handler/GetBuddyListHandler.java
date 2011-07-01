@@ -10,12 +10,13 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 
 import org.jivesoftware.smack.RosterEntry;
 
-import com.ryannadams.cheeonk.server.internal.Connection;
-import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
-import com.ryannadams.cheeonk.server.internal.wrappers.BuddyWrapper;
+import com.ryannadams.cheeonk.server.Connection;
+import com.ryannadams.cheeonk.server.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
+import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.result.GetBuddyResult;
 
 public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddyResult>
@@ -32,11 +33,11 @@ public class GetBuddyListHandler implements ActionHandler<GetBuddyList, GetBuddy
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
-		ArrayList<CheeonkBuddy> buddyList = new ArrayList<CheeonkBuddy>();
+		ArrayList<IBuddy> buddyList = new ArrayList<IBuddy>();
 
 		for (RosterEntry rosterEntry : connection.getRoster().getEntries())
 		{
-			buddyList.add(new BuddyWrapper(rosterEntry).getClientBuddy());
+			buddyList.add(new CheeonkBuddy(new JabberId(rosterEntry.getUser()), rosterEntry.getName()));
 		}
 
 		Logger.getLogger("").log(Level.FINER, "Getting BuddyList for " + key.getUsername());

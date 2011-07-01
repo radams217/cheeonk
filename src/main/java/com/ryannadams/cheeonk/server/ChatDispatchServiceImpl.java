@@ -10,11 +10,8 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 import net.customware.gwt.dispatch.shared.Result;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.ryannadams.cheeonk.server.handler.CreateChatHandler;
 import com.ryannadams.cheeonk.server.handler.GetBuddyListHandler;
-import com.ryannadams.cheeonk.server.handler.GetBuddyPresenceHandler;
-import com.ryannadams.cheeonk.server.handler.GetChatHandler;
-import com.ryannadams.cheeonk.server.handler.GetMessagesHandler;
+import com.ryannadams.cheeonk.server.handler.GetEventHandler;
 import com.ryannadams.cheeonk.server.handler.RegisterHandler;
 import com.ryannadams.cheeonk.server.handler.SendMessageHandler;
 import com.ryannadams.cheeonk.server.handler.SigninHandler;
@@ -27,15 +24,12 @@ public class ChatDispatchServiceImpl extends RemoteServiceServlet implements Sta
 	public ChatDispatchServiceImpl()
 	{
 		InstanceActionHandlerRegistry registry = new DefaultActionHandlerRegistry();
-		registry.addHandler(new CreateChatHandler());
 		registry.addHandler(new GetBuddyListHandler());
-		registry.addHandler(new GetChatHandler());
-		registry.addHandler(new GetMessagesHandler());
 		registry.addHandler(new RegisterHandler());
 		registry.addHandler(new SendMessageHandler());
 		registry.addHandler(new SigninHandler());
 		registry.addHandler(new SignoutHandler());
-		registry.addHandler(new GetBuddyPresenceHandler());
+		registry.addHandler(new GetEventHandler());
 
 		dispatch = new SimpleDispatch(registry);
 	}

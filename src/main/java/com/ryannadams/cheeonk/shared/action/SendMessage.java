@@ -3,15 +3,13 @@ package com.ryannadams.cheeonk.shared.action;
 import net.customware.gwt.dispatch.shared.Action;
 
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
-import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 import com.ryannadams.cheeonk.shared.result.SendMessageResult;
 
 public class SendMessage implements Action<SendMessageResult>
 {
 	private ConnectionKey key;
-	private CheeonkChat chat;
-	private CheeonkMessage message;
+	private IMessage message;
 
 	@Deprecated
 	public SendMessage()
@@ -19,10 +17,9 @@ public class SendMessage implements Action<SendMessageResult>
 
 	}
 
-	public SendMessage(ConnectionKey key, CheeonkChat chat, CheeonkMessage message)
+	public SendMessage(ConnectionKey key, IMessage message)
 	{
 		this.key = key;
-		this.chat = chat;
 		this.message = message;
 	}
 
@@ -31,12 +28,7 @@ public class SendMessage implements Action<SendMessageResult>
 		return key;
 	}
 
-	public CheeonkChat getChat()
-	{
-		return chat;
-	}
-
-	public CheeonkMessage getMessage()
+	public IMessage getMessage()
 	{
 		return message;
 	}

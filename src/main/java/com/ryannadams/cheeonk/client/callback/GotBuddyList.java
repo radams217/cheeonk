@@ -1,7 +1,7 @@
 package com.ryannadams.cheeonk.client.callback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.result.GetBuddyResult;
 
 public abstract class GotBuddyList implements AsyncCallback<GetBuddyResult>
@@ -16,8 +16,8 @@ public abstract class GotBuddyList implements AsyncCallback<GetBuddyResult>
 	@Override
 	public void onSuccess(GetBuddyResult result)
 	{
-		got(result.getBuddyList().toArray(new CheeonkBuddy[result.getBuddyList().size()]));
+		got(result.getBuddyList().toArray(new IBuddy[result.getBuddyList().size()]));
 	}
 
-	public abstract void got(CheeonkBuddy[] buddies);
+	public abstract void got(IBuddy[] buddies);
 }

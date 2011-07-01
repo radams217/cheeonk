@@ -9,8 +9,8 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 
 import org.jivesoftware.smack.XMPPException;
 
-import com.ryannadams.cheeonk.server.internal.Connection;
-import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
+import com.ryannadams.cheeonk.server.Connection;
+import com.ryannadams.cheeonk.server.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.result.RegisterResult;

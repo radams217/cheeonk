@@ -1,6 +1,7 @@
 package com.ryannadams.cheeonk.client.callback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 import com.ryannadams.cheeonk.shared.result.SendMessageResult;
 
 public abstract class SentMessage implements AsyncCallback<SendMessageResult>
@@ -16,8 +17,8 @@ public abstract class SentMessage implements AsyncCallback<SendMessageResult>
 	@Override
 	public void onSuccess(SendMessageResult result)
 	{
-		got(result.isSent());
+		got(result.getMessage());
 	}
 
-	public abstract void got(boolean isSent);
+	public abstract void got(IMessage message);
 }

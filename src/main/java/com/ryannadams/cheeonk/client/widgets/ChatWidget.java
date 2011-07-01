@@ -1,8 +1,5 @@
 package com.ryannadams.cheeonk.client.widgets;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
@@ -13,7 +10,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -21,22 +17,15 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.callback.GotMessages;
 import com.ryannadams.cheeonk.client.callback.SentMessage;
-import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
-import com.ryannadams.cheeonk.client.event.ChatReceivedEvent;
 import com.ryannadams.cheeonk.client.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.client.event.MessageSentEvent;
-import com.ryannadams.cheeonk.client.event.SignedinEvent;
-import com.ryannadams.cheeonk.client.event.SignedoutEvent;
-import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
-import com.ryannadams.cheeonk.client.handler.ChatEventHandler;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.action.GetMessages;
+import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.action.SendMessage;
-import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 
 /**
  * @author radams217
@@ -46,23 +35,22 @@ import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
  *         coming from the server. This widget can be added to a dialog box or
  *         any type of panel.
  */
-public class ChatWidget extends Composite implements MessageEventHandler, ChatEventHandler, AuthenticationEventHandler
+public class ChatWidget extends Composite implements MessageEventHandler
 {
 	private final VerticalPanel cheeonks;
 	private final TextArea messageArea;
 	private final ScrollPanel scrollPanel;
 
-	private Timer timer;
-
 	private final DispatchAsync dispatchAsync;
 
-	public ChatWidget(SimpleEventBus eventBus)
+	private final JabberId participant;
+
+	public ChatWidget(final SimpleEventBus eventBus, JabberId participant)
 	{
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 		eventBus.addHandler(MessageSentEvent.TYPE, this);
-		eventBus.addHandler(ChatCreatedEvent.TYPE, this);
-		eventBus.addHandler(ChatReceivedEvent.TYPE, this);
-		eventBus.addHandler(SignedoutEvent.TYPE, this);
+
+		this.participant = participant;
 
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
@@ -75,23 +63,32 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 
 		messageArea = new TextArea();
 		messageArea.addStyleName("chatWidget-MessageArea");
-		messageArea.addKeyPressHandler(new KeyPressHandler()
+
+		VerticalPanel panel = new VerticalPanel();
+		panel.addStyleName("chatWidget");
+		panel.add(scrollPanel);
+		panel.add(messageArea);
+
+		addKeyPressHandler(new KeyPressHandler()
 		{
 			@Override
 			public void onKeyPress(KeyPressEvent event)
 			{
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
-					addCheeonk("me", messageArea.getText());
+					dispatchAsync.execute(new SendMessage(ConnectionKey.get(), getMessageAreaText()), new SentMessage()
+					{
+						@Override
+						public void got(IMessage message)
+						{
+							eventBus.fireEvent(new MessageSentEvent(message));
+						}
+					});
+
 				}
 			}
 
 		});
-
-		VerticalPanel panel = new VerticalPanel();
-		panel.addStyleName("chatWidget");
-		panel.add(scrollPanel);
-		panel.add(messageArea);
 
 		initWidget(panel);
 	}
@@ -101,9 +98,9 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 		messageArea.addKeyPressHandler(handler);
 	}
 
-	public void addCheeonk(String sender, String message)
+	public void addCheeonk(IMessage message)
 	{
-		cheeonks.add(new Cheeonk(sender, message));
+		cheeonks.add(new Cheeonk(message));
 		scrollPanel.scrollToBottom();
 	}
 
@@ -113,20 +110,10 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 		messageArea.setText("");
 	}
 
-	public CheeonkMessage getMessageAreaText()
+	public IMessage getMessageAreaText()
 	{
-		return new CheeonkMessage(messageArea.getText(), "", "");
-	}
-
-	public void setTimer(Timer timer, int periodMillis)
-	{
-		this.timer = timer;
-		this.timer.scheduleRepeating(periodMillis);
-	}
-
-	public void cancelTimer()
-	{
-		timer.cancel();
+		// TODO fix from
+		return new CheeonkMessage(participant, new JabberId(""), messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler
@@ -134,15 +121,13 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 		private final HTML cheeonk;
 		private final PushButton cheeonkCastButton;
 
-		private final String sender;
-		private final String message;
+		private final IMessage message;
 
-		public Cheeonk(String sender, String message)
+		public Cheeonk(IMessage message)
 		{
-			this.sender = sender;
 			this.message = message;
 
-			cheeonk = new HTML(sender + ": " + message);
+			cheeonk = new HTML(message.getTo() + ": " + message);
 			cheeonkCastButton = new PushButton("C", this);
 
 			HorizontalPanel panel = new HorizontalPanel();
@@ -164,87 +149,14 @@ public class ChatWidget extends Composite implements MessageEventHandler, ChatEv
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		addCheeonk(event.getMessage().getTo(), event.getMessage().getBody());
+		addCheeonk(event.getMessage());
 	}
 
 	@Override
 	public void onMessageSent(MessageSentEvent event)
 	{
-		// TODO Auto-generated method stub
-
+		resetMessageArea();
+		addCheeonk(event.getMessage());
 	}
 
-	@Override
-	public void onChatCreated(ChatCreatedEvent event)
-	{
-		Logger.getLogger("").log(Level.INFO, "Chat Created");
-
-		final CheeonkChat chat = event.getChat();
-
-		addKeyPressHandler(new KeyPressHandler()
-		{
-			@Override
-			public void onKeyPress(KeyPressEvent event)
-			{
-				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
-				{
-					dispatchAsync.execute(new SendMessage(ConnectionKey.get(), chat, getMessageAreaText()), new SentMessage()
-					{
-						@Override
-						public void got(boolean isSent)
-						{
-							if (isSent)
-							{
-								resetMessageArea();
-							}
-						}
-					});
-
-				}
-			}
-
-		});
-
-		setTimer(new Timer()
-		{
-			@Override
-			public void run()
-			{
-				dispatchAsync.execute(new GetMessages(ConnectionKey.get(), chat), new GotMessages()
-				{
-					@Override
-					public void got(CheeonkMessage[] messages)
-					{
-						for (CheeonkMessage message : messages)
-						{
-							addCheeonk(message.getFrom(), message.getBody());
-						}
-
-					}
-				});
-
-			}
-		}, 5000);
-
-	}
-
-	@Deprecated
-	@Override
-	public void onChatReceived(ChatReceivedEvent event)
-	{
-		// TODO I might not need this in here
-	}
-
-	@Deprecated
-	@Override
-	public void onSignedin(SignedinEvent event)
-	{
-		// Not used
-	}
-
-	@Override
-	public void onSignedout(SignedoutEvent event)
-	{
-		cancelTimer();
-	}
 }

@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.server.internal;
+package com.ryannadams.cheeonk.server;
 
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 

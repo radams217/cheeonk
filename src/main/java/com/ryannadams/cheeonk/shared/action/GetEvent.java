@@ -3,19 +3,19 @@ package com.ryannadams.cheeonk.shared.action;
 import net.customware.gwt.dispatch.shared.Action;
 
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.result.GetChatResult;
+import com.ryannadams.cheeonk.shared.result.GetEventResult;
 
-public class GetChat implements Action<GetChatResult>
+public class GetEvent implements Action<GetEventResult>
 {
 	private ConnectionKey key;
 
 	@Deprecated
-	public GetChat()
+	public GetEvent()
 	{
 
 	}
 
-	public GetChat(ConnectionKey key)
+	public GetEvent(ConnectionKey key)
 	{
 		this.key = key;
 	}

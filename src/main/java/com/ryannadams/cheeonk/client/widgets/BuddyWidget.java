@@ -8,37 +8,26 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.callback.GotBuddyPresence;
-import com.ryannadams.cheeonk.client.event.SignedinEvent;
-import com.ryannadams.cheeonk.client.event.SignedoutEvent;
-import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
-import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.action.GetBuddyPresence;
-import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 
-public class BuddyWidget extends Composite implements AuthenticationEventHandler, MouseOverHandler
+public class BuddyWidget extends Composite implements MouseOverHandler
 {
-	private final CheeonkBuddy buddy;
+	private final IBuddy buddy;
 	private final PushButton button;
 
 	private final DispatchAsync dispatchAsync;
 
-	private final Timer timer;
-
 	private final SimpleEventBus eventBus;
 
-	public BuddyWidget(final SimpleEventBus eventBus, final CheeonkBuddy buddy)
+	public BuddyWidget(final SimpleEventBus eventBus, final IBuddy buddy)
 	{
 		this.eventBus = eventBus;
 		this.buddy = buddy;
-
-		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 
 		this.button = new PushButton(buddy.getName());
 		this.button.setStyleName("buddy");
@@ -46,32 +35,6 @@ public class BuddyWidget extends Composite implements AuthenticationEventHandler
 		this.button.addMouseOverHandler(this);
 
 		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
-
-		this.timer = new Timer()
-		{
-			@Override
-			public void run()
-			{
-				dispatchAsync.execute(new GetBuddyPresence(ConnectionKey.get(), buddy.getJID()), new GotBuddyPresence()
-				{
-					@Override
-					public void got(boolean isAvailable)
-					{
-						if (isAvailable)
-						{
-							setAvailable();
-						}
-						else
-						{
-							setUnavailable();
-						}
-					}
-				});
-
-			}
-		};
-
-		this.timer.scheduleRepeating(8000);
 
 		VerticalPanel panel = new VerticalPanel();
 		panel.add(button);
@@ -92,19 +55,6 @@ public class BuddyWidget extends Composite implements AuthenticationEventHandler
 	public void addClickHandler(ClickHandler clickHandler)
 	{
 		button.addClickHandler(clickHandler);
-	}
-
-	@Deprecated
-	@Override
-	public void onSignedin(SignedinEvent event)
-	{
-
-	}
-
-	@Override
-	public void onSignedout(SignedoutEvent event)
-	{
-		timer.cancel();
 	}
 
 	@Override

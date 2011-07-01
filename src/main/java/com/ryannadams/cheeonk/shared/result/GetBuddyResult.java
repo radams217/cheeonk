@@ -5,17 +5,18 @@ import java.util.ArrayList;
 import net.customware.gwt.dispatch.shared.Result;
 
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 
 public class GetBuddyResult implements Result
 {
-	private ArrayList<CheeonkBuddy> buddies;
+	private ArrayList<IBuddy> buddies;
 
 	public GetBuddyResult()
 	{
-		this.buddies = new ArrayList<CheeonkBuddy>();
+		this.buddies = new ArrayList<IBuddy>();
 	}
 
-	public GetBuddyResult(ArrayList<CheeonkBuddy> buddies)
+	public GetBuddyResult(ArrayList<IBuddy> buddies)
 	{
 		this.buddies = buddies;
 	}
@@ -25,8 +26,8 @@ public class GetBuddyResult implements Result
 		buddies.add(buddy);
 	}
 
-	public ArrayList<CheeonkBuddy> getBuddyList()
+	public ArrayList<IBuddy> getBuddyList()
 	{
-		return new ArrayList<CheeonkBuddy>(buddies);
+		return new ArrayList<IBuddy>(buddies);
 	}
 }

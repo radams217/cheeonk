@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.server.internal;
+package com.ryannadams.cheeonk.server;
 
 import java.util.HashMap;
 import java.util.Map;

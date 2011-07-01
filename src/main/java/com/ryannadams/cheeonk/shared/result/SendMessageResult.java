@@ -2,9 +2,11 @@ package com.ryannadams.cheeonk.shared.result;
 
 import net.customware.gwt.dispatch.shared.Result;
 
+import com.ryannadams.cheeonk.shared.message.IMessage;
+
 public class SendMessageResult implements Result
 {
-	private boolean isSent;
+	private IMessage message;
 
 	@Deprecated
 	public SendMessageResult()
@@ -12,14 +14,14 @@ public class SendMessageResult implements Result
 
 	}
 
-	public SendMessageResult(boolean isSent)
+	public SendMessageResult(IMessage message)
 	{
-		this.isSent = isSent;
+		this.message = message;
 	}
 
-	public boolean isSent()
+	public IMessage getMessage()
 	{
-		return isSent;
+		return message;
 	}
 
 }

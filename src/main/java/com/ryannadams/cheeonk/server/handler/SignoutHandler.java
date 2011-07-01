@@ -7,8 +7,8 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
-import com.ryannadams.cheeonk.server.internal.Connection;
-import com.ryannadams.cheeonk.server.internal.ConnectionDriver;
+import com.ryannadams.cheeonk.server.Connection;
+import com.ryannadams.cheeonk.server.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.Signout;
 import com.ryannadams.cheeonk.shared.result.SignoutResult;

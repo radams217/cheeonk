@@ -1,5 +1,7 @@
 package com.ryannadams.cheeonk.shared.message;
 
+import com.ryannadams.cheeonk.shared.JabberId;
+
 /**
  * @author radams217
  *         <p>
@@ -11,9 +13,9 @@ package com.ryannadams.cheeonk.shared.message;
  */
 public class CheeonkMessage implements IMessage
 {
+	protected JabberId to;
+	protected JabberId from;
 	protected String body;
-	protected String to;
-	protected String from;
 
 	@Deprecated
 	public CheeonkMessage()
@@ -26,29 +28,29 @@ public class CheeonkMessage implements IMessage
 	 * @param to
 	 * @param from
 	 */
-	public CheeonkMessage(String body, String to, String from)
+	public CheeonkMessage(JabberId to, JabberId from, String body)
 	{
-		this.body = body;
 		this.to = to;
 		this.from = from;
+		this.body = body;
+	}
+
+	@Override
+	public JabberId getTo()
+	{
+		return to;
+	}
+
+	@Override
+	public JabberId getFrom()
+	{
+		return from;
 	}
 
 	@Override
 	public String getBody()
 	{
 		return body;
-	}
-
-	@Override
-	public String getTo()
-	{
-		return to;
-	}
-
-	@Override
-	public String getFrom()
-	{
-		return from;
 	}
 
 }

@@ -14,26 +14,25 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.ryannadams.cheeonk.client.callback.GotChat;
+import com.ryannadams.cheeonk.client.callback.GotEvent;
 import com.ryannadams.cheeonk.client.callback.Registered;
 import com.ryannadams.cheeonk.client.callback.Signedin;
 import com.ryannadams.cheeonk.client.callback.Signedout;
-import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
+import com.ryannadams.cheeonk.client.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.BuddyListWidget;
-import com.ryannadams.cheeonk.client.widgets.ChatWidgetDialog;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.action.GetChat;
+import com.ryannadams.cheeonk.shared.action.GetEvent;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.action.Signin;
 import com.ryannadams.cheeonk.shared.action.Signout;
-import com.ryannadams.cheeonk.shared.chat.CheeonkChat;
+import com.ryannadams.cheeonk.shared.event.CheeonkEvent;
+import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent2;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -52,7 +51,7 @@ public class cheeonk implements EntryPoint
 	private final Logger rootLogger;
 	private final DispatchAsync dispatchAsync;
 
-	private Timer pollChats;
+	private Timer chatTimer;
 
 	public cheeonk()
 	{
@@ -87,6 +86,15 @@ public class cheeonk implements EntryPoint
 			}
 
 		};
+
+		chatTimer = new Timer()
+		{
+			@Override
+			public void run()
+			{
+				getEvent();
+			}
+		};
 	}
 
 	@Override
@@ -111,8 +119,7 @@ public class cheeonk implements EntryPoint
 							{
 								ConnectionKey.get().setConnectionId(connectionId);
 
-								pollChats = getChatTimer();
-								pollChats.scheduleRepeating(POLLING_INTERVAL);
+								getEvent();
 
 								eventBus.fireEvent(new SignedinEvent());
 							}
@@ -134,7 +141,6 @@ public class cheeonk implements EntryPoint
 					{
 						if (isSignedout)
 						{
-							pollChats.cancel();
 							eventBus.fireEvent(new SignedoutEvent());
 							ConnectionKey.get().reset();
 						}
@@ -149,41 +155,28 @@ public class cheeonk implements EntryPoint
 		RootPanel.get("tab").add(new Image(ImageResources.INSTANCE.getTab()));
 		RootPanel.get("bannerSignin").add(authenticationWidget);
 		RootPanel.get("buddyListContainer").add(buddyList);
-
-		DockPanel panel;
-
 	}
 
-	public Timer getChatTimer()
+	public void getEvent()
 	{
-		return new Timer()
+		rootLogger.log(Level.FINER, "Waiting for incoming events.");
+
+		dispatchAsync.execute(new GetEvent(ConnectionKey.get()), new GotEvent()
 		{
 			@Override
-			public void run()
+			public void got(CheeonkEvent[] events)
 			{
-				rootLogger.log(Level.FINER, "Polling for Incoming Chats");
-
-				dispatchAsync.execute(new GetChat(ConnectionKey.get()), new GotChat()
+				for (CheeonkEvent event : events)
 				{
-					@Override
-					public void got(CheeonkChat[] chats)
+					// TODO change this
+					if (event instanceof MessageReceivedEvent2)
 					{
-						for (final CheeonkChat chat : chats)
-						{
-							final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus);
-							chatWidget.setText(chat.getParticipant());
-
-							eventBus.fireEvent(new ChatCreatedEvent(chat));
-
-							chatWidget.show();
-						}
-
+						eventBus.fireEvent(new MessageReceivedEvent(((MessageReceivedEvent2) event).getMessage()));
 					}
 
-				});
-
+				}
 			}
-		};
-	}
 
+		});
+	}
 }

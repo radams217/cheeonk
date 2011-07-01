@@ -2,20 +2,20 @@ package com.ryannadams.cheeonk.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
-import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 
 public class MessageSentEvent extends GwtEvent<MessageEventHandler>
 {
 	public static final GwtEvent.Type<MessageEventHandler> TYPE = new GwtEvent.Type<MessageEventHandler>();
 
-	private final CheeonkMessage message;
+	private final IMessage message;
 
-	public MessageSentEvent(CheeonkMessage message)
+	public MessageSentEvent(IMessage message)
 	{
 		this.message = message;
 	}
 
-	public CheeonkMessage getMessage()
+	public IMessage getMessage()
 	{
 		return message;
 	}

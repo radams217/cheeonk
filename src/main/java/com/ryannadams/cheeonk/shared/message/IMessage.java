@@ -1,6 +1,7 @@
 package com.ryannadams.cheeonk.shared.message;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.ryannadams.cheeonk.shared.JabberId;
 
 /**
  * @author radams217
@@ -12,17 +13,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public interface IMessage extends IsSerializable
 {
 	/**
-	 * @return the body of the message.
-	 */
-	String getBody();
-
-	/**
 	 * @return the user to receive the message.
 	 */
-	String getTo();
+	JabberId getTo();
 
 	/**
 	 * @return the user who sent the message
 	 */
-	String getFrom();
+	JabberId getFrom();
+
+	/**
+	 * @return the body of the message.
+	 */
+	String getBody();
 }
