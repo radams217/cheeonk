@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.GotBuddyList;
 import com.ryannadams.cheeonk.client.event.AddBuddyEvent;
-import com.ryannadams.cheeonk.client.event.PresenceChangeEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
@@ -29,6 +28,7 @@ import com.ryannadams.cheeonk.shared.JabberId;
 import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
 public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
 {
