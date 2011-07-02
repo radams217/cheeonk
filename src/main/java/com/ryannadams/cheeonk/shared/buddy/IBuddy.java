@@ -22,6 +22,17 @@ public interface IBuddy extends IsSerializable
 	String getName();
 
 	/**
+	 * @return the current presence/status of the user
+	 */
+	Presence getPresence();
+
+	/**
+	 * @param presence
+	 *            sets the serializable shared presence object
+	 */
+	void setPresence(Presence presence);
+
+	/**
 	 * @return true/false depending on if the user is available on the server.
 	 */
 	boolean isAvailable();

@@ -81,7 +81,8 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 	@Override
 	public void presenceChanged(Presence presence)
 	{
-		IBuddy buddy = new CheeonkBuddy();
+		IBuddy buddy = new CheeonkBuddy(new JabberId(presence.getFrom()));
+		// buddy.setPresence(presence);
 
 		eventDeque.add(new PresenceChangeEvent(buddy));
 	}

@@ -12,17 +12,18 @@ public class CheeonkBuddy extends AbstractBuddy
 
 	}
 
+	public CheeonkBuddy(JabberId jID)
+	{
+		this.jID = jID;
+		this.name = "";
+		this.presence = new Presence();
+	}
+
 	public CheeonkBuddy(JabberId jID, String name)
 	{
 		this.jID = jID;
 		this.name = name;
 		this.presence = new Presence();
-	}
-
-	public CheeonkBuddy(JabberId jID, String name, boolean isAvailable)
-	{
-		this.jID = jID;
-		this.name = name;
 	}
 
 	@Override
@@ -40,6 +41,18 @@ public class CheeonkBuddy extends AbstractBuddy
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	@Override
+	public Presence getPresence()
+	{
+		return presence;
+	}
+
+	@Override
+	public void setPresence(Presence presence)
+	{
+		this.presence = presence;
 	}
 
 	@Override

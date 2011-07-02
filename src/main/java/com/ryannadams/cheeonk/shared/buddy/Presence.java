@@ -4,21 +4,39 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Presence implements IsSerializable
 {
+	public enum Type
+	{
+		AVAILABLE, UNAVAILABLE, SUBSCRIBE, SUBSCRIBED, UNSUBSCRIBE, UNSUBSCRIBED, ERROR;
+	}
+
 	public enum Mode
 	{
 		AVAILABLE, AWAY, CHAT, DND, XA;
 	}
 
-	public enum Type
-	{
-
-	}
-
+	private Type type;
 	private Mode mode;
 
 	public Presence()
 	{
-		this.mode = Mode.AVAILABLE;
+		this.type = Type.UNAVAILABLE;
+		this.mode = null;
+	}
+
+	public Presence(Type type, Mode mode)
+	{
+		this.type = type;
+		this.mode = mode;
+	}
+
+	public Type getType()
+	{
+		return type;
+	}
+
+	public void setType(Type type)
+	{
+		this.type = type;
 	}
 
 	public void setMode(Mode mode)
@@ -29,6 +47,16 @@ public class Presence implements IsSerializable
 	public Mode getMode()
 	{
 		return mode;
+	}
+
+	public boolean isAvailable()
+	{
+		return Type.AVAILABLE.equals(type);
+	}
+
+	public boolean isAway()
+	{
+		return Mode.AWAY.equals(mode);
 	}
 
 }

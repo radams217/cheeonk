@@ -31,6 +31,7 @@ public class BuddyWidget extends Composite implements MouseOverHandler, BuddyEve
 	public BuddyWidget(final SimpleEventBus eventBus, final IBuddy buddy)
 	{
 		this.eventBus = eventBus;
+		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
 		this.buddy = buddy;
 
