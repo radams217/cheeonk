@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.RosterEntry;
@@ -26,7 +27,7 @@ import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 
-public class Connection extends XMPPConnection implements RosterListener, MessageListener
+public class Connection extends XMPPConnection implements RosterListener, ChatManagerListener, MessageListener
 {
 	private final BlockingDeque<GwtEvent> eventDeque;
 
@@ -43,11 +44,13 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 
 	public void addListeners()
 	{
+		getChatManager().addChatListener(this);
 		getRoster().addRosterListener(this);
 	}
 
 	public void removeListeners()
 	{
+		getChatManager().removeChatListener(this);
 		getRoster().removeRosterListener(this);
 	}
 
@@ -56,13 +59,6 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 		for (RosterEntry entry : getRoster().getEntries())
 		{
 			IBuddy buddy = new CheeonkBuddy(new JabberId(entry.getUser()), entry.getName());
-
-			// Presence presence =
-			// getRoster().getPresence(buddy.getJabberId().toString());
-
-			// buddy.setPresence(getPresence(presence));
-			// buddy.setStatus(presence.getStatus());
-
 			eventDeque.add(new AddBuddyEvent(buddy));
 		}
 	}
@@ -167,6 +163,13 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 			case error:
 				break;
 		}
+
+	}
+
+	@Override
+	public void chatCreated(Chat chat, boolean isLocal)
+	{
+		chat.addMessageListener(this);
 
 	}
 }
