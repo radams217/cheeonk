@@ -35,7 +35,7 @@ public class CheeonkBuddy extends AbstractBuddy
 	}
 
 	@Override
-	public JabberId getJID()
+	public JabberId getJabberId()
 	{
 		return jID;
 	}

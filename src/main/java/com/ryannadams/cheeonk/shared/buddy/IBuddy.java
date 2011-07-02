@@ -15,7 +15,7 @@ public interface IBuddy extends IsSerializable
 	/**
 	 * @return the unique Jabber ID user@domain.com/resource
 	 */
-	JabberId getJID();
+	JabberId getJabberId();
 
 	/**
 	 * @return the name of the user.

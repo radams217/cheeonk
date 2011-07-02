@@ -17,16 +17,16 @@ public abstract class AbstractBuddy implements IBuddy
 
 		IBuddy other = (IBuddy) obj;
 
-		if (getJID() == null)
+		if (getJabberId() == null)
 		{
-			if (other.getJID() != null)
+			if (other.getJabberId() != null)
 			{
 				return false;
 			}
 		}
 		else
 		{
-			if (!getJID().equals(other.getJID()))
+			if (!getJabberId().equals(other.getJabberId()))
 			{
 				return false;
 			}
@@ -40,7 +40,7 @@ public abstract class AbstractBuddy implements IBuddy
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((getJID() == null) ? 0 : getJID().hashCode());
+		result = prime * result + ((getJabberId() == null) ? 0 : getJabberId().hashCode());
 		return result;
 	}
 

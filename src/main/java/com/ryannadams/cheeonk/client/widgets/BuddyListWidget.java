@@ -173,7 +173,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 			public void onClick(ClickEvent event)
 			{
 				final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus, buddy);
-				chatWidget.setText(buddy.getJID().getJabberId());
+				chatWidget.setText(buddy.getJabberId().toString());
 				chatWidget.show();
 			}
 

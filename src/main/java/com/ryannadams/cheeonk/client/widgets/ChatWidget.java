@@ -112,7 +112,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	public IMessage getMessage()
 	{
-		return new CheeonkMessage(participant.getJID(), null, messageArea.getText());
+		return new CheeonkMessage(participant.getJabberId(), null, messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler
@@ -126,7 +126,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		{
 			this.message = message;
 
-			cheeonk = new HTML(message.getTo().getJabberId() + ": " + message.getBody());
+			cheeonk = new HTML(message.getFrom().toString() + ": " + message.getBody());
 			cheeonkCastButton = new PushButton("C", this);
 
 			HorizontalPanel panel = new HorizontalPanel();
@@ -148,15 +148,17 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		addCheeonk(event.getMessage());
+		if (event.getMessage().getFrom().toString().equals(participant.getJabberId().toString() + "/Smack"))
+		{
+			addCheeonk(event.getMessage());
+		}
 	}
 
 	@Override
 	public void onMessageSent(MessageSentEvent event)
 	{
-
 		resetMessageArea();
 		addCheeonk(event.getMessage());
-	}
 
+	}
 }

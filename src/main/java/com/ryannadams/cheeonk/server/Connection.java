@@ -86,7 +86,7 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	{
 		try
 		{
-			getChatManager().createChat(message.getTo().getJabberId(), this).sendMessage(message.getBody());
+			getChatManager().createChat(message.getTo().toString(), this).sendMessage(message.getBody());
 		}
 		catch (XMPPException e)
 		{

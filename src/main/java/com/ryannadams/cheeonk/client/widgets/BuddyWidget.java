@@ -86,7 +86,7 @@ public class BuddyWidget extends Composite implements MouseOverHandler
 			VerticalPanel panel = new VerticalPanel();
 			panel.setStyleName("signinPanel");
 			panel.add(new HTML(buddy.getName()));
-			panel.add(new HTML(buddy.getJID().getJabberId()));
+			panel.add(new HTML(buddy.getJabberId().toString()));
 
 			add(panel);
 		}
