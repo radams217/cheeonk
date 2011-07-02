@@ -87,6 +87,29 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 		eventDeque.add(new PresenceChangeEvent(buddy));
 	}
 
+	// public static Presence getPresence(Presence presence)
+	// {
+	// Presence cheeonkPresence = new Presence();
+	//
+	// switch (presence.getType())
+	// {
+	// case available:
+	// cheeonkPresence.setType(Presence.Type.AVAILABLE);
+	// break;
+	//
+	// }
+	//
+	// switch (presence.getMode())
+	// {
+	// case available:
+	// cheeonkPresence.setMode(Presence.Mode.AVAILABLE);
+	// break;
+	//
+	// }
+	//
+	// return cheeonkPresence;
+	// }
+
 	public void sendMessage(IMessage message)
 	{
 		try

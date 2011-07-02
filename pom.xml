@@ -69,7 +69,7 @@
 	<build>
 		<!-- Generate compiled stuff in the folder used for developing mode -->
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
-        <finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 
 			<!-- GWT Maven Plugin -->
@@ -109,6 +109,8 @@
 					</execution>
 				</executions>
 				<configuration>
+					<testTimeOut>600</testTimeOut>
+					<mode>htmlunit</mode>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
 			</plugin>

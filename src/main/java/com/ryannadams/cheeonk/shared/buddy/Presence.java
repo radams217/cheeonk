@@ -59,27 +59,4 @@ public class Presence implements IsSerializable
 		return Mode.AWAY.equals(mode);
 	}
 
-	public static Presence getPresence(org.jivesoftware.smack.packet.Presence presence)
-	{
-		Presence cheeonkPresence = new Presence();
-
-		switch (presence.getType())
-		{
-			case available:
-				cheeonkPresence.setType(Presence.Type.AVAILABLE);
-				break;
-
-		}
-
-		switch (presence.getMode())
-		{
-			case available:
-				cheeonkPresence.setMode(Presence.Mode.AVAILABLE);
-				break;
-
-		}
-
-		return new Presence();
-	}
-
 }

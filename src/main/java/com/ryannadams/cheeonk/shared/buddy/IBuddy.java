@@ -33,6 +33,16 @@ public interface IBuddy extends IsSerializable
 	void setPresence(Presence presence);
 
 	/**
+	 * @return buddy status
+	 */
+	String getStatus();
+
+	/**
+	 * @param Status
+	 */
+	void setStatus(String Status);
+
+	/**
 	 * @return true/false depending on if the user is available on the server.
 	 */
 	boolean isAvailable();
