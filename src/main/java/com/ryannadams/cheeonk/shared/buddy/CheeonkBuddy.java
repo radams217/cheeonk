@@ -71,7 +71,7 @@ public class CheeonkBuddy extends AbstractBuddy
 	@Override
 	public boolean isAvailable()
 	{
-		return SharedPresence.Mode.AVAILABLE.equals(presence.getMode());
+		return SharedPresence.Type.AVAILABLE.equals(presence.getType());
 	}
 
 	@Override

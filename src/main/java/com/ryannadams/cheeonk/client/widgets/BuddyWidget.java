@@ -44,8 +44,10 @@ public class BuddyWidget extends Composite implements MouseOverHandler, BuddyEve
 
 		VerticalPanel panel = new VerticalPanel();
 		panel.add(button);
-		panel.add(new HTML("[Status]"));
+		panel.add(new HTML(this.buddy.getStatus()));
 		initWidget(panel);
+
+		setUnavailable();
 	}
 
 	private void setUnavailable()
@@ -116,7 +118,8 @@ public class BuddyWidget extends Composite implements MouseOverHandler, BuddyEve
 	@Override
 	public void onPresenceChange(PresenceChangeEvent event)
 	{
-		if (!buddy.equals(event.getBuddy()))
+		// This is a hack
+		if (!((buddy.getJabberId().toString() + "/Smack").equals(event.getBuddy().getJabberId().toString())))
 		{
 			return;
 		}

@@ -57,10 +57,11 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 		{
 			IBuddy buddy = new CheeonkBuddy(new JabberId(entry.getUser()), entry.getName());
 
-			Presence presence = getRoster().getPresence(buddy.getJabberId().toString());
+			// Presence presence =
+			// getRoster().getPresence(buddy.getJabberId().toString());
 
-			buddy.setPresence(getPresence(presence));
-			buddy.setStatus(presence.getStatus());
+			// buddy.setPresence(getPresence(presence));
+			// buddy.setStatus(presence.getStatus());
 
 			eventDeque.add(new AddBuddyEvent(buddy));
 		}
@@ -110,24 +111,24 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 				break;
 		}
 
-		switch (presence.getMode())
-		{
-			case available:
-				sharedPresence.setMode(SharedPresence.Mode.AVAILABLE);
-				break;
-			case away:
-				sharedPresence.setMode(SharedPresence.Mode.AWAY);
-				break;
-			case chat:
-				sharedPresence.setMode(SharedPresence.Mode.CHAT);
-				break;
-			case dnd:
-				sharedPresence.setMode(SharedPresence.Mode.DND);
-				break;
-			case xa:
-				sharedPresence.setMode(SharedPresence.Mode.XA);
-				break;
-		}
+		// switch (presence.getMode())
+		// {
+		// case available:
+		// sharedPresence.setMode(SharedPresence.Mode.AVAILABLE);
+		// break;
+		// case away:
+		// sharedPresence.setMode(SharedPresence.Mode.AWAY);
+		// break;
+		// case chat:
+		// sharedPresence.setMode(SharedPresence.Mode.CHAT);
+		// break;
+		// case dnd:
+		// sharedPresence.setMode(SharedPresence.Mode.DND);
+		// break;
+		// case xa:
+		// sharedPresence.setMode(SharedPresence.Mode.XA);
+		// break;
+		// }
 
 		return sharedPresence;
 	}
