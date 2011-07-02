@@ -38,6 +38,8 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 			// For now accept all subscription requests
 			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);
 
+			connection.processRoster();
+
 			connection.addListeners();
 		}
 		catch (XMPPException e)

@@ -13,9 +13,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
+import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
+import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
-public class BuddyWidget extends Composite implements MouseOverHandler
+public class BuddyWidget extends Composite implements MouseOverHandler, BuddyEventHandler
 {
 	private final IBuddy buddy;
 	private final PushButton button;
@@ -27,6 +31,7 @@ public class BuddyWidget extends Composite implements MouseOverHandler
 	public BuddyWidget(final SimpleEventBus eventBus, final IBuddy buddy)
 	{
 		this.eventBus = eventBus;
+
 		this.buddy = buddy;
 
 		this.button = new PushButton(buddy.getName());
@@ -91,6 +96,38 @@ public class BuddyWidget extends Composite implements MouseOverHandler
 			add(panel);
 		}
 
+	}
+
+	@Override
+	public void onAddBuddy(AddBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRemoveBuddy(RemoveBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPresenceChange(PresenceChangeEvent event)
+	{
+		if (!buddy.equals(event.getBuddy()))
+		{
+			return;
+		}
+
+		if (event.getBuddy().isAvailable())
+		{
+			setAvailable();
+		}
+		else
+		{
+			setUnavailable();
+		}
 	}
 
 }

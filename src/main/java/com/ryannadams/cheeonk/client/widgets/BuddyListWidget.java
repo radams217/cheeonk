@@ -1,8 +1,5 @@
 package com.ryannadams.cheeonk.client.widgets;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
@@ -16,18 +13,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.callback.GotBuddyList;
-import com.ryannadams.cheeonk.client.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
-import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.JabberId;
-import com.ryannadams.cheeonk.shared.action.GetBuddyList;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
+import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
 public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
@@ -138,19 +132,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	public void onSignedin(SignedinEvent event)
 	{
 		panel.add(addButton);
-
-		dispatchAsync.execute(new GetBuddyList(ConnectionKey.get()), new GotBuddyList()
-		{
-			@Override
-			public void got(IBuddy[] buddies)
-			{
-				for (final IBuddy buddy : buddies)
-				{
-					eventBus.fireEvent(new AddBuddyEvent(buddy));
-				}
-
-			}
-		});
 	}
 
 	@Override
@@ -162,9 +143,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	@Override
 	public void onAddBuddy(AddBuddyEvent event)
 	{
-		// Need to add Buddy Information
-		Logger.getLogger("").log(Level.INFO, "Added Buddy");
-
 		final IBuddy buddy = event.getBuddy();
 
 		addBuddy(buddy, new ClickHandler()

@@ -7,9 +7,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  *         Defines an event that occurs on the server side that must be
  *         serialized and sent over the wire to the client.
- * 
  */
-public interface IEvent extends IsSerializable
+public interface SharedEvent extends IsSerializable
 {
 
 }

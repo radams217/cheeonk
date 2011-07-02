@@ -1,16 +1,10 @@
 package com.ryannadams.cheeonk.shared.buddy;
 
-import com.ryannadams.cheeonk.shared.JabberId;
-import com.ryannadams.cheeonk.shared.Presence;
-
 public class CheeonkBuddy extends AbstractBuddy
 {
 	private JabberId jID;
 	private String name;
 	private Presence presence;
-
-	private boolean isAvailable;
-	private boolean isAway;
 
 	@Deprecated
 	public CheeonkBuddy()
@@ -22,16 +16,13 @@ public class CheeonkBuddy extends AbstractBuddy
 	{
 		this.jID = jID;
 		this.name = name;
-		this.isAvailable = false;
-		this.isAway = false;
+		this.presence = new Presence();
 	}
 
 	public CheeonkBuddy(JabberId jID, String name, boolean isAvailable)
 	{
 		this.jID = jID;
 		this.name = name;
-		this.isAvailable = isAvailable;
-		this.isAway = false;
 	}
 
 	@Override
@@ -54,23 +45,13 @@ public class CheeonkBuddy extends AbstractBuddy
 	@Override
 	public boolean isAvailable()
 	{
-		return isAvailable;
-	}
-
-	public void setAvailable(boolean isAvailable)
-	{
-		this.isAvailable = isAvailable;
+		return Presence.Mode.AVAILABLE.equals(presence.getMode());
 	}
 
 	@Override
 	public boolean isAway()
 	{
-		return isAway;
-	}
-
-	public void setAway(boolean isAway)
-	{
-		this.isAway = isAway;
+		return Presence.Mode.AWAY.equals(presence.getMode());
 	}
 
 }

@@ -37,8 +37,6 @@ import com.ryannadams.cheeonk.shared.action.Signout;
  */
 public class cheeonk implements EntryPoint
 {
-	private final int POLLING_INTERVAL = 5000;
-
 	private final SimpleEventBus eventBus;
 	private final Messages messages;
 
@@ -139,8 +137,8 @@ public class cheeonk implements EntryPoint
 					{
 						if (isSignedout)
 						{
-							eventBus.fireEvent(new SignedoutEvent());
 							ConnectionKey.get().reset();
+							eventBus.fireEvent(new SignedoutEvent());
 						}
 
 					}

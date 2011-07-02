@@ -23,6 +23,7 @@ import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.SendMessage;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
 import com.ryannadams.cheeonk.shared.message.IMessage;
@@ -48,7 +49,6 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	public ChatWidget(final SimpleEventBus eventBus, final IBuddy participant)
 	{
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
-		eventBus.addHandler(MessageSentEvent.TYPE, this);
 
 		this.participant = participant;
 
@@ -81,6 +81,9 @@ public class ChatWidget extends Composite implements MessageEventHandler
 						@Override
 						public void got(IMessage message)
 						{
+							resetMessageArea();
+							addCheeonk(message);
+
 							eventBus.fireEvent(new MessageSentEvent(message));
 						}
 					});
@@ -112,7 +115,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	public IMessage getMessage()
 	{
-		return new CheeonkMessage(participant.getJabberId(), null, messageArea.getText());
+		return new CheeonkMessage(participant.getJabberId(), new JabberId(ConnectionKey.get().getUsername()), messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler
@@ -148,17 +151,18 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		if (event.getMessage().getFrom().toString().equals(participant.getJabberId().toString() + "/Smack"))
+		// Check where to route the message
+		if (!event.getMessage().getFrom().toString().equals(participant.getJabberId().toString() + "/Smack"))
 		{
-			addCheeonk(event.getMessage());
+			return;
 		}
+
+		addCheeonk(event.getMessage());
 	}
 
 	@Override
 	public void onMessageSent(MessageSentEvent event)
 	{
-		resetMessageArea();
-		addCheeonk(event.getMessage());
 
 	}
 }

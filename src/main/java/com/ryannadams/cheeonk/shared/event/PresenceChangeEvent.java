@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 
-public class PresenceChangeEvent extends GwtEvent<BuddyEventHandler> implements IEvent
+public class PresenceChangeEvent extends GwtEvent<BuddyEventHandler> implements SharedEvent
 {
 	public static final GwtEvent.Type<BuddyEventHandler> TYPE = new GwtEvent.Type<BuddyEventHandler>();
 

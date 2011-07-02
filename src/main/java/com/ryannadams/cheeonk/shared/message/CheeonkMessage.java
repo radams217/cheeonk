@@ -1,6 +1,6 @@
 package com.ryannadams.cheeonk.shared.message;
 
-import com.ryannadams.cheeonk.shared.JabberId;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 
 /**
  * @author radams217

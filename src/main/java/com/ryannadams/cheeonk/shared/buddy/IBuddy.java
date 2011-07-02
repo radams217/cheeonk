@@ -1,7 +1,6 @@
 package com.ryannadams.cheeonk.shared.buddy;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.ryannadams.cheeonk.shared.JabberId;
 
 /**
  * @author radams217
