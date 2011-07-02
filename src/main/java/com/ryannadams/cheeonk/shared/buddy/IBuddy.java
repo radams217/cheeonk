@@ -24,13 +24,13 @@ public interface IBuddy extends IsSerializable
 	/**
 	 * @return the current presence/status of the user
 	 */
-	Presence getPresence();
+	SharedPresence getPresence();
 
 	/**
 	 * @param presence
 	 *            sets the serializable shared presence object
 	 */
-	void setPresence(Presence presence);
+	void setPresence(SharedPresence presence);
 
 	/**
 	 * @return buddy status

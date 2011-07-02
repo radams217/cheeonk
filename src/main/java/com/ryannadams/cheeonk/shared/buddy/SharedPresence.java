@@ -2,7 +2,7 @@ package com.ryannadams.cheeonk.shared.buddy;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Presence implements IsSerializable
+public class SharedPresence implements IsSerializable
 {
 	public enum Type
 	{
@@ -17,13 +17,13 @@ public class Presence implements IsSerializable
 	private Type type;
 	private Mode mode;
 
-	public Presence()
+	public SharedPresence()
 	{
 		this.type = Type.UNAVAILABLE;
 		this.mode = null;
 	}
 
-	public Presence(Type type, Mode mode)
+	public SharedPresence(Type type, Mode mode)
 	{
 		this.type = type;
 		this.mode = mode;

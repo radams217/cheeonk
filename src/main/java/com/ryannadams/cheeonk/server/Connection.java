@@ -19,6 +19,7 @@ import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
+import com.ryannadams.cheeonk.shared.buddy.SharedPresence;
 import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
@@ -54,7 +55,14 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 	{
 		for (RosterEntry entry : getRoster().getEntries())
 		{
-			eventDeque.add(new AddBuddyEvent(new CheeonkBuddy(new JabberId(entry.getUser()), entry.getName())));
+			IBuddy buddy = new CheeonkBuddy(new JabberId(entry.getUser()), entry.getName());
+
+			Presence presence = getRoster().getPresence(buddy.getJabberId().toString());
+
+			buddy.setPresence(getPresence(presence));
+			buddy.setStatus(presence.getStatus());
+
+			eventDeque.add(new AddBuddyEvent(buddy));
 		}
 	}
 
@@ -82,33 +90,47 @@ public class Connection extends XMPPConnection implements RosterListener, Messag
 	public void presenceChanged(Presence presence)
 	{
 		IBuddy buddy = new CheeonkBuddy(new JabberId(presence.getFrom()));
-		// buddy.setPresence(presence);
+		buddy.setPresence(getPresence(presence));
+		buddy.setStatus(presence.getStatus());
 
 		eventDeque.add(new PresenceChangeEvent(buddy));
 	}
 
-	// public static Presence getPresence(Presence presence)
-	// {
-	// Presence cheeonkPresence = new Presence();
-	//
-	// switch (presence.getType())
-	// {
-	// case available:
-	// cheeonkPresence.setType(Presence.Type.AVAILABLE);
-	// break;
-	//
-	// }
-	//
-	// switch (presence.getMode())
-	// {
-	// case available:
-	// cheeonkPresence.setMode(Presence.Mode.AVAILABLE);
-	// break;
-	//
-	// }
-	//
-	// return cheeonkPresence;
-	// }
+	public static SharedPresence getPresence(Presence presence)
+	{
+		SharedPresence sharedPresence = new SharedPresence();
+
+		switch (presence.getType())
+		{
+			case available:
+				sharedPresence.setType(SharedPresence.Type.AVAILABLE);
+				break;
+			case unavailable:
+				sharedPresence.setType(SharedPresence.Type.UNAVAILABLE);
+				break;
+		}
+
+		switch (presence.getMode())
+		{
+			case available:
+				sharedPresence.setMode(SharedPresence.Mode.AVAILABLE);
+				break;
+			case away:
+				sharedPresence.setMode(SharedPresence.Mode.AWAY);
+				break;
+			case chat:
+				sharedPresence.setMode(SharedPresence.Mode.CHAT);
+				break;
+			case dnd:
+				sharedPresence.setMode(SharedPresence.Mode.DND);
+				break;
+			case xa:
+				sharedPresence.setMode(SharedPresence.Mode.XA);
+				break;
+		}
+
+		return sharedPresence;
+	}
 
 	public void sendMessage(IMessage message)
 	{
