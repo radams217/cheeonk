@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client.widgets;
+package com.ryannadams.cheeonk.client.widgets.chat;
 
 import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -152,12 +152,12 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
 		// Check where to route the message
-		if (!event.getMessage().getFrom().toString().equals(participant.getJabberId().toString() + "/Smack"))
-		{
-			return;
-		}
-
-		addCheeonk(event.getMessage());
+		// if (!event.getMessage().getFrom().equals(participant.getJabberId()))
+		// {
+		// return;
+		// }
+		//
+		// addCheeonk(event.getMessage());
 	}
 
 	@Override

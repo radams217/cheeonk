@@ -10,6 +10,7 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 import net.customware.gwt.dispatch.shared.Result;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ryannadams.cheeonk.server.handler.AddBuddyHandler;
 import com.ryannadams.cheeonk.server.handler.GetEventHandler;
 import com.ryannadams.cheeonk.server.handler.RegisterHandler;
 import com.ryannadams.cheeonk.server.handler.SendMessageHandler;
@@ -28,6 +29,7 @@ public class ChatDispatchServiceImpl extends RemoteServiceServlet implements Sta
 		registry.addHandler(new SigninHandler());
 		registry.addHandler(new SignoutHandler());
 		registry.addHandler(new GetEventHandler());
+		registry.addHandler(new AddBuddyHandler());
 
 		dispatch = new SimpleDispatch(registry);
 	}

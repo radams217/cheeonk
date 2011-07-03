@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client.widgets;
+package com.ryannadams.cheeonk.client.widgets.chat;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,8 +10,9 @@ import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 
-public class ChatWidgetDialog extends DialogBox implements AuthenticationEventHandler
+public class ChatWidgetDialog extends DialogBox implements AuthenticationEventHandler, ChatWidgetContainer
 {
 	private final ChatWidget chatWidget;
 
@@ -51,6 +52,12 @@ public class ChatWidgetDialog extends DialogBox implements AuthenticationEventHa
 	public void onSignedout(SignedoutEvent event)
 	{
 		hide();
+	}
+
+	@Override
+	public void addCheeonk(IMessage message)
+	{
+		chatWidget.addCheeonk(message);
 	}
 
 }

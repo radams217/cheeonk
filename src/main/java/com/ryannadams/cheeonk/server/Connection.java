@@ -170,6 +170,5 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	public void chatCreated(Chat chat, boolean isLocal)
 	{
 		chat.addMessageListener(this);
-
 	}
 }

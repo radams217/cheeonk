@@ -1,5 +1,7 @@
 package com.ryannadams.cheeonk.client;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,21 +23,30 @@ import com.ryannadams.cheeonk.client.callback.GotEvent;
 import com.ryannadams.cheeonk.client.callback.Registered;
 import com.ryannadams.cheeonk.client.callback.Signedin;
 import com.ryannadams.cheeonk.client.callback.Signedout;
+import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
+import com.ryannadams.cheeonk.client.event.MessageSentEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
+import com.ryannadams.cheeonk.client.handler.ChatEventHandler;
+import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.BuddyListWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
+import com.ryannadams.cheeonk.client.widgets.chat.ChatWidgetContainer;
+import com.ryannadams.cheeonk.client.widgets.chat.ChatWidgetDialog;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetEvent;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.action.Signin;
 import com.ryannadams.cheeonk.shared.action.Signout;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
+import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class cheeonk implements EntryPoint
+public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandler
 {
 	private final SimpleEventBus eventBus;
 	private final Messages messages;
@@ -47,11 +58,17 @@ public class cheeonk implements EntryPoint
 	private final Logger rootLogger;
 	private final DispatchAsync dispatchAsync;
 
+	private final Map<JabberId, ChatWidgetContainer> chats;
+
 	private Timer chatTimer;
 
 	public cheeonk()
 	{
 		eventBus = new SimpleEventBus();
+		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
+		eventBus.addHandler(ChatCreatedEvent.TYPE, this);
+
+		chats = new HashMap<JabberId, ChatWidgetContainer>();
 
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
@@ -171,5 +188,41 @@ public class cheeonk implements EntryPoint
 			}
 
 		});
+	}
+
+	@Override
+	public void onMessageReceived(MessageReceivedEvent event)
+	{
+		JabberId key = event.getMessage().getFrom();
+
+		if (!chats.containsKey(key))
+		{
+			chats.put(key, new ChatWidgetDialog(eventBus, new CheeonkBuddy(key)));
+		}
+
+		ChatWidgetContainer chatContainer = chats.get(key);
+		chatContainer.addCheeonk(event.getMessage());
+		chatContainer.show();
+	}
+
+	@Override
+	public void onMessageSent(MessageSentEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onChatCreated(ChatCreatedEvent event)
+	{
+		JabberId key = event.getBuddy().getJabberId();
+
+		if (!chats.containsKey(key))
+		{
+			chats.put(key, new ChatWidgetDialog(eventBus, new CheeonkBuddy(key)));
+		}
+
+		ChatWidgetContainer chatContainer = chats.get(key);
+		chatContainer.show();
 	}
 }

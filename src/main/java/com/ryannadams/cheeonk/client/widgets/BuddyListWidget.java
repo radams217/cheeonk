@@ -13,11 +13,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.callback.AddedBuddy;
+import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
+import com.ryannadams.cheeonk.shared.ConnectionKey;
+import com.ryannadams.cheeonk.shared.action.AddBuddy;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
@@ -44,7 +48,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 		this.eventBus.addHandler(AddBuddyEvent.TYPE, this);
 		this.eventBus.addHandler(RemoveBuddyEvent.TYPE, this);
-		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
@@ -83,9 +86,17 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 					@Override
 					public void onClick(ClickEvent event)
 					{
-						CheeonkBuddy buddy = new CheeonkBuddy(new JabberId(buddyName.getText()), buddyName.getText());
+						final CheeonkBuddy buddy = new CheeonkBuddy(new JabberId(buddyName.getText()), buddyName.getText());
 
-						eventBus.fireEvent(new AddBuddyEvent(buddy));
+						dispatchAsync.execute(new AddBuddy(ConnectionKey.get(), buddy), new AddedBuddy()
+						{
+							@Override
+							public void got()
+							{
+								eventBus.fireEvent(new AddBuddyEvent(buddy));
+							}
+
+						});
 
 						popupPanel.hide();
 					}
@@ -100,7 +111,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		initWidget(panel);
 	}
 
-	public void addBuddy(final IBuddy buddy, ClickHandler clickHandler)
+	private void addBuddy(final IBuddy buddy, ClickHandler clickHandler)
 	{
 		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
 		buddyWidget.addClickHandler(clickHandler);
@@ -108,7 +119,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		panel.add(buddyWidget);
 	}
 
-	public void removeBuddy(IBuddy buddy)
+	private void removeBuddy(IBuddy buddy)
 	{
 		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
 
@@ -131,6 +142,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	@Override
 	public void onSignedin(SignedinEvent event)
 	{
+		// Add utility Buttons to the Buddy List to come
 		panel.add(addButton);
 	}
 
@@ -150,13 +162,9 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				final ChatWidgetDialog chatWidget = new ChatWidgetDialog(eventBus, buddy);
-				chatWidget.setText(buddy.getJabberId().toString());
-				chatWidget.show();
+				eventBus.fireEvent(new ChatCreatedEvent(buddy));
 			}
-
 		});
-
 	}
 
 	@Override
@@ -166,10 +174,10 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 	}
 
+	@Deprecated
 	@Override
 	public void onPresenceChange(PresenceChangeEvent event)
 	{
-		// TODO Auto-generated method stub
-
+		// Event not added to event bus for this object
 	}
 }

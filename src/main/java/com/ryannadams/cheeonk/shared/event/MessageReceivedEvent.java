@@ -2,13 +2,13 @@ package com.ryannadams.cheeonk.shared.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
-import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
+import com.ryannadams.cheeonk.shared.message.IMessage;
 
 public class MessageReceivedEvent extends GwtEvent<MessageEventHandler> implements SharedEvent
 {
 	public static final GwtEvent.Type<MessageEventHandler> TYPE = new GwtEvent.Type<MessageEventHandler>();
 
-	private CheeonkMessage message;
+	private IMessage message;
 
 	@Deprecated
 	public MessageReceivedEvent()
@@ -16,12 +16,12 @@ public class MessageReceivedEvent extends GwtEvent<MessageEventHandler> implemen
 
 	}
 
-	public MessageReceivedEvent(CheeonkMessage message)
+	public MessageReceivedEvent(IMessage message)
 	{
 		this.message = message;
 	}
 
-	public CheeonkMessage getMessage()
+	public IMessage getMessage()
 	{
 		return message;
 	}

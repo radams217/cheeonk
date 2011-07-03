@@ -6,7 +6,6 @@ import com.ryannadams.cheeonk.shared.result.SendMessageResult;
 
 public abstract class SentMessage implements AsyncCallback<SendMessageResult>
 {
-
 	@Override
 	public void onFailure(Throwable caught)
 	{

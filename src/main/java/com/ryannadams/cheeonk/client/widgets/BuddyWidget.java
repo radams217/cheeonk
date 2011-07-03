@@ -119,7 +119,7 @@ public class BuddyWidget extends Composite implements MouseOverHandler, BuddyEve
 	public void onPresenceChange(PresenceChangeEvent event)
 	{
 		// This is a hack
-		if (!((buddy.getJabberId().toString() + "/Smack").equals(event.getBuddy().getJabberId().toString())))
+		if (!buddy.equals(event.getBuddy()))
 		{
 			return;
 		}
