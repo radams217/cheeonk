@@ -250,14 +250,14 @@ a:hover
 }
 
 /* buddyWidget */
-.buddyWidget-Available
+.buddyWidget-Hover
 {
-	background-color: #00FF00;
+	background-color: #C3C3C3;
 }
 
-.buddyWidget-Unavailable
+.buddyWidget-NonHover
 {
-	background-color: #FF0000;
+	background-color: transparent;
 }
 
 /* buddyListWidget */

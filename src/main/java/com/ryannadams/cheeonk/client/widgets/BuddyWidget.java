@@ -13,13 +13,17 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.ImageResources;
 import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.buddy.SharedPresence;
 import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
@@ -30,12 +34,16 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	private final SimpleEventBus eventBus;
 	private final BuddyPopupPanel detailsPopupPanel;
 
+	private Image statusDot;
+
 	public BuddyWidget(SimpleEventBus eventBus, IBuddy buddy)
 	{
 		this.eventBus = eventBus;
 		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
 		this.buddy = buddy;
+		this.statusDot = new Image(ImageResources.INSTANCE.getRedDot());
+
 		this.detailsPopupPanel = new BuddyPopupPanel();
 		this.detailsPopupPanel.addChatClickHandler(this);
 
@@ -50,33 +58,28 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		buddyStatus.setStyleName("buddyWidget-status");
 
 		VerticalPanel panel = new VerticalPanel();
-		panel.setStyleName("buddyWidget");
-		panel.add(buddyName);
+
+		HorizontalPanel statusDotNamePanel = new HorizontalPanel();
+		statusDotNamePanel.add(statusDot);
+		statusDotNamePanel.add(buddyName);
+
+		panel.add(statusDotNamePanel);
 		panel.add(buddyStatus);
+
 		initWidget(panel);
-
-		setUnavailable();
-	}
-
-	private void setUnavailable()
-	{
-		setStyleName("buddyWidget-Unavailable");
-	}
-
-	private void setAvailable()
-	{
-		setStyleName("buddyWidget-Available");
 	}
 
 	@Override
 	public void onMouseOver(MouseOverEvent event)
 	{
+		setStyleName("buddyWidget-Hover");
+
 		this.detailsPopupPanel.setPopupPositionAndShow(new PopupPanel.PositionCallback()
 		{
 			@Override
 			public void setPosition(int offsetWidth, int offsetHeight)
 			{
-				int left = (getAbsoluteLeft() + getOffsetWidth());
+				int left = getAbsoluteLeft() + getOffsetWidth() - 20;
 				int top = getAbsoluteTop();
 				detailsPopupPanel.setPopupPosition(left, top);
 			}
@@ -88,7 +91,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	@Override
 	public void onMouseOut(MouseOutEvent event)
 	{
-		detailsPopupPanel.hide();
+		setStyleName("buddyWidget-NonHover");
 	}
 
 	@Override
@@ -97,15 +100,17 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		eventBus.fireEvent(new ChatCreatedEvent(buddy));
 	}
 
-	private class BuddyPopupPanel extends PopupPanel
+	private class BuddyPopupPanel extends PopupPanel implements HasMouseOutHandlers, MouseOutHandler, HasMouseOverHandlers, MouseOverHandler
 	{
 		private final PushButton chatButton;
 
 		public BuddyPopupPanel()
 		{
-			super(true);
+			super(false);
 
-			chatButton = new PushButton("Chat");
+			this.chatButton = new PushButton("Chat");
+			this.addMouseOutHandler(this);
+			this.addMouseOverHandler(this);
 
 			HTML buddyName = new HTML(buddy.getName());
 			buddyName.setStyleName("buddyPopupPanel-name");
@@ -116,7 +121,11 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 			VerticalPanel panel = new VerticalPanel();
 			panel.setStyleName("buddyPopupPanel");
 
-			panel.add(buddyName);
+			HorizontalPanel statusDotNamePanel = new HorizontalPanel();
+			statusDotNamePanel.add(statusDot);
+			statusDotNamePanel.add(buddyName);
+
+			panel.add(statusDotNamePanel);
 			panel.add(jabberId);
 			panel.add(chatButton);
 
@@ -126,6 +135,30 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		public void addChatClickHandler(ClickHandler clickHandler)
 		{
 			chatButton.addClickHandler(clickHandler);
+		}
+
+		@Override
+		public void onMouseOut(MouseOutEvent event)
+		{
+			hide();
+		}
+
+		@Override
+		public void onMouseOver(MouseOverEvent event)
+		{
+
+		}
+
+		@Override
+		public HandlerRegistration addMouseOutHandler(MouseOutHandler handler)
+		{
+			return addDomHandler(handler, MouseOutEvent.getType());
+		}
+
+		@Override
+		public HandlerRegistration addMouseOverHandler(MouseOverHandler handler)
+		{
+			return addDomHandler(handler, MouseOverEvent.getType());
 		}
 	}
 
@@ -169,13 +202,17 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 			return;
 		}
 
-		if (event.getBuddy().isAvailable())
+		SharedPresence presence = event.getBuddy().getPresence();
+
+		if (presence.isAvailable())
 		{
-			setAvailable();
+			statusDot.setResource(ImageResources.INSTANCE.getGreenDot());
 		}
 		else
 		{
-			setUnavailable();
+			statusDot.setResource(ImageResources.INSTANCE.getRedDot());
 		}
+
+		// buddy.setStatus(event.getBuddy().getStatus());
 	}
 }

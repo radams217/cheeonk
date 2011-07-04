@@ -17,4 +17,10 @@ public interface ImageResources extends ClientBundle
 	@Source("com/ryannadams/cheeonk/client/images/tab.png")
 	public ImageResource getTab();
 
+	@Source("com/ryannadams/cheeonk/client/images/reddot.png")
+	public ImageResource getRedDot();
+
+	@Source("com/ryannadams/cheeonk/client/images/greendot.png")
+	public ImageResource getGreenDot();
+
 }
