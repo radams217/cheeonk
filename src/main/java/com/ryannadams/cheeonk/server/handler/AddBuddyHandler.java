@@ -14,7 +14,6 @@ import com.ryannadams.cheeonk.shared.result.AddBuddyResult;
 
 public class AddBuddyHandler implements ActionHandler<AddBuddy, AddBuddyResult>
 {
-
 	@Override
 	public Class<AddBuddy> getActionType()
 	{
@@ -29,7 +28,7 @@ public class AddBuddyHandler implements ActionHandler<AddBuddy, AddBuddyResult>
 
 		try
 		{
-			connection.getRoster().createEntry(action.getBuddy().getJabberId().toString(), action.getBuddy().getName(), null);
+			connection.getRoster().createEntry(action.getBuddy().getJabberId().getJabberId(), action.getBuddy().getName(), null);
 		}
 		catch (XMPPException e)
 		{

@@ -21,6 +21,7 @@ public class ChatWidgetDialog extends DialogBox implements AuthenticationEventHa
 		super(false);
 
 		setModal(false);
+		setText(buddy.getJabberId().getJabberId());
 
 		eventBus.addHandler(SignedoutEvent.TYPE, this);
 

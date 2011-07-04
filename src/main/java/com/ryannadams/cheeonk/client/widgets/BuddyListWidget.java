@@ -9,12 +9,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.callback.AddedBuddy;
-import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
@@ -23,7 +23,6 @@ import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.AddBuddy;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
-import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
@@ -33,6 +32,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	private final VerticalPanel panel;
 
 	private final Button addButton;
+	private final TextBox jabberId;
 	private final TextBox buddyName;
 	private final Button okButton;
 
@@ -54,13 +54,13 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		panel = new VerticalPanel();
 		panel.addStyleName("buddyListWidget");
 
+		jabberId = new TextBox();
 		buddyName = new TextBox();
 		okButton = new Button("ok");
 
 		addButton = new Button("Add Buddy");
 		addButton.addClickHandler(new ClickHandler()
 		{
-
 			@Override
 			public void onClick(ClickEvent event)
 			{
@@ -77,8 +77,18 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 					}
 				});
 
-				HorizontalPanel panel = new HorizontalPanel();
-				panel.add(buddyName);
+				VerticalPanel panel = new VerticalPanel();
+
+				HorizontalPanel jabberPanel = new HorizontalPanel();
+				jabberPanel.add(new HTML("Jabber Id:"));
+				jabberPanel.add(jabberId);
+
+				HorizontalPanel buddyNamePanel = new HorizontalPanel();
+				buddyNamePanel.add(new HTML("Name:"));
+				buddyNamePanel.add(buddyName);
+
+				panel.add(jabberPanel);
+				panel.add(buddyNamePanel);
 				panel.add(okButton);
 
 				okButton.addClickHandler(new ClickHandler()
@@ -86,13 +96,15 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 					@Override
 					public void onClick(ClickEvent event)
 					{
-						final CheeonkBuddy buddy = new CheeonkBuddy(new JabberId(buddyName.getText()), buddyName.getText());
+						final CheeonkBuddy buddy = new CheeonkBuddy(new JabberId(jabberId.getText()), buddyName.getText());
 
 						dispatchAsync.execute(new AddBuddy(ConnectionKey.get(), buddy), new AddedBuddy()
 						{
 							@Override
 							public void got()
 							{
+								jabberId.setText("");
+								buddyName.setText("");
 								eventBus.fireEvent(new AddBuddyEvent(buddy));
 							}
 
@@ -109,21 +121,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		});
 
 		initWidget(panel);
-	}
-
-	private void addBuddy(final IBuddy buddy, ClickHandler clickHandler)
-	{
-		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
-		buddyWidget.addClickHandler(clickHandler);
-
-		panel.add(buddyWidget);
-	}
-
-	private void removeBuddy(IBuddy buddy)
-	{
-		BuddyWidget buddyWidget = new BuddyWidget(eventBus, buddy);
-
-		panel.remove(buddyWidget);
 	}
 
 	private class AddBuddyPopupPanel extends PopupPanel
@@ -155,23 +152,14 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	@Override
 	public void onAddBuddy(AddBuddyEvent event)
 	{
-		final IBuddy buddy = event.getBuddy();
-
-		addBuddy(buddy, new ClickHandler()
-		{
-			@Override
-			public void onClick(ClickEvent event)
-			{
-				eventBus.fireEvent(new ChatCreatedEvent(buddy));
-			}
-		});
+		panel.add(new BuddyWidget(eventBus, event.getBuddy()));
 	}
 
 	@Override
 	public void onRemoveBuddy(RemoveBuddyEvent event)
 	{
-		// TODO Auto-generated method stub
-
+		// BuddyWidget buddyWidget = new BuddyWidget(eventBus, event.get);
+		// panel.remove(buddyWidget);
 	}
 
 	@Deprecated
