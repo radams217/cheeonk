@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -43,6 +44,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 
 		this.buddy = buddy;
 		this.statusDot = new Image(ImageResources.INSTANCE.getRedDot());
+		this.statusDot.setStyleName("buddyWidget-statusDot");
 
 		this.detailsPopupPanel = new BuddyPopupPanel();
 		this.detailsPopupPanel.addChatClickHandler(this);
@@ -58,7 +60,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		buddyStatus.setStyleName("buddyWidget-status");
 
 		VerticalPanel panel = new VerticalPanel();
-
+		panel.setStyleName("buddyWidget");
 		HorizontalPanel statusDotNamePanel = new HorizontalPanel();
 		statusDotNamePanel.add(statusDot);
 		statusDotNamePanel.add(buddyName);
@@ -72,26 +74,22 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	@Override
 	public void onMouseOver(MouseOverEvent event)
 	{
-		setStyleName("buddyWidget-Hover");
-
 		this.detailsPopupPanel.setPopupPositionAndShow(new PopupPanel.PositionCallback()
 		{
 			@Override
 			public void setPosition(int offsetWidth, int offsetHeight)
 			{
-				int left = getAbsoluteLeft() + getOffsetWidth() - 20;
+				int left = getAbsoluteLeft() + getOffsetWidth() - 30;
 				int top = getAbsoluteTop();
 				detailsPopupPanel.setPopupPosition(left, top);
 			}
 		});
-
-		detailsPopupPanel.show();
 	}
 
 	@Override
 	public void onMouseOut(MouseOutEvent event)
 	{
-		setStyleName("buddyWidget-NonHover");
+		this.detailsPopupPanel.hide();
 	}
 
 	@Override
@@ -100,7 +98,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		eventBus.fireEvent(new ChatCreatedEvent(buddy));
 	}
 
-	private class BuddyPopupPanel extends PopupPanel implements HasMouseOutHandlers, MouseOutHandler, HasMouseOverHandlers, MouseOverHandler
+	private class BuddyPopupPanel extends DecoratedPopupPanel implements HasMouseOutHandlers, MouseOutHandler, HasMouseOverHandlers, MouseOverHandler
 	{
 		private final PushButton chatButton;
 

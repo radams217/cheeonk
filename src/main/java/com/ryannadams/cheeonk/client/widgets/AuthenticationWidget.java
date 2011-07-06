@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -139,7 +140,7 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 		signoutButton.addClickHandler(clickHandler);
 	}
 
-	private class SigninPopupPanel extends PopupPanel
+	private class SigninPopupPanel extends DecoratedPopupPanel
 	{
 		public SigninPopupPanel()
 		{

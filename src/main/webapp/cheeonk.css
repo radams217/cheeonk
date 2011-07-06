@@ -21,104 +21,54 @@ Banner Blues:
 	2272be
 	3377bb
 */
-
-body
-{
-	background-color:#ffffff;
+body {
+	background-color: #ffffff;
 	text-align: center;
 	width: 100%;
 	margin: 5px auto;
 }
 
-
-
-.header
-{
+.header {
 	position: relative;
-	
-	width: 1022px;
-	margin: auto;
+	width: 1024px;
+	margin: 15px auto 0px auto;
 }
 
-.content
-{
+.content {
 	position: relative;
+	width: 1024px;
+	margin: 0px auto;
+}
+
+.footer {
+	position: relative;
+	font-family: Verdana;
+	font-size: 10pt;
 	width: 1024px;
 	margin: auto;
 }
 
-.panel
-{
-	width: 100%;
+.panel {
+	float: left;
+	width: 870px;
 	height: 300px;
-	border-style:solid;
-	border-color:#f8f8f8;
+	border-style: solid;
+	border-color: #eeeeff;
+	border-width:2px;
 }
 
-
-.footer
-{
-	position: relative;
-	font-family:Verdana;
-	font-size: 10pt;
-	width: 1024px;
-	margin: auto;
-}
-
-
-
-
-.banner
-{
+.banner {
 	position: relative;
 	width: 1024px;
 	margin: auto;
 }
 
-.bannerNavigation
-{
-	position: relative;
-	text-align: right;
+#authenticationWidget {
+	float: right;
+	margin: 0px 0px 5px 0px;
 }
 
-.bannerSignin
-{
-	position: absolute;
-	top: 10px;
-	right: 138px;
-	width: 80px;
-	height: 20px;
-	background-color: #D80000;
-	border-style: solid;
-	border-width: 2px;
-	border-color: #000000;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-khtml-border-radius: 5px;
-}
-
-.buddy
-{
-
-	width: 100%;
-	border-style: solid;
-	border-color: #000000;
-	border-width: 1px;
-	font-family:  Verdana;
-	font-size: 10pt;
-	text-align: left;
-
-}
-
-.tabs
-{
-	position: absolute;
-	width: 100%;
-	bottom: -4px;
-	text-align: right;
-}
-.menubar
-{
+.menubar {
 	position: absolute;
 	width: 100%;
 	height: 3px;
@@ -126,175 +76,158 @@ body
 	bottom: 0px;
 }
 
-.signup
-{
-	position: absolute;
-	width: 200px;
-	height: 400px;
-	background-color: #b9d1e8;
-	top: -130px;
-	left: 0px;
-	border-style: solid;
-	border-width: 10px;
-	border-color: #ffffff;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	-khtml-border-radius: 20px;
-	border-radius: 20px;
+.textfield {
+	font-family: Verdana;
+	font-size: 10pt;
 }
 
-
-.textfield
-{
-	font-family:Verdana;
-	font-size:10pt;
-}
-
-.buttonPane
-{
+.buttonPane {
 	float: right;
 	vertical-align: bottom;
 }
 
-.button 
-{
-    border: 1px solid #006;
-    background: #aaaaaa;
-	font-size:10pt;
-	cursor:pointer;
+.button {
+	border: 1px solid #006;
+	background: #aaaaaa;
+	font-size: 10pt;
+	cursor: pointer;
 }
 
-.button:hover 
-{
-    background:#cccccc;
+.button:hover {
+	background: #cccccc;
 }
 
-space
-{
+space {
 	margin-left: 10px;
 }
 
-description
-{
-	text-decoration:none;
-	font-family:Verdana, sans-serif;
+description {
+	text-decoration: none;
+	font-family: Verdana, sans-serif;
 	font-size: 9pt;
 }
 
-label
-{
-	font-family:Verdana, sans-serif;
-	font-size:10pt;
+label {
+	font-family: Verdana, sans-serif;
+	font-size: 10pt;
 }
 
 /* Link Stylings */
-
-.navigationLink
-{
-	color:#000000;
+.navigationLink {
+	color: #000000;
 	font-size: 10pt;
 }
 
-.navigationLink:hover
-{
-	color:#990000;
+.navigationLink:hover {
+	color: #990000;
 	font-size: 10pt;
 }
 
-.footerLink
-{
-	color:#004499;
+.footerLink {
+	color: #004499;
 	font-size: 10pt;
 }
 
-.footerLink:hover
-{
-	color:#990000;
+.footerLink:hover {
+	color: #990000;
 	font-size: 10pt;
 }
 
-a
-{
-	text-decoration:none;
-	font-family:Verdana, sans-serif;
+a {
+	text-decoration: none;
+	font-family: Verdana, sans-serif;
 }
 
-a:hover
-{
-	text-decoration:none;
-	font-family:Verdana, sans-serif;
+a:hover {
+	text-decoration: none;
+	font-family: Verdana, sans-serif;
 }
 
-
-#buddyListContainer
-{
-	position: absolute;
+#buddyListContainer {
+	float: left;
 	width: 150px;
-	height: 200px;
+	height: 300px;
 	background-color: #b9d1e8;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #ffffff;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	-khtml-border-radius: 20px;
-	border-radius: 20px;
 }
 
-#chatContainer
-{
+#chatContainer {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-color: #FFFFFF;	
+	background-color: #FFFFFF;
 }
 
-/* buddyWidget */
-.buddyWidget-Hover
-{
-	background-color: #C3C3C3;
-}
-
-.buddyWidget-NonHover
-{
+.signinPanel {
+	padding: 2px;
+	width: 200px;
+	height: 200px;
 	background-color: transparent;
 }
 
+/* buddyWidget */
+.buddyWidget {
+	width: 100%;
+	padding: 2px;
+	background-color: transparent;
+}
+
+.buddyWidget:hover {
+	background-color: #ddeeee;
+}
+
+.buddyPopupPanel {
+	padding: 2px;
+	width: 200px;
+	height: 100px;
+	background-color: transparent;
+}
+
+.buddyWidget-buddy {
+	color: #000000;
+}
+
+.buddyPopupPanel-name {
+	color: #3377bb;
+	font-weight: bold;
+}
+
+.buddyPopupPanel-jabberId,.buddyWidget-status {
+	color: #77bbff;
+}
+
+.buddyWidget-statusDot {
+	margin-left: 2px;
+	margin-right: 3px;
+}
+
 /* buddyListWidget */
-.buddyListWidget
-{
-		
+.buddyListWidget {
+	width: 100%;
 }
 
 /* AuthenticationWidget */
-
-.authenticationWidget-LoggedIn
-{
+.authenticationWidget-LoggedIn {
 	margin-right: 10px;
 	font-family: Verdana, sans-serif;
 	font-size: 10pt;
 }
 
-
 /* ChatWidget */
-.chatWidget
-{
+.chatWidget {
 	width: 400px;
 	height: 400px;
 }
 
-.chatWidget-Cheeonks
-{
+.chatWidget-Cheeonks {
 	width: 400px;
 	height: 300px;
 	font-family: Verdana, sans-serif;
 	font-size: 10pt;
 }
 
-.chatWidget-MessageArea
-{
+.chatWidget-MessageArea {
 	width: 390px;
-	min-height:100px;
+	min-height: 100px;
 	font-family: Verdana, sans-serif;
-	font-size: 10pt;		
+	font-size: 10pt;
 }
