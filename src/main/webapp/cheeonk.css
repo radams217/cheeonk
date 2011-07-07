@@ -37,6 +37,7 @@ body {
 .content {
 	position: relative;
 	width: 1024px;
+	height: 100%;
 	margin: 0px auto;
 }
 
