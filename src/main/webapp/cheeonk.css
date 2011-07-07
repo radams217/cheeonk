@@ -32,12 +32,14 @@ body {
 	position: relative;
 	width: 1024px;
 	margin: 15px auto 0px auto;
+	z-index: -1;
 }
 
 .content {
 	position: relative;
 	width: 1024px;
 	margin: 0px auto;
+	z-index: -2;
 }
 
 .footer {
@@ -46,6 +48,7 @@ body {
 	font-size: 10pt;
 	width: 1024px;
 	margin: 15px auto;
+	z-index: -3;
 }
 	
 .panel {
@@ -154,7 +157,6 @@ a:hover {
 	border-style: solid;
 	border-color: #3377bb;
 	border-width: 2px;
-	z-index: 10;
 }
 
 #chatContainer {
