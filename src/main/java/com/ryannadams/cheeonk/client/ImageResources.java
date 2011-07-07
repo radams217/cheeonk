@@ -8,7 +8,7 @@ public interface ImageResources extends ClientBundle
 {
 	public static final ImageResources INSTANCE = GWT.create(ImageResources.class);
 
-	@Source("com/ryannadams/cheeonk/client/images/tab.png")
+	@Source("com/ryannadams/cheeonk/client/images/banner.png")
 	public ImageResource getBanner();
 
 	@Source("com/ryannadams/cheeonk/client/images/calendar.png")
