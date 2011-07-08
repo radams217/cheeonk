@@ -8,6 +8,8 @@ public class Register implements Action<RegisterResult>
 {
 	private String username;
 	private String password;
+	private String name;
+	private String email;
 
 	@Deprecated
 	public Register()
@@ -15,10 +17,12 @@ public class Register implements Action<RegisterResult>
 
 	}
 
-	public Register(String username, String password)
+	public Register(String username, String password, String name, String email)
 	{
 		this.username = username;
 		this.password = password;
+		this.name = name;
+		this.email = email;
 	}
 
 	public String getUsername()
@@ -31,4 +35,13 @@ public class Register implements Action<RegisterResult>
 		return password;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
 }

@@ -54,6 +54,7 @@ public class ConnectionKey implements IsSerializable
 	 */
 	public ConnectionKey(String host, int port, String username, String domain, String password)
 	{
+		this.connectionId = null;
 		this.host = host;
 		this.port = port;
 		this.username = username;
@@ -68,6 +69,7 @@ public class ConnectionKey implements IsSerializable
 	 */
 	public ConnectionKey(String host, int port, String domain)
 	{
+		this.connectionId = null;
 		this.host = host;
 		this.port = port;
 		this.domain = domain;
@@ -75,7 +77,7 @@ public class ConnectionKey implements IsSerializable
 
 	public void reset()
 	{
-		connectionId = "";
+		connectionId = null;
 		username = "";
 		password = "";
 	}

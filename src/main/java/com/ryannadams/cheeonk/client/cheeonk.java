@@ -13,10 +13,14 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.ryannadams.cheeonk.client.callback.GotEvent;
@@ -46,7 +50,7 @@ import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandler
+public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandler, CloseHandler<Window>
 {
 	private final SimpleEventBus eventBus;
 	private final Messages messages;
@@ -64,6 +68,20 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 
 	public cheeonk()
 	{
+		Window.addWindowClosingHandler(new Window.ClosingHandler()
+		{
+			@Override
+			public void onWindowClosing(Window.ClosingEvent closingEvent)
+			{
+				if (ConnectionKey.get().getConnectionId() != null)
+				{
+					closingEvent.setMessage("All conversations will be lost.  Do you really want to leave the page?");
+				}
+			}
+		});
+
+		Window.addCloseHandler(this);
+
 		eventBus = new SimpleEventBus();
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 		eventBus.addHandler(ChatCreatedEvent.TYPE, this);
@@ -84,13 +102,16 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 			{
 				super.onClick(event);
 
-				dispatchAsync.execute(new Register(registrationWidget.getUsername(), registrationWidget.getPassword()), new Registered()
+				dispatchAsync.execute(new Register(registrationWidget.getUsername(), registrationWidget.getPassword(), registrationWidget.getName(),
+						registrationWidget.getEmail()), new Registered()
 				{
 					@Override
 					public void got(boolean isRegistered)
 					{
 						if (isRegistered)
 						{
+							RootPanel.get("registerContainer").clear();
+							RootPanel.get("registerContainer").add(new HTML("Registration Complete.  Log in Above."));
 							// Send email with registration information
 						}
 
@@ -165,6 +186,7 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 		});
 
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
+		RootPanel.get("registerContainer").add(registrationWidget);
 		RootPanel.get("authenticationWidget").add(authenticationWidget);
 		RootPanel.get("buddyListContainer").add(buddyList);
 	}
@@ -223,5 +245,21 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 
 		ChatWidgetContainer chatContainer = chats.get(key);
 		chatContainer.show();
+	}
+
+	@Override
+	public void onClose(CloseEvent<Window> event)
+	{
+		if (ConnectionKey.get().getConnectionId() != null)
+		{
+			dispatchAsync.execute(new Signout(ConnectionKey.get()), new Signedout()
+			{
+				@Override
+				public void got(boolean isSignedout)
+				{
+
+				}
+			});
+		}
 	}
 }

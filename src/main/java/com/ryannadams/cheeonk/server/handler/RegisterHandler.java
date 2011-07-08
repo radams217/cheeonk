@@ -1,7 +1,7 @@
 package com.ryannadams.cheeonk.server.handler;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -27,12 +27,15 @@ public class RegisterHandler implements ActionHandler<Register, RegisterResult>
 	public RegisterResult execute(Register action, ExecutionContext context) throws DispatchException
 	{
 		Connection connection = ConnectionDriver.getConnection(ConnectionKey.get());
+		Map<String, String> accountAttributes = new HashMap<String, String>();
+
+		accountAttributes.put("name", action.getName());
+		accountAttributes.put("email", action.getEmail());
 
 		try
 		{
 			connection.connect();
-			connection.getAccountManager().createAccount(action.getUsername(), action.getPassword());
-			Logger.getLogger("").log(Level.FINER, "Account Created for " + action.getUsername());
+			connection.getAccountManager().createAccount(action.getUsername(), action.getPassword(), accountAttributes);
 		}
 		catch (XMPPException e)
 		{

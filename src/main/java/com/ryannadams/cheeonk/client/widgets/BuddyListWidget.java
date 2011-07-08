@@ -30,11 +30,7 @@ import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
 {
 	private final VerticalPanel panel;
-
 	private final Button addButton;
-	private final TextBox jabberId;
-	private final TextBox buddyName;
-	private final Button okButton;
 
 	private final DispatchAsync dispatchAsync;
 
@@ -53,10 +49,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 		panel = new VerticalPanel();
 		panel.addStyleName("buddyListWidget");
-
-		jabberId = new TextBox();
-		buddyName = new TextBox();
-		okButton = new Button("ok");
 
 		addButton = new Button("Add Buddy");
 		addButton.addClickHandler(new ClickHandler()
@@ -79,6 +71,9 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 				VerticalPanel panel = new VerticalPanel();
 
+				final TextBox jabberId = new TextBox();
+				final TextBox buddyName = new TextBox();
+
 				HorizontalPanel jabberPanel = new HorizontalPanel();
 				jabberPanel.add(new HTML("Jabber Id:"));
 				jabberPanel.add(jabberId);
@@ -86,6 +81,8 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 				HorizontalPanel buddyNamePanel = new HorizontalPanel();
 				buddyNamePanel.add(new HTML("Name:"));
 				buddyNamePanel.add(buddyName);
+
+				Button okButton = new Button("ok");
 
 				panel.add(jabberPanel);
 				panel.add(buddyNamePanel);

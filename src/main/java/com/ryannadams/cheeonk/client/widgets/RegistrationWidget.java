@@ -80,6 +80,16 @@ public class RegistrationWidget extends Composite implements ClickHandler
 		return passwordField.getText();
 	}
 
+	public String getName()
+	{
+		return nameField.getText();
+	}
+
+	public String getEmail()
+	{
+		return emailField.getText();
+	}
+
 	private boolean validate()
 	{
 		return true;
