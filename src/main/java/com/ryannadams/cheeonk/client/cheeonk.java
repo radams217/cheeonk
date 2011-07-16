@@ -152,6 +152,10 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 							if (isSignedin)
 							{
 								ConnectionKey.get().setConnectionId(connectionId);
+								// Use cookies to determined if the user is
+								// already logged into the server
+								// Cookies.setCookie("connectionId",
+								// connectionId);
 
 								getEvent();
 
@@ -250,16 +254,17 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 	@Override
 	public void onClose(CloseEvent<Window> event)
 	{
-		if (ConnectionKey.get().getConnectionId() != null)
-		{
-			dispatchAsync.execute(new Signout(ConnectionKey.get()), new Signedout()
-			{
-				@Override
-				public void got(boolean isSignedout)
-				{
-
-				}
-			});
-		}
+		// if (ConnectionKey.get().getConnectionId() != null)
+		// {
+		// dispatchAsync.execute(new Signout(ConnectionKey.get()), new
+		// Signedout()
+		// {
+		// @Override
+		// public void got(boolean isSignedout)
+		// {
+		//
+		// }
+		// });
+		// }
 	}
 }

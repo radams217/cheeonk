@@ -5,7 +5,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.result.GetEventResult;
 
-public class GetEvent implements Action<GetEventResult>
+public class GetEvent implements Action<GetEventResult>, IKey
 {
 	private ConnectionKey key;
 
@@ -20,6 +20,7 @@ public class GetEvent implements Action<GetEventResult>
 		this.key = key;
 	}
 
+	@Override
 	public ConnectionKey getConnectionKey()
 	{
 		return key;

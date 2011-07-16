@@ -6,7 +6,7 @@ import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 import com.ryannadams.cheeonk.shared.result.SendMessageResult;
 
-public class SendMessage implements Action<SendMessageResult>
+public class SendMessage implements Action<SendMessageResult>, IKey
 {
 	private ConnectionKey key;
 	private IMessage message;
@@ -23,6 +23,7 @@ public class SendMessage implements Action<SendMessageResult>
 		this.message = message;
 	}
 
+	@Override
 	public ConnectionKey getConnectionKey()
 	{
 		return key;

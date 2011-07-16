@@ -23,8 +23,8 @@ import com.ryannadams.cheeonk.client.ImageResources;
 import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
 import com.ryannadams.cheeonk.client.event.RemoveBuddyEvent;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkPresence;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
-import com.ryannadams.cheeonk.shared.buddy.SharedPresence;
 import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
@@ -35,6 +35,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	private final SimpleEventBus eventBus;
 	private final BuddyPopupPanel detailsPopupPanel;
 
+	private HTML buddyStatus;
 	private Image statusDot;
 
 	public BuddyWidget(SimpleEventBus eventBus, IBuddy buddy)
@@ -56,7 +57,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		HTML buddyName = new HTML(this.buddy.getName());
 		buddyName.setStyleName("buddyWidget-buddy");
 
-		HTML buddyStatus = new HTML(this.buddy.getStatus());
+		buddyStatus = new HTML(this.buddy.getPresence().getStatus());
 		buddyStatus.setStyleName("buddyWidget-status");
 
 		VerticalPanel panel = new VerticalPanel();
@@ -200,7 +201,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 			return;
 		}
 
-		SharedPresence presence = event.getBuddy().getPresence();
+		CheeonkPresence presence = event.getBuddy().getPresence();
 
 		if (presence.isAvailable())
 		{
@@ -211,6 +212,6 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 			statusDot.setResource(ImageResources.INSTANCE.getRedDot());
 		}
 
-		// buddy.setStatus(event.getBuddy().getStatus());
+		buddyStatus.setHTML(presence.getStatus());
 	}
 }

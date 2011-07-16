@@ -18,9 +18,9 @@ import org.jivesoftware.smack.packet.Presence;
 import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkPresence;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
-import com.ryannadams.cheeonk.shared.buddy.SharedPresence;
 import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
@@ -88,24 +88,25 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	{
 		IBuddy buddy = new CheeonkBuddy(new JabberId(presence.getFrom()));
 		buddy.setPresence(getPresence(presence));
-		buddy.setStatus(presence.getStatus());
 
 		eventDeque.add(new PresenceChangeEvent(buddy));
 	}
 
-	public static SharedPresence getPresence(Presence presence)
+	public static CheeonkPresence getPresence(Presence presence)
 	{
-		SharedPresence sharedPresence = new SharedPresence();
+		CheeonkPresence sharedPresence = new CheeonkPresence();
 
 		switch (presence.getType())
 		{
 			case available:
-				sharedPresence.setType(SharedPresence.Type.AVAILABLE);
+				sharedPresence.setType(CheeonkPresence.Type.AVAILABLE);
 				break;
 			case unavailable:
-				sharedPresence.setType(SharedPresence.Type.UNAVAILABLE);
+				sharedPresence.setType(CheeonkPresence.Type.UNAVAILABLE);
 				break;
 		}
+
+		sharedPresence.setStatus(presence.getStatus());
 
 		// switch (presence.getMode())
 		// {

@@ -209,7 +209,9 @@ a:hover {
 }
 
 .buddyPopupPanel-jabberId,.buddyWidget-status {
-	color: #77bbff;
+	width: 100%;
+	margin-left: 5px;
+	color: #9f9f9f;
 }
 
 .buddyWidget-statusDot {

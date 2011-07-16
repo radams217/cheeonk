@@ -4,8 +4,7 @@ public class CheeonkBuddy extends AbstractBuddy
 {
 	private JabberId jID;
 	private String name;
-	private SharedPresence presence;
-	private String status;
+	private CheeonkPresence presence;
 
 	@Deprecated
 	public CheeonkBuddy()
@@ -17,14 +16,14 @@ public class CheeonkBuddy extends AbstractBuddy
 	{
 		this.jID = jID;
 		this.name = "";
-		this.presence = new SharedPresence();
+		this.presence = new CheeonkPresence();
 	}
 
 	public CheeonkBuddy(JabberId jID, String name)
 	{
 		this.jID = jID;
 		this.name = name;
-		this.presence = new SharedPresence();
+		this.presence = new CheeonkPresence();
 	}
 
 	@Override
@@ -45,39 +44,27 @@ public class CheeonkBuddy extends AbstractBuddy
 	}
 
 	@Override
-	public SharedPresence getPresence()
+	public CheeonkPresence getPresence()
 	{
 		return presence;
 	}
 
 	@Override
-	public void setPresence(SharedPresence presence)
+	public void setPresence(CheeonkPresence presence)
 	{
 		this.presence = presence;
 	}
 
 	@Override
-	public String getStatus()
-	{
-		return status;
-	}
-
-	@Override
-	public void setStatus(String status)
-	{
-		this.status = status;
-	}
-
-	@Override
 	public boolean isAvailable()
 	{
-		return SharedPresence.Type.AVAILABLE.equals(presence.getType());
+		return CheeonkPresence.Type.AVAILABLE.equals(presence.getType());
 	}
 
 	@Override
 	public boolean isAway()
 	{
-		return SharedPresence.Mode.AWAY.equals(presence.getMode());
+		return CheeonkPresence.Mode.AWAY.equals(presence.getMode());
 	}
 
 }

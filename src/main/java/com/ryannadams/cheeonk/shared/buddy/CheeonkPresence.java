@@ -2,7 +2,7 @@ package com.ryannadams.cheeonk.shared.buddy;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class SharedPresence implements IsSerializable
+public class CheeonkPresence implements IsSerializable
 {
 	public enum Type
 	{
@@ -16,17 +16,20 @@ public class SharedPresence implements IsSerializable
 
 	private Type type;
 	private Mode mode;
+	private String status;
 
-	public SharedPresence()
+	public CheeonkPresence()
 	{
 		this.type = Type.UNAVAILABLE;
 		this.mode = null;
+		this.status = "";
 	}
 
-	public SharedPresence(Type type, Mode mode)
+	public CheeonkPresence(Type type, String status, Mode mode)
 	{
 		this.type = type;
 		this.mode = mode;
+		this.status = status;
 	}
 
 	public Type getType()
@@ -47,6 +50,16 @@ public class SharedPresence implements IsSerializable
 	public Mode getMode()
 	{
 		return mode;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
 	}
 
 	public boolean isAvailable()

@@ -6,7 +6,7 @@ import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.result.AddBuddyResult;
 
-public class AddBuddy implements Action<AddBuddyResult>
+public class AddBuddy implements Action<AddBuddyResult>, IKey
 {
 	private ConnectionKey key;
 	private IBuddy buddy;
@@ -23,6 +23,7 @@ public class AddBuddy implements Action<AddBuddyResult>
 		this.buddy = buddy;
 	}
 
+	@Override
 	public ConnectionKey getConnectionKey()
 	{
 		return key;

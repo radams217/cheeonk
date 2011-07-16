@@ -24,23 +24,13 @@ public interface IBuddy extends IsSerializable
 	/**
 	 * @return the current presence/status of the user
 	 */
-	SharedPresence getPresence();
+	CheeonkPresence getPresence();
 
 	/**
 	 * @param presence
 	 *            sets the serializable shared presence object
 	 */
-	void setPresence(SharedPresence presence);
-
-	/**
-	 * @return buddy status
-	 */
-	String getStatus();
-
-	/**
-	 * @param Status
-	 */
-	void setStatus(String Status);
+	void setPresence(CheeonkPresence presence);
 
 	/**
 	 * @return true/false depending on if the user is available on the server.

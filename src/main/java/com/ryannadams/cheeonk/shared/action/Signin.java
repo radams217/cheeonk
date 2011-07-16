@@ -5,7 +5,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.result.SigninResult;
 
-public class Signin implements Action<SigninResult>
+public class Signin implements Action<SigninResult>, IKey
 {
 	private ConnectionKey key;
 
@@ -20,6 +20,7 @@ public class Signin implements Action<SigninResult>
 		this.key = key;
 	}
 
+	@Override
 	public ConnectionKey getConnectionKey()
 	{
 		return key;
