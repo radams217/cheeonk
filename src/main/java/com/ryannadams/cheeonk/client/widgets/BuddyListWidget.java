@@ -137,7 +137,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	public void onSignedin(SignedinEvent event)
 	{
 		// Add utility Buttons to the Buddy List to come
-		panel.add(new StatusWidget(eventBus));
+		panel.add(new PresenceWidget(eventBus));
 		panel.add(addButton);
 	}
 

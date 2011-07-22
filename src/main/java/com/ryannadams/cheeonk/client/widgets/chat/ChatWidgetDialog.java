@@ -9,23 +9,23 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
-import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 
 public class ChatWidgetDialog extends DialogBox implements AuthenticationEventHandler, ChatWidgetContainer
 {
 	private final ChatWidget chatWidget;
 
-	public ChatWidgetDialog(SimpleEventBus eventBus, IBuddy buddy)
+	public ChatWidgetDialog(SimpleEventBus eventBus, JabberId jabberId)
 	{
 		super(false);
 
 		setModal(false);
-		setText(buddy.getJabberId().getJabberId());
+		setText(jabberId.getJabberId());
 
 		eventBus.addHandler(SignedoutEvent.TYPE, this);
 
-		chatWidget = new ChatWidget(eventBus, buddy);
+		chatWidget = new ChatWidget(eventBus, jabberId);
 
 		Button close = new Button("Close", new ClickHandler()
 		{

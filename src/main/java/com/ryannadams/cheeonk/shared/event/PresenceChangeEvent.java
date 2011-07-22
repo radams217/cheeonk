@@ -2,27 +2,28 @@ package com.ryannadams.cheeonk.shared.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.ryannadams.cheeonk.client.handler.BuddyEventHandler;
-import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkPresence;
 
 public class PresenceChangeEvent extends GwtEvent<BuddyEventHandler> implements SharedEvent
 {
 	public static final GwtEvent.Type<BuddyEventHandler> TYPE = new GwtEvent.Type<BuddyEventHandler>();
 
-	private IBuddy buddy;
+	private CheeonkPresence presence;
 
+	@Deprecated
 	public PresenceChangeEvent()
 	{
 
 	}
 
-	public PresenceChangeEvent(IBuddy buddy)
+	public PresenceChangeEvent(CheeonkPresence presence)
 	{
-		this.buddy = buddy;
+		this.presence = presence;
 	}
 
-	public IBuddy getBuddy()
+	public CheeonkPresence getPresence()
 	{
-		return buddy;
+		return presence;
 	}
 
 	@Override

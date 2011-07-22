@@ -4,8 +4,6 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
-import org.jivesoftware.smack.packet.Presence;
-
 import com.ryannadams.cheeonk.server.Connection;
 import com.ryannadams.cheeonk.server.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
@@ -27,11 +25,9 @@ public class ChangePresenceHandler implements ActionHandler<ChangePresence, Chan
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
-		Presence presence = new Presence(Presence.Type.available, action.getPresence().getStatus(), 1, Presence.Mode.available);
+		connection.sendPacket(Connection.getPresence(action.getPresence()));
 
-		connection.sendPacket(presence);
-
-		return new ChangePresenceResult();
+		return new ChangePresenceResult(action.getPresence());
 	}
 
 	@Override

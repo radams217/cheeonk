@@ -11,35 +11,33 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public interface IBuddy extends IsSerializable
 {
+	enum Subscription
+	{
+		NONE, BOTH, TO, FROM, REMOVE;
+	}
+
 	/**
 	 * @return the unique Jabber ID user@domain.com/resource
 	 */
 	JabberId getJabberId();
 
 	/**
-	 * @return the name of the user.
+	 * @param name
+	 */
+	void setName(String name);
+
+	/**
+	 * @return the name of the buddy.
 	 */
 	String getName();
 
 	/**
-	 * @return the current presence/status of the user
+	 * @param subscription
 	 */
-	CheeonkPresence getPresence();
+	void setSubscription(Subscription subscription);
 
 	/**
-	 * @param presence
-	 *            sets the serializable shared presence object
+	 * @return subscription status of the buddy.
 	 */
-	void setPresence(CheeonkPresence presence);
-
-	/**
-	 * @return true/false depending on if the user is available on the server.
-	 */
-	boolean isAvailable();
-
-	/**
-	 * @return true/false depending on if the user is available but away or not
-	 *         available.
-	 */
-	boolean isAway();
+	Subscription getSubscription();
 }

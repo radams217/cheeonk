@@ -1,6 +1,7 @@
 package com.ryannadams.cheeonk.client.callback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.ryannadams.cheeonk.shared.buddy.CheeonkPresence;
 import com.ryannadams.cheeonk.shared.result.ChangePresenceResult;
 
 public abstract class ChangedPresence implements AsyncCallback<ChangePresenceResult>
@@ -15,8 +16,8 @@ public abstract class ChangedPresence implements AsyncCallback<ChangePresenceRes
 	@Override
 	public void onSuccess(ChangePresenceResult result)
 	{
-		got();
+		got(result.getPresence());
 	}
 
-	public abstract void got();
+	public abstract void got(CheeonkPresence cheeonkPresence);
 }

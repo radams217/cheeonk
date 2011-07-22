@@ -4,6 +4,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CheeonkPresence implements IsSerializable
 {
+	private JabberId jID;
+
 	public enum Type
 	{
 		AVAILABLE, UNAVAILABLE, SUBSCRIBE, SUBSCRIBED, UNSUBSCRIBE, UNSUBSCRIBED, ERROR;
@@ -11,25 +13,46 @@ public class CheeonkPresence implements IsSerializable
 
 	public enum Mode
 	{
-		AVAILABLE, AWAY, CHAT, DND, XA;
+		AVAILABLE, UNAVAILABLE, AWAY, CHAT, DND, XA;
 	}
 
 	private Type type;
 	private Mode mode;
 	private String status;
 
+	@Deprecated
 	public CheeonkPresence()
 	{
+
+	}
+
+	public CheeonkPresence(JabberId jID)
+	{
+		this.jID = jID;
 		this.type = Type.UNAVAILABLE;
-		this.mode = null;
+		this.mode = Mode.UNAVAILABLE;
 		this.status = "";
 	}
 
-	public CheeonkPresence(Type type, String status, Mode mode)
+	public CheeonkPresence(JabberId jID, Mode mode, String status)
 	{
+		this.jID = jID;
+		this.type = Type.AVAILABLE;
+		this.mode = mode;
+		this.status = status;
+	}
+
+	public CheeonkPresence(JabberId jID, Type type, Mode mode, String status)
+	{
+		this.jID = jID;
 		this.type = type;
 		this.mode = mode;
 		this.status = status;
+	}
+
+	public JabberId getJabberId()
+	{
+		return jID;
 	}
 
 	public Type getType()
@@ -72,4 +95,26 @@ public class CheeonkPresence implements IsSerializable
 		return Mode.AWAY.equals(mode);
 	}
 
+	// /**
+	// * @return the current presence/status of the user
+	// */
+	// CheeonkPresence getPresence();
+	//
+	// /**
+	// * @param presence
+	// * sets the serializable shared presence object
+	// */
+	// void setPresence(CheeonkPresence presence);
+	//
+	// /**
+	// * @return true/false depending on if the user is available on the server.
+	// */
+	// boolean isAvailable();
+	//
+	// /**
+	// * @return true/false depending on if the user is available but away or
+	// not
+	// * available.
+	// */
+	// boolean isAway();
 }

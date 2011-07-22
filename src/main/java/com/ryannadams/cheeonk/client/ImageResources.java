@@ -23,4 +23,9 @@ public interface ImageResources extends ClientBundle
 	@Source("com/ryannadams/cheeonk/client/images/greendot.png")
 	public ImageResource getGreenDot();
 
+	@Source("com/ryannadams/cheeonk/client/images/yellowdot.png")
+	public ImageResource getYellowDot();
+
+	@Source("com/ryannadams/cheeonk/client/images/graydot.png")
+	public ImageResource getGrayDot();
 }

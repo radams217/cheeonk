@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -31,12 +32,12 @@ import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 public class BuddyWidget extends Composite implements HasMouseOverHandlers, MouseOverHandler, HasMouseOutHandlers, MouseOutHandler, HasClickHandlers,
 		ClickHandler, BuddyEventHandler
 {
-	private final IBuddy buddy;
+	protected final IBuddy buddy;
 	private final SimpleEventBus eventBus;
 	private final BuddyPopupPanel detailsPopupPanel;
 
 	private HTML buddyStatus;
-	private Image statusDot;
+	protected Image statusDot;
 
 	public BuddyWidget(SimpleEventBus eventBus, IBuddy buddy)
 	{
@@ -44,7 +45,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
 		this.buddy = buddy;
-		this.statusDot = new Image(ImageResources.INSTANCE.getRedDot());
+		this.statusDot = new Image(ImageResources.INSTANCE.getGrayDot());
 		this.statusDot.setStyleName("buddyWidget-statusDot");
 
 		this.detailsPopupPanel = new BuddyPopupPanel();
@@ -57,7 +58,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		HTML buddyName = new HTML(this.buddy.getName());
 		buddyName.setStyleName("buddyWidget-buddy");
 
-		buddyStatus = new HTML(this.buddy.getPresence().getStatus());
+		buddyStatus = new HTML("");
 		buddyStatus.setStyleName("buddyWidget-status");
 
 		VerticalPanel panel = new VerticalPanel();
@@ -196,22 +197,35 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	@Override
 	public void onPresenceChange(PresenceChangeEvent event)
 	{
-		if (!buddy.equals(event.getBuddy()))
+		if (!buddy.getJabberId().equals(event.getPresence().getJabberId()))
 		{
 			return;
 		}
 
-		CheeonkPresence presence = event.getBuddy().getPresence();
+		CheeonkPresence presence = event.getPresence();
+		ImageResource image = ImageResources.INSTANCE.getGrayDot();
 
 		if (presence.isAvailable())
 		{
-			statusDot.setResource(ImageResources.INSTANCE.getGreenDot());
-		}
-		else
-		{
-			statusDot.setResource(ImageResources.INSTANCE.getRedDot());
+			switch (presence.getMode())
+			{
+				case AVAILABLE:
+				case CHAT:
+					image = ImageResources.INSTANCE.getGreenDot();
+					break;
+
+				case AWAY:
+					image = ImageResources.INSTANCE.getYellowDot();
+					break;
+
+				case DND:
+				case XA:
+					image = ImageResources.INSTANCE.getRedDot();
+					break;
+			}
 		}
 
+		statusDot.setResource(image);
 		buddyStatus.setHTML(presence.getStatus());
 	}
 }

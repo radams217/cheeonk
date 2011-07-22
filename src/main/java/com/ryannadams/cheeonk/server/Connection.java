@@ -9,6 +9,7 @@ import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -20,6 +21,7 @@ import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.CheeonkPresence;
 import com.ryannadams.cheeonk.shared.buddy.IBuddy;
+import com.ryannadams.cheeonk.shared.buddy.IBuddy.Subscription;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.event.AddBuddyEvent;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
@@ -59,6 +61,34 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 		for (RosterEntry entry : getRoster().getEntries())
 		{
 			IBuddy buddy = new CheeonkBuddy(new JabberId(entry.getUser()), entry.getName());
+
+			// TODO: entry.getStatus()
+
+			switch (entry.getType())
+			{
+				case none:
+					buddy.setSubscription(Subscription.NONE);
+					break;
+				case both:
+					buddy.setSubscription(Subscription.BOTH);
+					break;
+				case to:
+					buddy.setSubscription(Subscription.TO);
+					break;
+				case from:
+					buddy.setSubscription(Subscription.FROM);
+					break;
+				case remove:
+					buddy.setSubscription(Subscription.REMOVE);
+					break;
+			}
+
+			for (RosterGroup group : entry.getGroups())
+			{
+				group.getName();
+
+			}
+
 			eventDeque.add(new AddBuddyEvent(buddy));
 		}
 	}
@@ -86,48 +116,83 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	@Override
 	public void presenceChanged(Presence presence)
 	{
-		IBuddy buddy = new CheeonkBuddy(new JabberId(presence.getFrom()));
-		buddy.setPresence(getPresence(presence));
-
-		eventDeque.add(new PresenceChangeEvent(buddy));
+		eventDeque.add(new PresenceChangeEvent(Connection.getPresence(presence)));
 	}
 
 	public static CheeonkPresence getPresence(Presence presence)
 	{
-		CheeonkPresence sharedPresence = new CheeonkPresence();
+		CheeonkPresence cheeonkPresence = new CheeonkPresence(new JabberId(presence.getFrom()));
 
 		switch (presence.getType())
 		{
 			case available:
-				sharedPresence.setType(CheeonkPresence.Type.AVAILABLE);
+				cheeonkPresence.setType(CheeonkPresence.Type.AVAILABLE);
 				break;
 			case unavailable:
-				sharedPresence.setType(CheeonkPresence.Type.UNAVAILABLE);
+				cheeonkPresence.setType(CheeonkPresence.Type.UNAVAILABLE);
 				break;
 		}
 
-		sharedPresence.setStatus(presence.getStatus());
+		cheeonkPresence.setStatus(presence.getStatus());
 
-		// switch (presence.getMode())
-		// {
-		// case available:
-		// sharedPresence.setMode(SharedPresence.Mode.AVAILABLE);
-		// break;
-		// case away:
-		// sharedPresence.setMode(SharedPresence.Mode.AWAY);
-		// break;
-		// case chat:
-		// sharedPresence.setMode(SharedPresence.Mode.CHAT);
-		// break;
-		// case dnd:
-		// sharedPresence.setMode(SharedPresence.Mode.DND);
-		// break;
-		// case xa:
-		// sharedPresence.setMode(SharedPresence.Mode.XA);
-		// break;
-		// }
+		switch (presence.getMode())
+		{
+			case available:
+				cheeonkPresence.setMode(CheeonkPresence.Mode.AVAILABLE);
+				break;
+			case away:
+				cheeonkPresence.setMode(CheeonkPresence.Mode.AWAY);
+				break;
+			case chat:
+				cheeonkPresence.setMode(CheeonkPresence.Mode.CHAT);
+				break;
+			case dnd:
+				cheeonkPresence.setMode(CheeonkPresence.Mode.DND);
+				break;
+			case xa:
+				cheeonkPresence.setMode(CheeonkPresence.Mode.XA);
+				break;
+		}
 
-		return sharedPresence;
+		return cheeonkPresence;
+	}
+
+	public static Presence getPresence(CheeonkPresence cheeonkPresence)
+	{
+		Presence presence = new Presence(Presence.Type.available);
+
+		switch (cheeonkPresence.getType())
+		{
+			case AVAILABLE:
+				presence = new Presence(Presence.Type.available);
+				break;
+			case UNAVAILABLE:
+				presence = new Presence(Presence.Type.unavailable);
+				break;
+		}
+
+		cheeonkPresence.setStatus(presence.getStatus());
+
+		switch (cheeonkPresence.getMode())
+		{
+			case AVAILABLE:
+				presence.setMode(Presence.Mode.available);
+				break;
+			case AWAY:
+				presence.setMode(Presence.Mode.away);
+				break;
+			case CHAT:
+				presence.setMode(Presence.Mode.chat);
+				break;
+			case DND:
+				presence.setMode(Presence.Mode.dnd);
+				break;
+			case XA:
+				presence.setMode(Presence.Mode.xa);
+				break;
+		}
+
+		return presence;
 	}
 
 	public void sendMessage(IMessage message)

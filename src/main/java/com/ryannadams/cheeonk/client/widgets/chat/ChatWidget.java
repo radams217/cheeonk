@@ -22,7 +22,6 @@ import com.ryannadams.cheeonk.client.event.MessageSentEvent;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.SendMessage;
-import com.ryannadams.cheeonk.shared.buddy.IBuddy;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 import com.ryannadams.cheeonk.shared.message.CheeonkMessage;
@@ -44,9 +43,9 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	private final DispatchAsync dispatchAsync;
 
-	private final IBuddy participant;
+	private final JabberId participant;
 
-	public ChatWidget(final SimpleEventBus eventBus, final IBuddy participant)
+	public ChatWidget(final SimpleEventBus eventBus, final JabberId participant)
 	{
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 
@@ -115,7 +114,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	public IMessage getMessage()
 	{
-		return new CheeonkMessage(participant.getJabberId(), new JabberId(ConnectionKey.get().getUsername()), messageArea.getText());
+		return new CheeonkMessage(participant, new JabberId(ConnectionKey.get().getUsername()), messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler

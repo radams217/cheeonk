@@ -1,6 +1,7 @@
 package com.ryannadams.cheeonk.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 
 /**
  * @author radams217
@@ -22,7 +23,7 @@ public class ConnectionKey implements IsSerializable
 		if (instance == null)
 		{
 			// Abstract this out to a config file
-			instance = new ConnectionKey("localhost", 5222, "cheeonk.com");
+			instance = new ConnectionKey("localhost", 5222, "ryannadams.com");
 		}
 
 		return instance;
@@ -73,6 +74,11 @@ public class ConnectionKey implements IsSerializable
 		this.host = host;
 		this.port = port;
 		this.domain = domain;
+	}
+
+	public JabberId getJabberId()
+	{
+		return new JabberId(username + "@" + domain);
 	}
 
 	public void reset()

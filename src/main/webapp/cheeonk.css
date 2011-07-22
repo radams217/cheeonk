@@ -48,7 +48,7 @@ body {
 	width: 1024px;
 	margin: 15px auto;
 }
-	
+
 .panel {
 	position: relative;
 	float: left;
@@ -56,7 +56,7 @@ body {
 	height: 300px;
 	border-style: solid;
 	border-color: #eeeeff;
-	border-width:2px;
+	border-width: 2px;
 }
 
 #registerContainer {
@@ -66,7 +66,7 @@ body {
 	height: 300px;
 	border-style: solid;
 	border-color: #eeeeff;
-	border-width:2px;
+	border-width: 2px;
 }
 
 .banner {
@@ -179,6 +179,16 @@ a:hover {
 	width: 200px;
 	height: 200px;
 	background-color: transparent;
+}
+
+.statusEntry {
+	width: 100%;
+	padding: 2px;
+	background-color: transparent;
+}
+
+.statusEntry:hover {
+	background-color: #ddeeee;
 }
 
 /* buddyWidget */

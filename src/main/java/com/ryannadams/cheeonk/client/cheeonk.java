@@ -10,14 +10,12 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
@@ -43,7 +41,6 @@ import com.ryannadams.cheeonk.shared.action.GetEvent;
 import com.ryannadams.cheeonk.shared.action.Register;
 import com.ryannadams.cheeonk.shared.action.Signin;
 import com.ryannadams.cheeonk.shared.action.Signout;
-import com.ryannadams.cheeonk.shared.buddy.CheeonkBuddy;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 
@@ -53,7 +50,7 @@ import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandler, CloseHandler<Window>
 {
 	private final SimpleEventBus eventBus;
-	private final Messages messages;
+	// private final Messages messages;
 
 	private final AuthenticationWidget authenticationWidget;
 	private final BuddyListWidget buddyList;
@@ -91,7 +88,7 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
 		rootLogger = Logger.getLogger("");
-		messages = GWT.create(Messages.class);
+		// messages = GWT.create(Messages.class);
 
 		authenticationWidget = new AuthenticationWidget(eventBus);
 		buddyList = new BuddyListWidget(eventBus);
@@ -222,7 +219,8 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 
 		if (!chats.containsKey(key))
 		{
-			chats.put(key, new ChatWidgetDialog(eventBus, new CheeonkBuddy(key)));
+			// Fire onchatcreated event
+			chats.put(key, new ChatWidgetDialog(eventBus, key));
 		}
 
 		ChatWidgetContainer chatContainer = chats.get(key);
@@ -244,7 +242,7 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 
 		if (!chats.containsKey(key))
 		{
-			chats.put(key, new ChatWidgetDialog(eventBus, new CheeonkBuddy(key)));
+			chats.put(key, new ChatWidgetDialog(eventBus, key));
 		}
 
 		ChatWidgetContainer chatContainer = chats.get(key);
