@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.result.SigninResult;
 
 public abstract class Signedin implements AsyncCallback<SigninResult>
@@ -17,8 +18,8 @@ public abstract class Signedin implements AsyncCallback<SigninResult>
 	@Override
 	public void onSuccess(SigninResult result)
 	{
-		got(result.isSignedin(), result.getConnectionId());
+		got(result.getConnectionId(), result.getJabberId(), result.isConnected(), result.isSignedin());
 	}
 
-	public abstract void got(boolean isSignedin, String connectionId);
+	public abstract void got(String connectionId, JabberId jabberId, boolean isConnected, boolean isSignedin);
 }

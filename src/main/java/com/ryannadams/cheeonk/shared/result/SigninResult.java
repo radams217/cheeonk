@@ -2,9 +2,12 @@ package com.ryannadams.cheeonk.shared.result;
 
 import net.customware.gwt.dispatch.shared.Result;
 
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
+
 public class SigninResult implements Result
 {
 	private String connectionId;
+	private JabberId jabberId;
 	private boolean isConnected;
 	private boolean isSignedin;
 
@@ -15,9 +18,10 @@ public class SigninResult implements Result
 		this.isSignedin = false;
 	}
 
-	public SigninResult(String connectionId, boolean isConnected, boolean isSignedin)
+	public SigninResult(String connectionId, JabberId jabberId, boolean isConnected, boolean isSignedin)
 	{
 		this.connectionId = connectionId;
+		this.jabberId = jabberId;
 		this.isConnected = isConnected;
 		this.isSignedin = isSignedin;
 	}
@@ -30,6 +34,16 @@ public class SigninResult implements Result
 	public void setConnectionId(String connectionId)
 	{
 		this.connectionId = connectionId;
+	}
+
+	public JabberId getJabberId()
+	{
+		return jabberId;
+	}
+
+	public void setJabberId(JabberId jabberId)
+	{
+		this.jabberId = jabberId;
 	}
 
 	public boolean isConnected()
@@ -51,5 +65,4 @@ public class SigninResult implements Result
 	{
 		this.isSignedin = isSignedin;
 	}
-
 }

@@ -1,5 +1,9 @@
 package com.ryannadams.cheeonk.client.widgets;
 
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -7,6 +11,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -15,9 +20,15 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ryannadams.cheeonk.client.callback.Signedin;
+import com.ryannadams.cheeonk.client.callback.Signedout;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
 import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
+import com.ryannadams.cheeonk.shared.ConnectionKey;
+import com.ryannadams.cheeonk.shared.action.Signin;
+import com.ryannadams.cheeonk.shared.action.Signout;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 
 /**
  * @author radams217
@@ -28,38 +39,35 @@ import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
  *         the panel is built and set to the sign in state. A sign in button
  *         will appear on the panel and all credentials can be entered into a
  *         pop up window. The logout state contains text indicating the user
- *         name logged in and a logout button. All input in this class can be
- *         validating by calling the validate method.
+ *         name logged in and a logout button.
  */
 public class AuthenticationWidget extends Composite implements AuthenticationEventHandler
 {
+	private final DispatchAsync dispatchAsync;
 	private final HorizontalPanel panel;
 	private final Button signinButton;
 	private final Button signoutButton;
-	private final TextBox usernameField;
-	private final PasswordTextBox passwordField;
-	private final Button goButton;
-
-	// TODO: Add Remember Me CheckBox
-	// TODO: Add Forgot Password? Link
+	private final SigninPopupPanel signinPopupPanel;
 
 	/**
 	 * Default Constructor the initiates the panel to the sign in state.
 	 * 
 	 * @param eventBus
 	 */
-	public AuthenticationWidget(SimpleEventBus eventBus)
+	public AuthenticationWidget(final SimpleEventBus eventBus)
 	{
+		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+
 		eventBus.addHandler(SignedinEvent.TYPE, this);
 		eventBus.addHandler(SignedoutEvent.TYPE, this);
 
-		signinButton = new Button("Sign in", new ClickHandler()
+		this.signinPopupPanel = new SigninPopupPanel(eventBus);
+
+		this.signinButton = new Button("Sign in", new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				final SigninPopupPanel signinPopupPanel = new SigninPopupPanel();
-
 				signinPopupPanel.setPopupPositionAndShow(new PopupPanel.PositionCallback()
 				{
 					@Override
@@ -70,81 +78,105 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 						signinPopupPanel.setPopupPosition(left, top);
 					}
 				});
-
-				signinPopupPanel.show();
-				usernameField.setFocus(true);
 			}
 		});
 
-		signoutButton = new Button("Sign out", new ClickHandler()
+		this.signoutButton = new Button("Sign out", new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				usernameField.setText("");
-				passwordField.setText("");
-			}
-		});
-
-		usernameField = new TextBox();
-		passwordField = new PasswordTextBox();
-		goButton = new Button("go");
-
-		passwordField.addKeyPressHandler(new KeyPressHandler()
-		{
-			@Override
-			public void onKeyPress(KeyPressEvent event)
-			{
-				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+				dispatchAsync.execute(new Signout(ConnectionKey.get()), new Signedout()
 				{
-					goButton.click();
-				}
+					@Override
+					public void got(boolean isSignedout)
+					{
+						if (isSignedout)
+						{
+							eventBus.fireEvent(new SignedoutEvent());
+						}
+
+					}
+				});
 
 			}
-
 		});
 
-		panel = new HorizontalPanel();
-		panel.add(signinButton);
+		this.panel = new HorizontalPanel();
+		this.panel.add(signinButton);
 
 		initWidget(panel);
 	}
 
-	public boolean validate()
+	private class SigninPopupPanel extends DecoratedPopupPanel implements AuthenticationEventHandler
 	{
-		if (usernameField.getText().equals("") || passwordField.getText().equals(""))
-		{
-			return false;
-		}
+		private final DispatchAsync dispatchAsync;
 
-		return true;
-	}
+		private final TextBox usernameField;
+		private final PasswordTextBox passwordField;
+		private final HTML errorMessage;
+		private final CheckBox staySignedIn;
+		private final Button goButton;
 
-	public String getUsername()
-	{
-		return usernameField.getText();
-	}
+		// TODO: Add Forgot Password? Link
 
-	public String getPassword()
-	{
-		return passwordField.getText();
-	}
-
-	public void addGoClickHandler(ClickHandler clickHandler)
-	{
-		goButton.addClickHandler(clickHandler);
-	}
-
-	public void addSignoutClickHandler(ClickHandler clickHandler)
-	{
-		signoutButton.addClickHandler(clickHandler);
-	}
-
-	private class SigninPopupPanel extends DecoratedPopupPanel
-	{
-		public SigninPopupPanel()
+		public SigninPopupPanel(final SimpleEventBus eventBus)
 		{
 			super(true);
+
+			dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+
+			eventBus.addHandler(SignedinEvent.TYPE, this);
+			eventBus.addHandler(SignedoutEvent.TYPE, this);
+
+			usernameField = new TextBox();
+			passwordField = new PasswordTextBox();
+			errorMessage = new HTML();
+			errorMessage.setStyleName("signinPopupPanel-errorMessage");
+
+			staySignedIn = new CheckBox("Stay signed in");
+
+			goButton = new Button("go", new ClickHandler()
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					dispatchAsync.execute(new Signin(usernameField.getText(), passwordField.getText()), new Signedin()
+					{
+						@Override
+						public void got(String connectionId, JabberId jabberId, boolean isConnected, boolean isSignedin)
+						{
+							if (isSignedin)
+							{
+								eventBus.fireEvent(new SignedinEvent(connectionId, jabberId));
+							}
+							else
+							{
+								if (isConnected)
+								{
+									errorMessage.setHTML("The username or password you entered is incorrect.");
+								}
+								else
+								{
+									errorMessage.setHTML("Cannot connected to the cheeonk server.");
+								}
+							}
+						}
+					});
+				}
+			});
+
+			passwordField.addKeyPressHandler(new KeyPressHandler()
+			{
+				@Override
+				public void onKeyPress(KeyPressEvent event)
+				{
+					if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+					{
+						goButton.click();
+					}
+				}
+			});
 
 			VerticalPanel panel = new VerticalPanel();
 			panel.setStyleName("signinPanel");
@@ -152,26 +184,36 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 			panel.add(usernameField);
 			panel.add(new HTML("Password:"));
 			panel.add(passwordField);
+			panel.add(errorMessage);
+			panel.add(staySignedIn);
 			panel.add(goButton);
-
-			goButton.addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					hide();
-				}
-			});
 
 			add(panel);
 		}
 
+		public String getUsername()
+		{
+			return usernameField.getText();
+		}
+
+		@Override
+		public void onSignedin(SignedinEvent event)
+		{
+			hide();
+			passwordField.setText("");
+		}
+
+		@Override
+		public void onSignedout(SignedoutEvent event)
+		{
+			usernameField.setText("");
+		}
 	}
 
 	@Override
 	public void onSignedin(SignedinEvent event)
 	{
-		HTML loggedinAs = new HTML("Logged in as " + getUsername());
+		HTML loggedinAs = new HTML("Logged in as " + signinPopupPanel.getUsername());
 		loggedinAs.addStyleName("authenticationWidget-LoggedIn");
 
 		panel.clear();

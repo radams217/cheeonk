@@ -29,23 +29,20 @@ import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
 public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
 {
-	private final VerticalPanel panel;
-	private final Button addButton;
-
 	private final DispatchAsync dispatchAsync;
-
 	private final SimpleEventBus eventBus;
+	private final Button addButton;
+	private final VerticalPanel panel;
 
 	public BuddyListWidget(final SimpleEventBus eventBus)
 	{
 		this.eventBus = eventBus;
-
 		this.eventBus.addHandler(SignedinEvent.TYPE, this);
 		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 		this.eventBus.addHandler(AddBuddyEvent.TYPE, this);
 		this.eventBus.addHandler(RemoveBuddyEvent.TYPE, this);
 
-		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
 		panel = new VerticalPanel();
 		panel.addStyleName("buddyListWidget");
@@ -137,7 +134,6 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	public void onSignedin(SignedinEvent event)
 	{
 		// Add utility Buttons to the Buddy List to come
-		panel.add(new PresenceWidget(eventBus));
 		panel.add(addButton);
 	}
 

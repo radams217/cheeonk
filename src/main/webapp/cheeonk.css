@@ -241,6 +241,10 @@ a:hover {
 	font-size: 9pt;
 }
 
+.signinPopupPanel-errorMessage {
+	color: red;	
+}
+
 /* ChatWidget */
 .chatWidget {
 	width: 400px;

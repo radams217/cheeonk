@@ -7,6 +7,8 @@ import com.ryannadams.cheeonk.shared.result.SigninResult;
 
 public class Signin implements Action<SigninResult>, IKey
 {
+	private String username;
+	private String password;
 	private ConnectionKey key;
 
 	@Deprecated
@@ -15,9 +17,21 @@ public class Signin implements Action<SigninResult>, IKey
 
 	}
 
-	public Signin(ConnectionKey key)
+	public Signin(String username, String password)
 	{
-		this.key = key;
+		this.username = username;
+		this.password = password;
+		this.key = ConnectionKey.get();
+	}
+
+	public String getUsername()
+	{
+		return username;
+	}
+
+	public String getPassword()
+	{
+		return password;
 	}
 
 	@Override

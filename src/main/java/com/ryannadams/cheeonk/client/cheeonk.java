@@ -11,7 +11,6 @@ import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -23,37 +22,34 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.ryannadams.cheeonk.client.callback.GotEvent;
 import com.ryannadams.cheeonk.client.callback.Registered;
-import com.ryannadams.cheeonk.client.callback.Signedin;
-import com.ryannadams.cheeonk.client.callback.Signedout;
 import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
 import com.ryannadams.cheeonk.client.event.MessageSentEvent;
 import com.ryannadams.cheeonk.client.event.SignedinEvent;
 import com.ryannadams.cheeonk.client.event.SignedoutEvent;
+import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
 import com.ryannadams.cheeonk.client.handler.ChatEventHandler;
 import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
 import com.ryannadams.cheeonk.client.widgets.AuthenticationWidget;
 import com.ryannadams.cheeonk.client.widgets.BuddyListWidget;
+import com.ryannadams.cheeonk.client.widgets.PresenceWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.client.widgets.chat.ChatWidgetContainer;
 import com.ryannadams.cheeonk.client.widgets.chat.ChatWidgetDialog;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetEvent;
 import com.ryannadams.cheeonk.shared.action.Register;
-import com.ryannadams.cheeonk.shared.action.Signin;
-import com.ryannadams.cheeonk.shared.action.Signout;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandler, CloseHandler<Window>
+public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageEventHandler, ChatEventHandler, CloseHandler<Window>
 {
 	private final SimpleEventBus eventBus;
 	// private final Messages messages;
 
 	private final AuthenticationWidget authenticationWidget;
-	private final BuddyListWidget buddyList;
 	private final RegistrationWidget registrationWidget;
 
 	private final Logger rootLogger;
@@ -80,6 +76,8 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 		Window.addCloseHandler(this);
 
 		eventBus = new SimpleEventBus();
+		eventBus.addHandler(SignedinEvent.TYPE, this);
+		eventBus.addHandler(SignedoutEvent.TYPE, this);
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 		eventBus.addHandler(ChatCreatedEvent.TYPE, this);
 
@@ -91,7 +89,6 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 		// messages = GWT.create(Messages.class);
 
 		authenticationWidget = new AuthenticationWidget(eventBus);
-		buddyList = new BuddyListWidget(eventBus);
 		registrationWidget = new RegistrationWidget()
 		{
 			@Override
@@ -131,65 +128,9 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 	@Override
 	public void onModuleLoad()
 	{
-		authenticationWidget.addGoClickHandler(new ClickHandler()
-		{
-			@Override
-			public void onClick(ClickEvent event)
-			{
-				if (authenticationWidget.validate())
-				{
-					ConnectionKey.get().setUsername(authenticationWidget.getUsername());
-					ConnectionKey.get().setPassword(authenticationWidget.getPassword());
-
-					dispatchAsync.execute(new Signin(ConnectionKey.get()), new Signedin()
-					{
-						@Override
-						public void got(boolean isSignedin, String connectionId)
-						{
-							if (isSignedin)
-							{
-								ConnectionKey.get().setConnectionId(connectionId);
-								// Use cookies to determined if the user is
-								// already logged into the server
-								// Cookies.setCookie("connectionId",
-								// connectionId);
-
-								getEvent();
-
-								eventBus.fireEvent(new SignedinEvent());
-							}
-						}
-					});
-				}
-			}
-		});
-
-		authenticationWidget.addSignoutClickHandler(new ClickHandler()
-		{
-			@Override
-			public void onClick(ClickEvent event)
-			{
-				dispatchAsync.execute(new Signout(ConnectionKey.get()), new Signedout()
-				{
-					@Override
-					public void got(boolean isSignedout)
-					{
-						if (isSignedout)
-						{
-							ConnectionKey.get().reset();
-							eventBus.fireEvent(new SignedoutEvent());
-						}
-
-					}
-				});
-
-			}
-		});
-
 		RootPanel.get("banner").add(new Image(ImageResources.INSTANCE.getBanner()));
 		RootPanel.get("registerContainer").add(registrationWidget);
 		RootPanel.get("authenticationWidget").add(authenticationWidget);
-		RootPanel.get("buddyListContainer").add(buddyList);
 	}
 
 	public void getEvent()
@@ -264,5 +205,25 @@ public class cheeonk implements EntryPoint, MessageEventHandler, ChatEventHandle
 		// }
 		// });
 		// }
+	}
+
+	@Override
+	public void onSignedin(SignedinEvent event)
+	{
+		RootPanel.get("buddyListContainer").add(new PresenceWidget(eventBus, event.getJabberId()));
+		RootPanel.get("buddyListContainer").add(new BuddyListWidget(eventBus));
+
+		ConnectionKey.get().setConnectionId(event.getConnectionId());
+
+		getEvent();
+	}
+
+	@Override
+	public void onSignedout(SignedoutEvent event)
+	{
+		RootPanel.get("buddyListContainer").clear();
+
+		ConnectionKey.get().reset();
+
 	}
 }

@@ -1,7 +1,6 @@
 package com.ryannadams.cheeonk.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.ryannadams.cheeonk.shared.buddy.JabberId;
 
 /**
  * @author radams217
@@ -14,6 +13,7 @@ import com.ryannadams.cheeonk.shared.buddy.JabberId;
  *         objects that it needs to complete the task.
  *         </p>
  */
+// TODO use prom for this.
 public class ConnectionKey implements IsSerializable
 {
 	private static ConnectionKey instance;
@@ -23,7 +23,7 @@ public class ConnectionKey implements IsSerializable
 		if (instance == null)
 		{
 			// Abstract this out to a config file
-			instance = new ConnectionKey("localhost", 5222, "cheeonk.com");
+			instance = new ConnectionKey("cheeonk.com", 5222, "cheeonk.com");
 		}
 
 		return instance;
@@ -32,35 +32,12 @@ public class ConnectionKey implements IsSerializable
 	private String connectionId;
 	private String host;
 	private int port;
-	private String username;
 	private String domain;
-	private String password;
 
 	@Deprecated
 	public ConnectionKey()
 	{
 		// Do Nothing
-	}
-
-	/**
-	 * @param host
-	 *            Most commonly localhost
-	 * @param port
-	 *            5222 for chat without SSL
-	 * @param userName
-	 *            UserName without domain or resource, unique to the domain
-	 * @param domain
-	 *            for example @cheeonk
-	 * @param password
-	 */
-	public ConnectionKey(String host, int port, String username, String domain, String password)
-	{
-		this.connectionId = null;
-		this.host = host;
-		this.port = port;
-		this.username = username;
-		this.domain = domain;
-		this.password = password;
 	}
 
 	/**
@@ -76,16 +53,9 @@ public class ConnectionKey implements IsSerializable
 		this.domain = domain;
 	}
 
-	public JabberId getJabberId()
-	{
-		return new JabberId(username + "@" + domain);
-	}
-
 	public void reset()
 	{
 		connectionId = null;
-		username = "";
-		password = "";
 	}
 
 	/**
@@ -121,16 +91,6 @@ public class ConnectionKey implements IsSerializable
 		this.port = port;
 	}
 
-	public String getUsername()
-	{
-		return username;
-	}
-
-	public void setUsername(String username)
-	{
-		this.username = username;
-	}
-
 	public String getDomain()
 	{
 		return domain;
@@ -139,16 +99,6 @@ public class ConnectionKey implements IsSerializable
 	public void setDomain(String domain)
 	{
 		this.domain = domain;
-	}
-
-	public String getPassword()
-	{
-		return password;
-	}
-
-	public void setPassword(String password)
-	{
-		this.password = password;
 	}
 
 	@Override
@@ -160,7 +110,6 @@ public class ConnectionKey implements IsSerializable
 		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		result = prime * result + ((host == null) ? 0 : host.hashCode());
 		result = prime * result + port;
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
@@ -200,14 +149,7 @@ public class ConnectionKey implements IsSerializable
 				return false;
 		if (port != other.port)
 			return false;
-		if (username == null)
-		{
-			if (other.username != null)
-				return false;
-		}
-		else
-			if (!username.equals(other.username))
-				return false;
+
 		return true;
 	}
 

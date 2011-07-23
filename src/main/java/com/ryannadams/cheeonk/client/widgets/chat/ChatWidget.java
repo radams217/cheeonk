@@ -114,7 +114,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	public IMessage getMessage()
 	{
-		return new CheeonkMessage(participant, new JabberId(ConnectionKey.get().getUsername()), messageArea.getText());
+		return new CheeonkMessage(participant, new JabberId("test"), messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler

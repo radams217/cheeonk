@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -35,38 +34,29 @@ import com.ryannadams.cheeonk.shared.event.PresenceChangeEvent;
 
 public class PresenceWidget extends Composite implements BuddyEventHandler
 {
+	private final DispatchAsync dispatchAsync;
+	private final SimpleEventBus eventBus;
 	private final VerticalPanel panel;
 
-	private Label name;
-	private TextBox status;
 	private Image statusDot;
+	private TextBox status;
+	private CheeonkPresence currentPresence;
 	private StatusPopupPanel popup;
 
-	private final DispatchAsync dispatchAsync;
-
-	protected final SimpleEventBus eventBus;
-
-	public PresenceWidget(final SimpleEventBus eventBus)
+	public PresenceWidget(final SimpleEventBus eventBus, final JabberId jabberId)
 	{
+		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+
 		this.eventBus = eventBus;
 		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
-		panel = new VerticalPanel();
-		statusDot = new Image(ImageResources.INSTANCE.getGreenDot());
-		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
-		VerticalPanel buddyLocal = new VerticalPanel();
-
-		HorizontalPanel statusDotNamePanel = new HorizontalPanel();
-		statusDotNamePanel.add(statusDot);
+		this.panel = new VerticalPanel();
+		this.statusDot = new Image(ImageResources.INSTANCE.getGreenDot());
 		this.statusDot.setStyleName("buddyWidget-statusDot");
-
-		statusDotNamePanel.add(new HTML(ConnectionKey.get().getUsername()));
-
-		buddyLocal.add(statusDotNamePanel);
-
 		this.status = new TextBox();
+		this.currentPresence = new CheeonkPresence(jabberId, Mode.AVAILABLE, status.getText());
 
-		status.addClickHandler(new ClickHandler()
+		this.status.addClickHandler(new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
@@ -87,39 +77,38 @@ public class PresenceWidget extends Composite implements BuddyEventHandler
 			}
 		});
 
-		status.addKeyDownHandler(new KeyDownHandler()
+		this.status.addKeyDownHandler(new KeyDownHandler()
 		{
 			@Override
 			public void onKeyDown(KeyDownEvent event)
 			{
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
-					dispatchAsync.execute(
-							new ChangePresence(ConnectionKey.get(), new CheeonkPresence(ConnectionKey.get().getJabberId(), Mode.AVAILABLE, status.getText())),
-							new ChangedPresence()
-							{
-								@Override
-								public void got(CheeonkPresence cheeonkPresence)
-								{
-									popup.hide();
-									status.setReadOnly(true);
-									eventBus.fireEvent(new PresenceChangeEvent(cheeonkPresence));
-								}
-							});
+					dispatchAsync.execute(new ChangePresence(ConnectionKey.get(), currentPresence), new ChangedPresence()
+					{
+						@Override
+						public void got(CheeonkPresence cheeonkPresence)
+						{
+							popup.hide();
+							status.setReadOnly(true);
+							update(cheeonkPresence);
+						}
+					});
 
 				}
 
 			}
 		});
+		this.popup = new StatusPopupPanel();
 
-		popup = new StatusPopupPanel();
+		HorizontalPanel statusDotNamePanel = new HorizontalPanel();
+		statusDotNamePanel.add(statusDot);
+		statusDotNamePanel.add(new HTML(jabberId.toString()));
 
-		buddyLocal.add(status);
-
-		panel.add(buddyLocal);
+		panel.add(statusDotNamePanel);
+		panel.add(status);
 
 		initWidget(panel);
-
 	}
 
 	private class StatusPopupPanel extends PopupPanel
@@ -159,7 +148,7 @@ public class PresenceWidget extends Composite implements BuddyEventHandler
 							public void got(CheeonkPresence cheeonkPresence)
 							{
 								popup.hide();
-								eventBus.fireEvent(new PresenceChangeEvent(cheeonkPresence));
+								update(cheeonkPresence);
 							}
 						});
 					}
@@ -179,24 +168,9 @@ public class PresenceWidget extends Composite implements BuddyEventHandler
 
 	}
 
-	@Override
-	public void onAddBuddy(AddBuddyEvent event)
+	public void update(CheeonkPresence presence)
 	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onRemoveBuddy(RemoveBuddyEvent event)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onPresenceChange(PresenceChangeEvent event)
-	{
-		CheeonkPresence presence = event.getPresence();
+		currentPresence = presence;
 		ImageResource image = ImageResources.INSTANCE.getGrayDot();
 
 		if (presence.isAvailable())
@@ -220,6 +194,26 @@ public class PresenceWidget extends Composite implements BuddyEventHandler
 		}
 
 		statusDot.setResource(image);
+	}
+
+	@Override
+	public void onAddBuddy(AddBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRemoveBuddy(RemoveBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPresenceChange(PresenceChangeEvent event)
+	{
+
 	}
 
 }

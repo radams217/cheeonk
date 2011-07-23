@@ -14,6 +14,7 @@ import com.ryannadams.cheeonk.server.Connection;
 import com.ryannadams.cheeonk.server.ConnectionDriver;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.Signin;
+import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.result.SigninResult;
 
 public class SigninHandler implements ActionHandler<Signin, SigninResult>
@@ -32,12 +33,11 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 
 		try
 		{
-			connection.login(key.getUsername(), key.getPassword());
+			connection.login(action.getUsername(), action.getPassword());
 			Logger.getLogger("").log(Level.FINER, "Client logged in as " + connection.getUser());
 
 			// For now accept all subscription requests
 			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);
-
 			connection.processRoster();
 
 			connection.addListeners();
@@ -53,6 +53,8 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 		}
 
 		SigninResult result = new SigninResult();
+		// Change this perhaps
+		result.setJabberId(new JabberId(action.getUsername() + "@" + key.getDomain()));
 		result.setConnectionId(connection.getConnectionID());
 		result.setConnected(connection.isConnected());
 		result.setSignedin(connection.isAuthenticated());

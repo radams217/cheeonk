@@ -31,7 +31,6 @@ public class ConnectionPool
 			if (!connections.get(key).isConnected())
 			{
 				removeConnection(key);
-				logger.log(Level.FINEST, "Removing: " + key.getUsername() + "@" + key.getHost());
 			}
 		}
 
@@ -70,7 +69,6 @@ public class ConnectionPool
 				key.setConnectionId(connection.getConnectionID());
 
 				connections.put(key, connection);
-				logger.log(Level.FINEST, "Creating Connection for " + key.getUsername() + "@" + key.getHost());
 			}
 			catch (XMPPException e)
 			{
