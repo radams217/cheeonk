@@ -135,23 +135,31 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 
 		cheeonkPresence.setStatus(presence.getStatus());
 
-		switch (presence.getMode())
+		if (presence.getMode() != null)
 		{
-			case available:
-				cheeonkPresence.setMode(CheeonkPresence.Mode.AVAILABLE);
-				break;
-			case away:
-				cheeonkPresence.setMode(CheeonkPresence.Mode.AWAY);
-				break;
-			case chat:
-				cheeonkPresence.setMode(CheeonkPresence.Mode.CHAT);
-				break;
-			case dnd:
-				cheeonkPresence.setMode(CheeonkPresence.Mode.DND);
-				break;
-			case xa:
-				cheeonkPresence.setMode(CheeonkPresence.Mode.XA);
-				break;
+			switch (presence.getMode())
+			{
+				case available:
+					cheeonkPresence.setMode(CheeonkPresence.Mode.AVAILABLE);
+					break;
+				case away:
+					cheeonkPresence.setMode(CheeonkPresence.Mode.AWAY);
+					break;
+				case chat:
+					cheeonkPresence.setMode(CheeonkPresence.Mode.CHAT);
+					break;
+				case dnd:
+					cheeonkPresence.setMode(CheeonkPresence.Mode.DND);
+					break;
+				case xa:
+					cheeonkPresence.setMode(CheeonkPresence.Mode.XA);
+					break;
+			}
+		}
+		else
+		{
+			cheeonkPresence.setMode(CheeonkPresence.Mode.AVAILABLE);
+
 		}
 
 		return cheeonkPresence;

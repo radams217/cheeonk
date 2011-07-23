@@ -23,7 +23,7 @@ public class ConnectionKey implements IsSerializable
 		if (instance == null)
 		{
 			// Abstract this out to a config file
-			instance = new ConnectionKey("localhost", 5222, "ryannadams.com");
+			instance = new ConnectionKey("localhost", 5222, "cheeonk.com");
 		}
 
 		return instance;
