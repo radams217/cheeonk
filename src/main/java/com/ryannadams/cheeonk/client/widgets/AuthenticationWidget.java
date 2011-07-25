@@ -141,6 +141,8 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 				@Override
 				public void onClick(ClickEvent event)
 				{
+					hide();
+
 					dispatchAsync.execute(new Signin(usernameField.getText(), passwordField.getText()), new Signedin()
 					{
 						@Override
@@ -152,14 +154,14 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 							}
 							else
 							{
-								if (isConnected)
-								{
-									errorMessage.setHTML("The username or password you entered is incorrect.");
-								}
-								else
-								{
-									errorMessage.setHTML("Cannot connected to the cheeonk server.");
-								}
+								// if (isConnected)
+								// {
+								errorMessage.setHTML("The username or password you entered is incorrect.");
+								// }
+								// else
+								// {
+								// errorMessage.setHTML("Cannot connected to the cheeonk server.");
+								// }
 							}
 						}
 					});
@@ -199,7 +201,6 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 		@Override
 		public void onSignedin(SignedinEvent event)
 		{
-			hide();
 			passwordField.setText("");
 		}
 

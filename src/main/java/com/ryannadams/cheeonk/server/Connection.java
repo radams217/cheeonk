@@ -179,7 +179,7 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 				break;
 		}
 
-		cheeonkPresence.setStatus(presence.getStatus());
+		presence.setStatus(cheeonkPresence.getStatus());
 
 		switch (cheeonkPresence.getMode())
 		{

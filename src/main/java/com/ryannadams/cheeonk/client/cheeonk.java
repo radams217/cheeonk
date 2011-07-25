@@ -160,7 +160,6 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		if (!chats.containsKey(key))
 		{
-			// Fire onchatcreated event
 			chats.put(key, new ChatWidgetDialog(eventBus, key));
 		}
 
