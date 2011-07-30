@@ -113,7 +113,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 
 			}
 		});
-
+		panel.add(addButton);
 		initWidget(panel);
 	}
 
@@ -134,7 +134,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	public void onSignedin(SignedinEvent event)
 	{
 		// Add utility Buttons to the Buddy List to come
-		panel.add(addButton);
+
 	}
 
 	@Override

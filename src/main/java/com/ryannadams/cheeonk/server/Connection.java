@@ -96,20 +96,26 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	@Override
 	public void entriesAdded(Collection<String> entries)
 	{
+		for (String entry : entries)
+		{
+			JabberId jabberId = new JabberId(entry);
+
+			IBuddy buddy = new CheeonkBuddy(jabberId, getRoster().getEntry(jabberId.toString()).getName());
+
+			eventDeque.add(new AddBuddyEvent(buddy));
+		}
 
 	}
 
 	@Override
 	public void entriesDeleted(Collection<String> entries)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void entriesUpdated(Collection<String> entries)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
