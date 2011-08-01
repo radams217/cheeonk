@@ -11,13 +11,11 @@ import com.ryannadams.cheeonk.shared.message.IMessage;
  *         for when a message is received and the container needs to be
  *         displayed or closed if the user closes the chat.
  */
-public interface ChatWidgetContainer
+public interface IChatWidget
 {
 	void show();
 
 	void hide();
-
-	void setText(String text);
 
 	void addCheeonk(IMessage message);
 }

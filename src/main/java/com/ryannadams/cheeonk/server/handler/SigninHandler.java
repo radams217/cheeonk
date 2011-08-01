@@ -31,8 +31,11 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 		ConnectionKey key = action.getConnectionKey();
 		Connection connection = ConnectionDriver.getConnection(key);
 
+		SigninResult result = new SigninResult();
+
 		try
 		{
+			result.setConnected(connection.isConnected());
 			connection.login(action.getUsername(), action.getPassword());
 			Logger.getLogger("").log(Level.FINER, "Client logged in as " + connection.getUser());
 
@@ -52,11 +55,9 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 			}
 		}
 
-		SigninResult result = new SigninResult();
 		// Change this perhaps
 		result.setJabberId(new JabberId(action.getUsername() + "@" + key.getDomain()));
 		result.setConnectionId(connection.getConnectionID());
-		result.setConnected(connection.isConnected());
 		result.setSignedin(connection.isAuthenticated());
 
 		return result;
