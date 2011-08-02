@@ -91,6 +91,7 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		this.authenticationWidget = new AuthenticationWidget(eventBus);
 		this.signinWidget = new SigninWidget(eventBus);
+		this.signinWidget.setStyleName("signinPanelFull");
 
 		this.headerPanel = new VerticalPanel();
 		this.headerPanel.setStyleName("header");
@@ -98,12 +99,15 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		this.headerPanel.add(new Image(ImageResources.INSTANCE.getBanner()));
 
 		this.westPanel = new VerticalPanel();
+		this.westPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		this.westPanel.setStyleName("west");
 
 		this.eastPanel = new VerticalPanel();
+		this.eastPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		this.eastPanel.setStyleName("east");
 
 		this.centerPanel = new VerticalPanel();
+		this.centerPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		this.centerPanel.setStyleName("center");
 
 		this.footerPanel = new VerticalPanel();
@@ -287,7 +291,6 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	public void onSignedin(SignedinEvent event)
 	{
 		VerticalPanel buddyListPanel = new VerticalPanel();
-		buddyListPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		buddyListPanel.setStyleName("buddyListContainer");
 		buddyListPanel.add(new PresenceWidget(eventBus, event.getJabberId()));
 		buddyListPanel.add(new BuddyListWidget(eventBus));

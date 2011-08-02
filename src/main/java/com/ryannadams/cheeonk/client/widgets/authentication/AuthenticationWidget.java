@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -51,7 +50,7 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 		eventBus.addHandler(SignedinEvent.TYPE, this);
 		eventBus.addHandler(SignedoutEvent.TYPE, this);
 
-		final DecoratedPopupPanel signinWidgetPopup = new DecoratedPopupPanel(true);
+		final PopupPanel signinWidgetPopup = new PopupPanel(true);
 		signinWidgetPopup.setAnimationEnabled(true);
 
 		this.signinWidget = new SigninWidget(eventBus)

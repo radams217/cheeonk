@@ -47,7 +47,7 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		this.usernameField = new TextBox();
 		this.passwordField = new PasswordTextBox();
 		this.errorMessage = new HTML();
-		this.errorMessage.setStyleName("signinPopupPanel-errorMessage");
+		this.errorMessage.setStyleName("signinWidget-errorMessage");
 
 		this.staySignedIn = new CheckBox("Stay signed in");
 
@@ -66,7 +66,6 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		});
 
 		VerticalPanel panel = new VerticalPanel();
-		panel.setStyleName("signinPanel");
 		panel.add(new HTML("Username:"));
 		panel.add(usernameField);
 		panel.add(new HTML("Password:"));
@@ -76,7 +75,7 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		panel.add(goButton);
 
 		initWidget(panel);
-		usernameField.setFocus(true);
+		setStyleName("signinWidget");
 	}
 
 	protected void onLoginProblem(String message)
