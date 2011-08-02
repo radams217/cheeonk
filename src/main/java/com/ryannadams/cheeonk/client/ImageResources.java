@@ -28,4 +28,13 @@ public interface ImageResources extends ClientBundle
 
 	@Source("com/ryannadams/cheeonk/client/images/graydot.png")
 	public ImageResource getGrayDot();
+
+	@Source("com/ryannadams/cheeonk/client/images/minimize.png")
+	public ImageResource getMinimizeSquare();
+
+	@Source("com/ryannadams/cheeonk/client/images/maximize.png")
+	public ImageResource getMaximizeSquare();
+
+	@Source("com/ryannadams/cheeonk/client/images/close.png")
+	public ImageResource getCloseSquare();
 }

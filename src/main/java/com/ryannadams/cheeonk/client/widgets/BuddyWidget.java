@@ -15,6 +15,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -62,6 +63,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		buddyStatus.setStyleName("buddyWidget-status");
 
 		VerticalPanel panel = new VerticalPanel();
+		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		panel.setStyleName("buddyWidget");
 		HorizontalPanel statusDotNamePanel = new HorizontalPanel();
 		statusDotNamePanel.add(statusDot);

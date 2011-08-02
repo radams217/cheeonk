@@ -7,38 +7,53 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.ryannadams.cheeonk.client.ImageResources;
 import com.ryannadams.cheeonk.shared.buddy.JabberId;
 import com.ryannadams.cheeonk.shared.message.IMessage;
 
-public class ChatPanelPlaceHolder extends Composite implements HasClickHandlers, IChatWidget
+public class ChatPanelPlaceHolder extends Composite implements HasClickHandlers, IChatWidget, ClickHandler
 {
 	private final ChatWidgetPopup chatPopup;
-	private final VerticalPanel panel;
+	private final HorizontalPanel panel;
 
 	public ChatPanelPlaceHolder(SimpleEventBus eventBus, JabberId jabberId)
 	{
 		chatPopup = new ChatWidgetPopup(eventBus, jabberId);
 
-		panel = new VerticalPanel();
+		panel = new HorizontalPanel();
 		panel.add(new HTML(jabberId.toString()));
 
-		addClickHandler(new ClickHandler()
+		PushButton minimizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMinimizeSquare()), new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				if (chatPopup.isShowing())
-				{
-					chatPopup.hide();
-				}
-				else
-				{
-					show();
-				}
+				hide();
 			}
 		});
+
+		minimizeButton.setStylePrimaryName("nostyle");
+
+		PushButton maximizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMaximizeSquare()), new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				show();
+			}
+		});
+
+		maximizeButton.setStylePrimaryName("nostyle");
+		PushButton closeButton = new PushButton(new Image(ImageResources.INSTANCE.getCloseSquare()), this);
+		closeButton.setStylePrimaryName("nostyle");
+
+		panel.add(minimizeButton);
+		panel.add(maximizeButton);
+		panel.add(closeButton);
 
 		initWidget(panel);
 		setStyleName("chatHolder");
@@ -75,6 +90,12 @@ public class ChatPanelPlaceHolder extends Composite implements HasClickHandlers,
 	public void addCheeonk(IMessage message)
 	{
 		chatPopup.addCheeonk(message);
+	}
+
+	@Override
+	public void onClick(ClickEvent event)
+	{
+
 	}
 
 }

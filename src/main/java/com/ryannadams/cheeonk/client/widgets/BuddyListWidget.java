@@ -10,6 +10,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -45,6 +46,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
 		panel = new VerticalPanel();
+		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		panel.addStyleName("buddyListWidget");
 
 		addButton = new Button("Add Buddy");
@@ -115,6 +117,7 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		});
 		panel.add(addButton);
 		initWidget(panel);
+		setStyleName("buddyListWidget");
 	}
 
 	private class AddBuddyPopupPanel extends PopupPanel

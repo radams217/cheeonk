@@ -21,6 +21,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -107,11 +108,13 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		this.footerPanel = new VerticalPanel();
 		this.footerPanel.setStyleName("footer");
-		this.footerPanel.add(new HTML("Cheeonk &#169; 2011 - All Rights Reserved."));
+
+		HTML copyright = new HTML("Cheeonk &#169; 2011 - All Rights Reserved.");
+		copyright.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		this.footerPanel.add(copyright);
 
 		chatPanel = new HorizontalPanel();
-		chatPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		// chatPanel.setStyleName("chatPanel");
+		chatPanel.setStyleName("chatPanel");
 
 		Window.addWindowClosingHandler(new Window.ClosingHandler()
 		{
@@ -144,10 +147,8 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 					{
 						if (isRegistered)
 						{
-							// RootPanel.get("registerContainer").clear();
-							// RootPanel.get("registerContainer").add(new
-							// HTML("Registration Complete.  Log in Above."));
-							// Send email with registration information
+							centerPanel.clear();
+							centerPanel.add(new HTML("Registration Complete."));
 						}
 
 					}
@@ -171,7 +172,7 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	{
 		rootPanel.addNorth(headerPanel, 100);
 		rootPanel.addSouth(footerPanel, 100);
-		rootPanel.addWest(westPanel, 300);
+		rootPanel.addWest(westPanel, 250);
 		rootPanel.addEast(eastPanel, 300);
 		rootPanel.add(centerPanel);
 
@@ -207,12 +208,22 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		JabberId key = event.getMessage().getFrom();
+		final JabberId key = event.getMessage().getFrom();
 
 		if (!chats.containsKey(key))
 		{
-			ChatPanelPlaceHolder chatPlaceHolder = new ChatPanelPlaceHolder(eventBus, key);
-			chatPanel.insert(chatPlaceHolder, 0);
+			ChatPanelPlaceHolder chatPlaceHolder = new ChatPanelPlaceHolder(eventBus, key)
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					this.hide();
+					chatPanel.remove(this);
+					chats.remove(key);
+				}
+			};
+
+			chatPanel.add(chatPlaceHolder);
 
 			chats.put(key, chatPlaceHolder);
 		}
@@ -232,12 +243,21 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	@Override
 	public void onChatCreated(ChatCreatedEvent event)
 	{
-		JabberId key = event.getBuddy().getJabberId();
+		final JabberId key = event.getBuddy().getJabberId();
 
 		if (!chats.containsKey(key))
 		{
-			ChatPanelPlaceHolder chatPlaceHolder = new ChatPanelPlaceHolder(eventBus, key);
-			chatPanel.insert(chatPlaceHolder, 0);
+			ChatPanelPlaceHolder chatPlaceHolder = new ChatPanelPlaceHolder(eventBus, key)
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					this.hide();
+					chatPanel.remove(this);
+					chats.remove(key);
+				}
+			};
+			chatPanel.add(chatPlaceHolder);
 
 			chats.put(key, chatPlaceHolder);
 		}
@@ -267,6 +287,7 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	public void onSignedin(SignedinEvent event)
 	{
 		VerticalPanel buddyListPanel = new VerticalPanel();
+		buddyListPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		buddyListPanel.setStyleName("buddyListContainer");
 		buddyListPanel.add(new PresenceWidget(eventBus, event.getJabberId()));
 		buddyListPanel.add(new BuddyListWidget(eventBus));

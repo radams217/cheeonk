@@ -103,6 +103,7 @@ public class PresenceWidget extends Composite
 		panel.add(status);
 
 		initWidget(panel);
+		setStyleName("presenceWidget");
 	}
 
 	private class StatusPopupPanel extends PopupPanel
