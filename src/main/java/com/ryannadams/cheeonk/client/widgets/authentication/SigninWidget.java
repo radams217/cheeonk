@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -45,7 +46,9 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 
 		this.usernameField = new TextBox();
+		this.usernameField.setStyleName("signinWidget-usernameField");
 		this.passwordField = new PasswordTextBox();
+		this.passwordField.setStyleName("signinWidget-passwordField");
 		this.errorMessage = new HTML();
 		this.errorMessage.setStyleName("signinWidget-errorMessage");
 
@@ -66,6 +69,7 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		});
 
 		VerticalPanel panel = new VerticalPanel();
+		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		panel.add(new HTML("Username:"));
 		panel.add(usernameField);
 		panel.add(new HTML("Password:"));

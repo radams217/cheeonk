@@ -13,9 +13,11 @@ import com.ryannadams.cheeonk.shared.message.IMessage;
  */
 public interface IChatWidget
 {
-	void show();
+	void onMinimize();
 
-	void hide();
+	void onMaximize();
+
+	void onClose();
 
 	void addCheeonk(IMessage message);
 }

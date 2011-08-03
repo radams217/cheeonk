@@ -54,10 +54,11 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
 		cheeonks = new VerticalPanel();
+		cheeonks.addStyleName("chatWidget-Cheeonks");
 		// scroll panel is set need to set the inner vertical panel
 		// cheeonks.addStyleName("cheeonkWidget-Cheeonks");
 		scrollPanel = new ScrollPanel();
-		scrollPanel.addStyleName("chatWidget-Cheeonks");
+		scrollPanel.addStyleName("chatWidget-ScrollCheeonks");
 		scrollPanel.add(cheeonks);
 
 		messageArea = new TextArea();
@@ -128,14 +129,17 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		{
 			this.message = message;
 
-			cheeonk = new HTML(message.getFrom().toString() + ": " + message.getBody());
+			cheeonk = new HTML(message.getFrom().toString() + ": " + this.message.getBody());
 			cheeonkCastButton = new PushButton("C", this);
+			cheeonkCastButton.setStyleName("cheeonk-Cast");
 
 			HorizontalPanel panel = new HorizontalPanel();
+			panel.setStyleName("cheeonk");
 			panel.add(cheeonk);
 			panel.add(cheeonkCastButton);
 
 			initWidget(panel);
+			setStyleName("cheeonk");
 		}
 
 		@Override

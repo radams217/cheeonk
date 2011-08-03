@@ -51,7 +51,7 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 		eventBus.addHandler(SignedoutEvent.TYPE, this);
 
 		final PopupPanel signinWidgetPopup = new PopupPanel(true);
-		signinWidgetPopup.setAnimationEnabled(true);
+		signinWidgetPopup.setStyleName("signinWidgetPopup");
 
 		this.signinWidget = new SigninWidget(eventBus)
 		{

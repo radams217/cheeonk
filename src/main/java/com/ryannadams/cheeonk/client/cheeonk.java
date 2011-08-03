@@ -39,8 +39,7 @@ import com.ryannadams.cheeonk.client.widgets.BuddyListWidget;
 import com.ryannadams.cheeonk.client.widgets.PresenceWidget;
 import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
 import com.ryannadams.cheeonk.client.widgets.authentication.AuthenticationWidget;
-import com.ryannadams.cheeonk.client.widgets.authentication.SigninWidget;
-import com.ryannadams.cheeonk.client.widgets.chat.ChatPanelPlaceHolder;
+import com.ryannadams.cheeonk.client.widgets.chat.ChatPopupWidget;
 import com.ryannadams.cheeonk.client.widgets.chat.IChatWidget;
 import com.ryannadams.cheeonk.shared.ConnectionKey;
 import com.ryannadams.cheeonk.shared.action.GetEvent;
@@ -64,7 +63,6 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 	private final AuthenticationWidget authenticationWidget;
 	private final RegistrationWidget registrationWidget;
-	private final SigninWidget signinWidget;
 
 	private final VerticalPanel headerPanel;
 	private final VerticalPanel westPanel;
@@ -90,8 +88,8 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		this.rootPanel.setStyleName("root");
 
 		this.authenticationWidget = new AuthenticationWidget(eventBus);
-		this.signinWidget = new SigninWidget(eventBus);
-		this.signinWidget.setStyleName("signinPanelFull");
+		// this.signinWidget = new SigninWidget(eventBus);
+		// this.signinWidget.setStyleName("signinPanelFull");
 
 		this.headerPanel = new VerticalPanel();
 		this.headerPanel.setStyleName("header");
@@ -160,6 +158,7 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 			}
 
 		};
+		registrationWidget.setStyleName("registrationWidget");
 
 		chatTimer = new Timer()
 		{
@@ -181,8 +180,6 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		rootPanel.add(centerPanel);
 
 		eastPanel.add(new HTML("Blank Panel"));
-		westPanel.add(new HTML("Sign In"));
-		westPanel.add(signinWidget);
 		centerPanel.add(new HTML("Register Now"));
 		centerPanel.add(registrationWidget);
 
@@ -216,25 +213,22 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		if (!chats.containsKey(key))
 		{
-			ChatPanelPlaceHolder chatPlaceHolder = new ChatPanelPlaceHolder(eventBus, key)
+			ChatPopupWidget chatPlaceHolder = new ChatPopupWidget(eventBus, key)
 			{
 				@Override
-				public void onClick(ClickEvent event)
+				public void onClose()
 				{
-					this.hide();
 					chatPanel.remove(this);
 					chats.remove(key);
 				}
 			};
 
 			chatPanel.add(chatPlaceHolder);
-
 			chats.put(key, chatPlaceHolder);
 		}
 
 		IChatWidget chatContainer = chats.get(key);
 		chatContainer.addCheeonk(event.getMessage());
-		chatContainer.show();
 	}
 
 	@Override
@@ -251,23 +245,19 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		if (!chats.containsKey(key))
 		{
-			ChatPanelPlaceHolder chatPlaceHolder = new ChatPanelPlaceHolder(eventBus, key)
+			ChatPopupWidget chatPlaceHolder = new ChatPopupWidget(eventBus, key)
 			{
 				@Override
-				public void onClick(ClickEvent event)
+				public void onClose()
 				{
-					this.hide();
 					chatPanel.remove(this);
 					chats.remove(key);
 				}
 			};
-			chatPanel.add(chatPlaceHolder);
 
+			chatPanel.add(chatPlaceHolder);
 			chats.put(key, chatPlaceHolder);
 		}
-
-		IChatWidget chatContainer = chats.get(key);
-		chatContainer.show();
 	}
 
 	@Override
@@ -309,8 +299,8 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	public void onSignedout(SignedoutEvent event)
 	{
 		westPanel.clear();
-		westPanel.add(signinWidget);
 		chatPanel.clear();
+		chats.clear();
 		ConnectionKey.get().reset();
 	}
 }
