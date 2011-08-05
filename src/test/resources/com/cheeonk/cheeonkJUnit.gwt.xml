@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<!-- Inherit our applications main module. -->
+	<inherits name='com.cheeonk.client.cheeonk' />
+
+	<!-- Specify the path to any remote services. -->
+	<servlet path="/cheeonk/dispatch" class="com.cheeonk.server.ChatDispatchServiceImpl" />
+</module>
