@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client;
+package com.cheeonk.client;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,26 @@ import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 
+import com.cheeonk.client.callback.GotEvent;
+import com.cheeonk.client.callback.Registered;
+import com.cheeonk.client.event.ChatCreatedEvent;
+import com.cheeonk.client.event.MessageSentEvent;
+import com.cheeonk.client.event.SignedinEvent;
+import com.cheeonk.client.event.SignedoutEvent;
+import com.cheeonk.client.handler.AuthenticationEventHandler;
+import com.cheeonk.client.handler.ChatEventHandler;
+import com.cheeonk.client.handler.MessageEventHandler;
+import com.cheeonk.client.widgets.BuddyListWidget;
+import com.cheeonk.client.widgets.PresenceWidget;
+import com.cheeonk.client.widgets.RegistrationWidget;
+import com.cheeonk.client.widgets.authentication.AuthenticationWidget;
+import com.cheeonk.client.widgets.chat.ChatPopupWidget;
+import com.cheeonk.client.widgets.chat.IChatWidget;
+import com.cheeonk.shared.ConnectionKey;
+import com.cheeonk.shared.action.GetEvent;
+import com.cheeonk.shared.action.Register;
+import com.cheeonk.shared.buddy.JabberId;
+import com.cheeonk.shared.event.MessageReceivedEvent;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,31 +46,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.ryannadams.cheeonk.client.callback.GotEvent;
-import com.ryannadams.cheeonk.client.callback.Registered;
-import com.ryannadams.cheeonk.client.event.ChatCreatedEvent;
-import com.ryannadams.cheeonk.client.event.MessageSentEvent;
-import com.ryannadams.cheeonk.client.event.SignedinEvent;
-import com.ryannadams.cheeonk.client.event.SignedoutEvent;
-import com.ryannadams.cheeonk.client.handler.AuthenticationEventHandler;
-import com.ryannadams.cheeonk.client.handler.ChatEventHandler;
-import com.ryannadams.cheeonk.client.handler.MessageEventHandler;
-import com.ryannadams.cheeonk.client.widgets.BuddyListWidget;
-import com.ryannadams.cheeonk.client.widgets.PresenceWidget;
-import com.ryannadams.cheeonk.client.widgets.RegistrationWidget;
-import com.ryannadams.cheeonk.client.widgets.authentication.AuthenticationWidget;
-import com.ryannadams.cheeonk.client.widgets.chat.ChatPopupWidget;
-import com.ryannadams.cheeonk.client.widgets.chat.IChatWidget;
-import com.ryannadams.cheeonk.shared.ConnectionKey;
-import com.ryannadams.cheeonk.shared.action.GetEvent;
-import com.ryannadams.cheeonk.shared.action.Register;
-import com.ryannadams.cheeonk.shared.buddy.JabberId;
-import com.ryannadams.cheeonk.shared.event.MessageReceivedEvent;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageEventHandler, ChatEventHandler, CloseHandler<Window>
+public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageEventHandler, ChatEventHandler, CloseHandler<Window>
 {
 	private final DispatchAsync dispatchAsync;
 	private final SimpleEventBus eventBus;
@@ -72,7 +72,7 @@ public class cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 	private final Timer chatTimer;
 
-	public cheeonk()
+	public Cheeonk()
 	{
 		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 		// this.messages = GWT.create(Messages.class);
