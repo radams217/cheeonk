@@ -1,4 +1,4 @@
-package com.ryannadams.cheeonk.client;
+package com.cheeonk.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
 
@@ -16,7 +16,7 @@ public class GwtTestcheeonk extends GWTTestCase
 	@Override
 	public String getModuleName()
 	{
-		return "com.ryannadams.cheeonk.cheeonk";
+		return "com.cheeonk.Cheeonk";
 	}
 
 	/**
