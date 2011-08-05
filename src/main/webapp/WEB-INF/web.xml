@@ -8,7 +8,7 @@
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>dispatch</servlet-name>
-		<servlet-class>com.ryannadams.cheeonk.server.ChatDispatchServiceImpl</servlet-class>
+		<servlet-class>com.cheeonk.server.ChatDispatchServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
