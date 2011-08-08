@@ -1,7 +1,5 @@
 package com.cheeonk.client;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,15 +17,14 @@ import com.cheeonk.client.handler.AuthenticationEventHandler;
 import com.cheeonk.client.handler.ChatEventHandler;
 import com.cheeonk.client.handler.MessageEventHandler;
 import com.cheeonk.client.widgets.BuddyListWidget;
+import com.cheeonk.client.widgets.ChatTrayWidget;
 import com.cheeonk.client.widgets.PresenceWidget;
 import com.cheeonk.client.widgets.RegistrationWidget;
 import com.cheeonk.client.widgets.authentication.AuthenticationWidget;
-import com.cheeonk.client.widgets.chat.ChatPopupWidget;
-import com.cheeonk.client.widgets.chat.IChatWidget;
+import com.cheeonk.client.widgets.authentication.SigninWidget;
 import com.cheeonk.shared.ConnectionKey;
 import com.cheeonk.shared.action.GetEvent;
 import com.cheeonk.shared.action.Register;
-import com.cheeonk.shared.buddy.JabberId;
 import com.cheeonk.shared.event.MessageReceivedEvent;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Unit;
@@ -42,7 +39,6 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -58,11 +54,11 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	private final Logger rootLogger;
 	private final DockLayoutPanel rootPanel;
 
-	private final Map<JabberId, IChatWidget> chats;
-	private final HorizontalPanel chatPanel;
+	private final ChatTrayWidget chatTrayWidget;
 
 	private final AuthenticationWidget authenticationWidget;
 	private final RegistrationWidget registrationWidget;
+	private final SigninWidget signinWidget;
 
 	private final VerticalPanel headerPanel;
 	private final VerticalPanel westPanel;
@@ -87,14 +83,16 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		this.rootPanel = new DockLayoutPanel(Unit.PX);
 		this.rootPanel.setStyleName("root");
 
+		this.chatTrayWidget = new ChatTrayWidget(eventBus);
+
 		this.authenticationWidget = new AuthenticationWidget(eventBus);
-		// this.signinWidget = new SigninWidget(eventBus);
-		// this.signinWidget.setStyleName("signinPanelFull");
+		this.signinWidget = new SigninWidget(eventBus);
+		this.signinWidget.setStyleName("signinPanelFull");
 
 		this.headerPanel = new VerticalPanel();
 		this.headerPanel.setStyleName("header");
 		this.headerPanel.add(authenticationWidget);
-		this.headerPanel.add(new Image(ImageResources.INSTANCE.getBanner()));
+		this.headerPanel.add(new Image(ImageResources.INSTANCE.getLogo()));
 
 		this.westPanel = new VerticalPanel();
 		this.westPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -109,14 +107,12 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		this.centerPanel.setStyleName("center");
 
 		this.footerPanel = new VerticalPanel();
+		this.centerPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
 		this.footerPanel.setStyleName("footer");
 
 		HTML copyright = new HTML("Cheeonk &#169; 2011 - All Rights Reserved.");
 		copyright.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		this.footerPanel.add(copyright);
-
-		chatPanel = new HorizontalPanel();
-		chatPanel.setStyleName("chatPanel");
 
 		Window.addWindowClosingHandler(new Window.ClosingHandler()
 		{
@@ -131,8 +127,6 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		});
 
 		Window.addCloseHandler(this);
-
-		chats = new HashMap<JabberId, IChatWidget>();
 
 		registrationWidget = new RegistrationWidget()
 		{
@@ -174,14 +168,12 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	public void onModuleLoad()
 	{
 		rootPanel.addNorth(headerPanel, 100);
-		rootPanel.addSouth(footerPanel, 100);
+		rootPanel.addSouth(footerPanel, 60);
 		rootPanel.addWest(westPanel, 250);
 		rootPanel.addEast(eastPanel, 300);
 		rootPanel.add(centerPanel);
 
-		eastPanel.add(new HTML("Blank Panel"));
-		centerPanel.add(new HTML("Register Now"));
-		centerPanel.add(registrationWidget);
+		eastPanel.add(signinWidget);
 
 		RootLayoutPanel.get().add(rootPanel);
 	}
@@ -209,26 +201,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		final JabberId key = event.getMessage().getFrom();
 
-		if (!chats.containsKey(key))
-		{
-			ChatPopupWidget chatPlaceHolder = new ChatPopupWidget(eventBus, key)
-			{
-				@Override
-				public void onClose()
-				{
-					chatPanel.remove(this);
-					chats.remove(key);
-				}
-			};
-
-			chatPanel.add(chatPlaceHolder);
-			chats.put(key, chatPlaceHolder);
-		}
-
-		IChatWidget chatContainer = chats.get(key);
-		chatContainer.addCheeonk(event.getMessage());
 	}
 
 	@Override
@@ -241,23 +214,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	@Override
 	public void onChatCreated(ChatCreatedEvent event)
 	{
-		final JabberId key = event.getBuddy().getJabberId();
 
-		if (!chats.containsKey(key))
-		{
-			ChatPopupWidget chatPlaceHolder = new ChatPopupWidget(eventBus, key)
-			{
-				@Override
-				public void onClose()
-				{
-					chatPanel.remove(this);
-					chats.remove(key);
-				}
-			};
-
-			chatPanel.add(chatPlaceHolder);
-			chats.put(key, chatPlaceHolder);
-		}
 	}
 
 	@Override
@@ -288,7 +245,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		westPanel.clear();
 		westPanel.add(buddyListPanel);
 
-		footerPanel.insert(chatPanel, 0);
+		footerPanel.add(chatTrayWidget);
 
 		ConnectionKey.get().setConnectionId(event.getConnectionId());
 
@@ -299,8 +256,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	public void onSignedout(SignedoutEvent event)
 	{
 		westPanel.clear();
-		chatPanel.clear();
-		chats.clear();
+		chatTrayWidget.clear();
 		ConnectionKey.get().reset();
 	}
 }

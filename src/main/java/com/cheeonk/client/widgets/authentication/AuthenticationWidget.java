@@ -121,7 +121,7 @@ public class AuthenticationWidget extends Composite implements AuthenticationEve
 	@Override
 	public void onSignedin(SignedinEvent event)
 	{
-		HTML loggedinAs = new HTML("Logged in as " + event.getJabberId().toString());
+		HTML loggedinAs = new HTML("Signed in as " + event.getJabberId().toString());
 		loggedinAs.addStyleName("authenticationWidget-LoggedIn");
 
 		panel.clear();

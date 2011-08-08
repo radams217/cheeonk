@@ -1,15 +1,17 @@
 package com.cheeonk.client.widgets.chat;
 
 import com.cheeonk.client.ImageResources;
-import com.cheeonk.shared.buddy.JabberId;
+import com.cheeonk.shared.buddy.IBuddy;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 
-public class ChatHeaderWidget extends Composite
+public abstract class ChatHeaderWidget extends Composite
 {
 	private final HorizontalPanel panel;
 
@@ -17,38 +19,56 @@ public class ChatHeaderWidget extends Composite
 	private final PushButton maximizeButton;
 	private final PushButton closeButton;
 
-	public ChatHeaderWidget(JabberId jabberId)
+	public ChatHeaderWidget(IBuddy buddy)
 	{
 		panel = new HorizontalPanel();
-		panel.add(new HTML(jabberId.toString()));
 
-		minimizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMinimizeSquare()));
-		minimizeButton.setStylePrimaryName("nostyle");
-		maximizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMaximizeSquare()));
-		maximizeButton.setStylePrimaryName("nostyle");
-		closeButton = new PushButton(new Image(ImageResources.INSTANCE.getCloseSquare()));
-		closeButton.setStylePrimaryName("nostyle");
+		HTML buddyName = new HTML(buddy.getName());
+		buddyName.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		panel.add(buddyName);
 
-		panel.add(minimizeButton);
-		panel.add(maximizeButton);
-		panel.add(closeButton);
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.setStyleName("chatHeaderWidget-buttonPanel");
+		minimizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMinimizeSquare()), new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				onMinimize();
+			}
+		});
+		minimizeButton.setStylePrimaryName("chatHeaderWidget-headerButton");
+		maximizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMaximizeSquare()), new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				onMaximize();
+			}
+		});
+		maximizeButton.setStylePrimaryName("chatHeaderWidget-headerButton");
+		closeButton = new PushButton(new Image(ImageResources.INSTANCE.getCloseSquare()), new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				onClose();
+			}
+		});
+		closeButton.setStylePrimaryName("chatHeaderWidget-headerButton");
+
+		buttonPanel.add(minimizeButton);
+		buttonPanel.add(maximizeButton);
+		buttonPanel.add(closeButton);
+		panel.add(buttonPanel);
 
 		initWidget(panel);
 		setStyleName("chatHeaderWidget");
 	}
 
-	public void addMinimizeClickHandler(ClickHandler handler)
-	{
-		minimizeButton.addClickHandler(handler);
-	}
+	public abstract void onMinimize();
 
-	public void addMaximizeClickHandler(ClickHandler handler)
-	{
-		maximizeButton.addClickHandler(handler);
-	}
+	public abstract void onMaximize();
 
-	public void addCloseClickHandler(ClickHandler handler)
-	{
-		closeButton.addClickHandler(handler);
-	}
+	public abstract void onClose();
 }

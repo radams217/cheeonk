@@ -1,103 +1,88 @@
 package com.cheeonk.client.widgets.chat;
 
-import com.cheeonk.shared.buddy.JabberId;
+import com.cheeonk.shared.buddy.IBuddy;
 import com.cheeonk.shared.message.IMessage;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ChatPopupWidget extends Composite implements IChatWidget
+public class ChatPopupWidget extends AbstractChatWidget
 {
-	private final ChatWidget chatWidget;
+	private final SimplePanel panel;
 	private final ChatHeaderWidget headerWidget;
-	private final SimplePanel blankPanel;
-	private final HorizontalPanel panel;
+	private final ChatWidget chatWidget;
 
-	public ChatPopupWidget(SimpleEventBus eventBus, JabberId jabberId)
+	public ChatPopupWidget(SimpleEventBus eventBus, IBuddy buddy)// JabberId
+																	// jabberId)
 	{
-		panel = new HorizontalPanel();
-		headerWidget = new ChatHeaderWidget(jabberId);
-		blankPanel = new SimplePanel();
-		blankPanel.setStyleName("blankPanel");
-		chatWidget = new ChatWidget(eventBus, jabberId);
+		panel = new SimplePanel();
+		panel.setStyleName("chatPopupWidget");
 
 		final PopupPanel popupPanel = new PopupPanel();
-		popupPanel.setStyleName("chatPopupWidget");
+		popupPanel.setStyleName("chatPopupWidget-popupPanel");
+
+		chatWidget = new ChatWidget(eventBus, buddy);
 
 		final VerticalPanel popupContents = new VerticalPanel();
-		popupContents.add(chatWidget);
+		popupContents.setStyleName("chatPopupWidget-popupContents");
 		popupPanel.add(popupContents);
 
-		headerWidget.addMinimizeClickHandler(new ClickHandler()
+		headerWidget = new ChatHeaderWidget(buddy)
 		{
 			@Override
-			public void onClick(ClickEvent event)
+			public void onMinimize()
 			{
+				panel.clear();
+				panel.add(this);
 				popupPanel.hide();
-				onMinimize();
-				panel.remove(blankPanel);
-				panel.add(headerWidget);
-			}
-		});
 
-		headerWidget.addMaximizeClickHandler(new ClickHandler()
-		{
+				setMinimized(true);
+				setMaximized(false);
+				setClosed(false);
+			}
+
 			@Override
-			public void onClick(ClickEvent event)
+			public void onMaximize()
 			{
-				popupContents.insert(headerWidget, 0);
-				panel.add(blankPanel);
+				panel.clear();
+
+				popupContents.clear();
+				popupContents.add(this);
+				popupContents.add(chatWidget);
 				popupPanel.setPopupPositionAndShow(new PopupPanel.PositionCallback()
 				{
 					@Override
 					public void setPosition(int offsetWidth, int offsetHeight)
 					{
 						int left = panel.getAbsoluteLeft();
-						int top = panel.getAbsoluteTop() - popupPanel.getOffsetHeight();
+						int top = panel.getAbsoluteTop() + panel.getOffsetHeight() - popupPanel.getOffsetHeight();
 						popupPanel.setPopupPosition(left, top);
 					}
 				});
 
-				onMaximize();
+				setMinimized(false);
+				setMaximized(true);
+				setClosed(false);
 			}
-		});
 
-		headerWidget.addCloseClickHandler(new ClickHandler()
-		{
 			@Override
-			public void onClick(ClickEvent event)
+			public void onClose()
 			{
 				popupPanel.hide();
-				onClose();
+				ChatPopupWidget.this.onClose();
+				setMinimized(false);
+				setMaximized(false);
+				setClosed(true);
 			}
-		});
+		};
 
 		panel.add(headerWidget);
 		initWidget(panel);
-		setStyleName("chatHolder");
-	}
 
-	@Override
-	public void onMinimize()
-	{
-
-	}
-
-	@Override
-	public void onMaximize()
-	{
-
-	}
-
-	@Override
-	public void onClose()
-	{
-
+		setMinimized(true);
+		setMaximized(false);
+		setClosed(false);
 	}
 
 	@Override
@@ -106,4 +91,26 @@ public class ChatPopupWidget extends Composite implements IChatWidget
 		chatWidget.addCheeonk(message);
 	}
 
+	@Override
+	public void minimize()
+	{
+		headerWidget.onMinimize();
+	}
+
+	@Override
+	public void maximize()
+	{
+		headerWidget.onMaximize();
+	}
+
+	@Override
+	public void close()
+	{
+		headerWidget.onClose();
+	}
+
+	public void onClose()
+	{
+
+	}
 }

@@ -35,7 +35,7 @@ public class PresenceWidget extends Composite
 
 	private Image statusDot;
 	private TextBox status;
-	public CheeonkPresence presence;
+	private CheeonkPresence presence;
 	private StatusPopupPanel popup;
 
 	public PresenceWidget(final SimpleEventBus eventBus, final JabberId jabberId)

@@ -13,11 +13,17 @@ import com.cheeonk.shared.message.IMessage;
  */
 public interface IChatWidget
 {
-	void onMinimize();
-
-	void onMaximize();
-
-	void onClose();
-
 	void addCheeonk(IMessage message);
+
+	void minimize();
+
+	void maximize();
+
+	void close();
+
+	boolean isMinimized();
+
+	boolean isMaximized();
+
+	boolean isClosed();
 }

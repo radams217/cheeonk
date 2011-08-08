@@ -4,6 +4,7 @@ import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 
+import com.cheeonk.client.ImageResources;
 import com.cheeonk.client.callback.Signedin;
 import com.cheeonk.client.event.SignedinEvent;
 import com.cheeonk.client.event.SignedoutEvent;
@@ -20,7 +21,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -53,8 +56,9 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		this.errorMessage.setStyleName("signinWidget-errorMessage");
 
 		this.staySignedIn = new CheckBox("Stay signed in");
+		this.staySignedIn.setStyleName("signinWidget-staySignedin");
 
-		this.goButton = new Button("go", this);
+		this.goButton = new Button("Sign in", this);
 
 		this.passwordField.addKeyPressHandler(new KeyPressHandler()
 		{
@@ -69,11 +73,20 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		});
 
 		VerticalPanel panel = new VerticalPanel();
-		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-		panel.add(new HTML("Username:"));
-		panel.add(usernameField);
-		panel.add(new HTML("Password:"));
-		panel.add(passwordField);
+		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		panel.add(new HTML("Sign into your"));
+		HorizontalPanel cheeonkPanel = new HorizontalPanel();
+		cheeonkPanel.add(new Image(ImageResources.INSTANCE.getSmallLogo()));
+		cheeonkPanel.add(new HTML("Account."));
+		panel.add(cheeonkPanel);
+		HorizontalPanel usernamePanel = new HorizontalPanel();
+		usernamePanel.add(new HTML("Username:"));
+		usernamePanel.add(usernameField);
+		HorizontalPanel passwordPanel = new HorizontalPanel();
+		passwordPanel.add(new HTML("Password:"));
+		passwordPanel.add(passwordField);
+		panel.add(usernamePanel);
+		panel.add(passwordPanel);
 		panel.add(errorMessage);
 		panel.add(staySignedIn);
 		panel.add(goButton);

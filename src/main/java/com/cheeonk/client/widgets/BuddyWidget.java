@@ -38,7 +38,8 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	private final BuddyPopupPanel detailsPopupPanel;
 
 	private HTML buddyStatus;
-	protected Image statusDot;
+
+	private Image statusDot;
 
 	public BuddyWidget(SimpleEventBus eventBus, IBuddy buddy)
 	{
@@ -105,12 +106,16 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	private class BuddyPopupPanel extends DecoratedPopupPanel implements HasMouseOutHandlers, MouseOutHandler, HasMouseOverHandlers, MouseOverHandler
 	{
 		private final PushButton chatButton;
+		private Image statusDot;
 
 		public BuddyPopupPanel()
 		{
 			super(false);
 
 			this.chatButton = new PushButton("Chat");
+			this.statusDot = new Image(ImageResources.INSTANCE.getGrayDot());
+			this.statusDot.setStyleName("buddyWidget-statusDot");
+
 			this.addMouseOutHandler(this);
 			this.addMouseOverHandler(this);
 
@@ -124,7 +129,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 			panel.setStyleName("buddyPopupPanel");
 
 			HorizontalPanel statusDotNamePanel = new HorizontalPanel();
-			statusDotNamePanel.add(statusDot);
+			statusDotNamePanel.add(this.statusDot);
 			statusDotNamePanel.add(buddyName);
 
 			panel.add(statusDotNamePanel);

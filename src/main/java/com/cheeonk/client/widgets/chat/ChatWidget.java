@@ -9,6 +9,7 @@ import com.cheeonk.client.event.MessageSentEvent;
 import com.cheeonk.client.handler.MessageEventHandler;
 import com.cheeonk.shared.ConnectionKey;
 import com.cheeonk.shared.action.SendMessage;
+import com.cheeonk.shared.buddy.IBuddy;
 import com.cheeonk.shared.buddy.JabberId;
 import com.cheeonk.shared.event.MessageReceivedEvent;
 import com.cheeonk.shared.message.CheeonkMessage;
@@ -43,9 +44,9 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	private final DispatchAsync dispatchAsync;
 
-	private final JabberId participant;
+	private final IBuddy participant;
 
-	public ChatWidget(final SimpleEventBus eventBus, final JabberId participant)
+	public ChatWidget(final SimpleEventBus eventBus, final IBuddy participant)
 	{
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 
@@ -55,8 +56,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 		cheeonks = new VerticalPanel();
 		cheeonks.addStyleName("chatWidget-Cheeonks");
-		// scroll panel is set need to set the inner vertical panel
-		// cheeonks.addStyleName("cheeonkWidget-Cheeonks");
+
 		scrollPanel = new ScrollPanel();
 		scrollPanel.addStyleName("chatWidget-ScrollCheeonks");
 		scrollPanel.add(cheeonks);
@@ -115,27 +115,28 @@ public class ChatWidget extends Composite implements MessageEventHandler
 
 	public IMessage getMessage()
 	{
-		return new CheeonkMessage(participant, new JabberId("me"), messageArea.getText());
+		return new CheeonkMessage(participant.getJabberId(), new JabberId("me"), messageArea.getText());
 	}
 
 	private class Cheeonk extends Composite implements ClickHandler
 	{
-		private final HTML cheeonk;
 		private final PushButton cheeonkCastButton;
-
 		private final IMessage message;
 
 		public Cheeonk(IMessage message)
 		{
 			this.message = message;
 
-			cheeonk = new HTML(message.getFrom().toString() + ": " + this.message.getBody());
+			VerticalPanel cheeonkPanel = new VerticalPanel();
+			cheeonkPanel.add(new HTML(message.getFrom().toString() + ":"));
+			cheeonkPanel.add(new HTML(this.message.getBody()));
+
 			cheeonkCastButton = new PushButton("C", this);
 			cheeonkCastButton.setStyleName("cheeonk-Cast");
 
 			HorizontalPanel panel = new HorizontalPanel();
 			panel.setStyleName("cheeonk");
-			panel.add(cheeonk);
+			panel.add(cheeonkPanel);
 			panel.add(cheeonkCastButton);
 
 			initWidget(panel);
@@ -154,7 +155,7 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		// Check where to route the message
+		// // Check where to route the message
 		// if (!event.getMessage().getFrom().equals(participant.getJabberId()))
 		// {
 		// return;
