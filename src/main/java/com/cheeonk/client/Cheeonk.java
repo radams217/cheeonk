@@ -19,9 +19,10 @@ import com.cheeonk.client.handler.MessageEventHandler;
 import com.cheeonk.client.widgets.BuddyListWidget;
 import com.cheeonk.client.widgets.ChatTrayWidget;
 import com.cheeonk.client.widgets.PresenceWidget;
-import com.cheeonk.client.widgets.RegistrationWidget;
 import com.cheeonk.client.widgets.authentication.AuthenticationWidget;
 import com.cheeonk.client.widgets.authentication.SigninWidget;
+import com.cheeonk.client.widgets.registration.RegistrationLinkWidget;
+import com.cheeonk.client.widgets.registration.RegistrationWidget;
 import com.cheeonk.shared.ConnectionKey;
 import com.cheeonk.shared.action.GetEvent;
 import com.cheeonk.shared.action.Register;
@@ -57,6 +58,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	private final ChatTrayWidget chatTrayWidget;
 
 	private final AuthenticationWidget authenticationWidget;
+	private final RegistrationLinkWidget registrationLinkWidget;
 	private final RegistrationWidget registrationWidget;
 	private final SigninWidget signinWidget;
 
@@ -154,6 +156,16 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		};
 		registrationWidget.setStyleName("registrationWidget");
 
+		registrationLinkWidget = new RegistrationLinkWidget()
+		{
+
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				westPanel.add(registrationWidget);
+			}
+		};
+
 		chatTimer = new Timer()
 		{
 			@Override
@@ -169,11 +181,16 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	{
 		rootPanel.addNorth(headerPanel, 100);
 		rootPanel.addSouth(footerPanel, 60);
-		rootPanel.addWest(westPanel, 250);
+		rootPanel.addWest(westPanel, 500);
 		rootPanel.addEast(eastPanel, 300);
 		rootPanel.add(centerPanel);
 
+		westPanel.add(new HTML("Stay Connected with Friends by Cheeonking the Shit out of them."));
+		westPanel.add(new HTML("Join the Herd for up to the minute cheeonks for your friends."));
+		westPanel.add(new HTML("Latest Cheeonk:"));
+
 		eastPanel.add(signinWidget);
+		eastPanel.add(registrationLinkWidget);
 
 		RootLayoutPanel.get().add(rootPanel);
 	}
@@ -242,6 +259,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		buddyListPanel.add(new PresenceWidget(eventBus, event.getJabberId()));
 		buddyListPanel.add(new BuddyListWidget(eventBus));
 
+		eastPanel.clear();
 		westPanel.clear();
 		westPanel.add(buddyListPanel);
 
@@ -255,6 +273,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	@Override
 	public void onSignedout(SignedoutEvent event)
 	{
+		eastPanel.add(signinWidget);
 		westPanel.clear();
 		chatTrayWidget.clear();
 		ConnectionKey.get().reset();

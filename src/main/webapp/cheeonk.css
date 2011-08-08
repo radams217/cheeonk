@@ -24,7 +24,7 @@ Banner Blues:
 body {
 	background-color: #ffffff;
 	width: 100%;
-	margin: 5px;
+	margin: 5px 5px 0px 0px;
 }
 
 .root {
@@ -189,6 +189,27 @@ label {
 	width: 100%;
 }
 
+.registrationLinkWidget {
+	padding: 15px;
+	width: 300px;
+	height: 100px;
+	background-color: #b9d1e8;
+	border-style: solid;
+	border-color: #3377bb;
+	border-width: 2px;
+	text-align: center;
+}
+
+.registrationLinkWidget-button {
+	padding: 5px;
+	width: 150px;
+	height: 40px;
+}
+
+.registrationLinkWidget-registerNow {
+	padding: 5px;
+}
+
 /* AuthenticationWidget */
 .authenticationWidget-LoggedIn {
 	margin-right: 10px;
@@ -318,4 +339,8 @@ label {
 .cheeonk-Cast {
 	width: 10px;
 	float: right;
+	background-color: #b9d1e8;
+	border-style: solid;
+	border-color: #3377bb;
+	border-width: 2px;
 }
