@@ -93,42 +93,21 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		this.headerPanel = new VerticalPanel();
 		this.headerPanel.setStyleName("header");
-		this.headerPanel.add(authenticationWidget);
-		this.headerPanel.add(new Image(ImageResources.INSTANCE.getLogo()));
 
 		this.westPanel = new VerticalPanel();
 		this.westPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-		this.westPanel.setStyleName("west");
+		this.westPanel.addStyleName("west");
 
 		this.eastPanel = new VerticalPanel();
 		this.eastPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-		this.eastPanel.setStyleName("east");
+		this.eastPanel.addStyleName("east");
 
 		this.centerPanel = new VerticalPanel();
 		this.centerPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-		this.centerPanel.setStyleName("center");
+		this.centerPanel.addStyleName("center");
 
 		this.footerPanel = new VerticalPanel();
-		this.centerPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
-		this.footerPanel.setStyleName("footer");
-
-		HTML copyright = new HTML("Cheeonk &#169; 2011 - All Rights Reserved.");
-		copyright.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		this.footerPanel.add(copyright);
-
-		Window.addWindowClosingHandler(new Window.ClosingHandler()
-		{
-			@Override
-			public void onWindowClosing(Window.ClosingEvent closingEvent)
-			{
-				if (ConnectionKey.get().getConnectionId() != null)
-				{
-					closingEvent.setMessage("All conversations will be lost.  Do you really want to leave the page?");
-				}
-			}
-		});
-
-		Window.addCloseHandler(this);
+		this.footerPanel.addStyleName("footer");
 
 		registrationWidget = new RegistrationWidget()
 		{
@@ -145,8 +124,8 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 					{
 						if (isRegistered)
 						{
-							centerPanel.clear();
-							centerPanel.add(new HTML("Registration Complete."));
+							westPanel.clear();
+							westPanel.add(new HTML("Registration Successful."));
 						}
 
 					}
@@ -165,6 +144,20 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 				westPanel.add(registrationWidget);
 			}
 		};
+
+		Window.addWindowClosingHandler(new Window.ClosingHandler()
+		{
+			@Override
+			public void onWindowClosing(Window.ClosingEvent closingEvent)
+			{
+				if (ConnectionKey.get().getConnectionId() != null)
+				{
+					closingEvent.setMessage("All conversations will be lost.  Do you really want to leave the page?");
+				}
+			}
+		});
+
+		Window.addCloseHandler(this);
 
 		chatTimer = new Timer()
 		{
@@ -185,14 +178,37 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		rootPanel.addEast(eastPanel, 300);
 		rootPanel.add(centerPanel);
 
+		createMainPage();
+
+		RootLayoutPanel.get().add(rootPanel);
+	}
+
+	private void createMainPage()
+	{
+		clear();
+
+		headerPanel.add(authenticationWidget);
+		headerPanel.add(new Image(ImageResources.INSTANCE.getLogo()));
+
+		HTML copyright = new HTML("Cheeonk &#169; 2011 - All Rights Reserved.");
+		copyright.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		this.footerPanel.add(copyright);
+
 		westPanel.add(new HTML("Stay Connected with Friends by Cheeonking the Shit out of them."));
 		westPanel.add(new HTML("Join the Herd for up to the minute cheeonks for your friends."));
 		westPanel.add(new HTML("Latest Cheeonk:"));
 
 		eastPanel.add(signinWidget);
 		eastPanel.add(registrationLinkWidget);
+	}
 
-		RootLayoutPanel.get().add(rootPanel);
+	private void clear()
+	{
+		headerPanel.clear();
+		footerPanel.clear();
+		westPanel.clear();
+		eastPanel.clear();
+		centerPanel.clear();
 	}
 
 	public void getEvent()
@@ -255,7 +271,8 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	public void onSignedin(SignedinEvent event)
 	{
 		VerticalPanel buddyListPanel = new VerticalPanel();
-		buddyListPanel.setStyleName("buddyListContainer");
+		buddyListPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+		buddyListPanel.addStyleName("buddyListContainer");
 		buddyListPanel.add(new PresenceWidget(eventBus, event.getJabberId()));
 		buddyListPanel.add(new BuddyListWidget(eventBus));
 
@@ -273,9 +290,9 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	@Override
 	public void onSignedout(SignedoutEvent event)
 	{
-		eastPanel.add(signinWidget);
-		westPanel.clear();
 		chatTrayWidget.clear();
 		ConnectionKey.get().reset();
+
+		createMainPage();
 	}
 }

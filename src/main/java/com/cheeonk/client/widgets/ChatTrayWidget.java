@@ -105,6 +105,16 @@ public class ChatTrayWidget extends Composite implements ChatEventHandler, Messa
 				public void onClose()
 				{
 					panel.remove(this);
+
+					for (IChatWidget chatWidget : chats.values())
+					{
+						// Redraw the popups just in case their position on the
+						// panel changes
+						if (chatWidget.isMaximized())
+						{
+							chatWidget.maximize();
+						}
+					}
 				}
 			};
 

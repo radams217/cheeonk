@@ -109,19 +109,21 @@ label {
 }
 
 .presenceWidget {
-	vertical-align: top;
-	width: 150px;
+	padding: 4px;
+	width: 100%;
+}
+
+.presenceWidget-status {
+	padding: 4px;
+	width: 175px;
 }
 
 .buddyListWidget {
-	vertical-align: top;
-	width: 150px;
-	max-height: 300px;
+	width: 100%;
 }
 
 .buddyListContainer {
-	width: 150px;
-	height: 450px;
+	width: 200px;
 	background-color: #b9d1e8;
 	border-style: solid;
 	border-color: #3377bb;
@@ -210,6 +212,22 @@ label {
 	padding: 5px;
 }
 
+.AddBuddyWidget {
+	padding: 15px;
+	background-color: #b9d1e8;
+	border-style: solid;
+	border-color: #3377bb;
+	border-width: 2px;
+	text-align: center;
+}
+
+.AddBuddyWidget-jabberId {
+	padding: 4px;
+}
+
+.AddBuddyWidget-buddyName {
+	padding: 4px;
+}
 /* AuthenticationWidget */
 .authenticationWidget-LoggedIn {
 	margin-right: 10px;

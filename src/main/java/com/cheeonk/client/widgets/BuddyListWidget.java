@@ -12,8 +12,6 @@ import com.cheeonk.client.handler.AuthenticationEventHandler;
 import com.cheeonk.client.handler.BuddyEventHandler;
 import com.cheeonk.shared.ConnectionKey;
 import com.cheeonk.shared.action.AddBuddy;
-import com.cheeonk.shared.buddy.CheeonkBuddy;
-import com.cheeonk.shared.buddy.JabberId;
 import com.cheeonk.shared.event.AddBuddyEvent;
 import com.cheeonk.shared.event.PresenceChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,11 +19,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
@@ -68,51 +63,28 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 					}
 				});
 
-				VerticalPanel panel = new VerticalPanel();
-
-				final TextBox jabberId = new TextBox();
-				final TextBox buddyName = new TextBox();
-
-				HorizontalPanel jabberPanel = new HorizontalPanel();
-				jabberPanel.add(new HTML("Jabber Id:"));
-				jabberPanel.add(jabberId);
-
-				HorizontalPanel buddyNamePanel = new HorizontalPanel();
-				buddyNamePanel.add(new HTML("Name:"));
-				buddyNamePanel.add(buddyName);
-
-				Button okButton = new Button("ok");
-
-				panel.add(jabberPanel);
-				panel.add(buddyNamePanel);
-				panel.add(okButton);
-
-				okButton.addClickHandler(new ClickHandler()
+				AddBuddyWidget addBuddyWidget = new AddBuddyWidget()
 				{
 					@Override
 					public void onClick(ClickEvent event)
 					{
-						final CheeonkBuddy buddy = new CheeonkBuddy(new JabberId(jabberId.getText()), buddyName.getText());
-
-						dispatchAsync.execute(new AddBuddy(ConnectionKey.get(), buddy), new AddedBuddy()
+						dispatchAsync.execute(new AddBuddy(ConnectionKey.get(), getBuddy()), new AddedBuddy()
 						{
 							@Override
 							public void got()
 							{
-								jabberId.setText("");
-								buddyName.setText("");
-								eventBus.fireEvent(new AddBuddyEvent(buddy));
+								clear();
 							}
 
 						});
 
 						popupPanel.hide();
 					}
-				});
-				popupPanel.add(panel);
+				};
+
+				popupPanel.add(addBuddyWidget);
 
 				popupPanel.show();
-
 			}
 		});
 		panel.add(addButton);

@@ -46,9 +46,10 @@ public class PresenceWidget extends Composite
 		this.statusDot = new Image(ImageResources.INSTANCE.getGreenDot());
 		this.statusDot.setStyleName("buddyWidget-statusDot");
 		this.status = new TextBox();
+		this.status.setStyleName("presenceWidget-status");
 		this.presence = new CheeonkPresence(jabberId, Mode.AVAILABLE, status.getText());
 
-		this.status.addClickHandler(new ClickHandler()
+		this.statusDot.addClickHandler(new ClickHandler()
 		{
 			@Override
 			public void onClick(ClickEvent event)
@@ -60,12 +61,20 @@ public class PresenceWidget extends Composite
 					@Override
 					public void setPosition(int offsetWidth, int offsetHeight)
 					{
-						int left = status.getAbsoluteLeft();
-						int top = status.getAbsoluteTop() + status.getOffsetHeight();
+						int left = statusDot.getAbsoluteLeft();
+						int top = statusDot.getAbsoluteTop() + statusDot.getOffsetHeight();
 						popup.setPopupPosition(left, top);
 					}
 				});
+			}
+		});
 
+		this.status.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				status.setReadOnly(false);
 			}
 		});
 
@@ -103,7 +112,7 @@ public class PresenceWidget extends Composite
 		panel.add(status);
 
 		initWidget(panel);
-		setStyleName("presenceWidget");
+		addStyleName("presenceWidget");
 	}
 
 	private class StatusPopupPanel extends PopupPanel

@@ -49,9 +49,9 @@ public class SigninWidget extends Composite implements AuthenticationEventHandle
 		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 
 		this.usernameField = new TextBox();
-		this.usernameField.addStyleName("signinWidget-usernameField");
+		this.usernameField.setStyleName("signinWidget-usernameField");
 		this.passwordField = new PasswordTextBox();
-		this.passwordField.addStyleName("signinWidget-passwordField");
+		this.passwordField.setStyleName("signinWidget-passwordField");
 		this.errorMessage = new HTML();
 		this.errorMessage.setStyleName("signinWidget-errorMessage");
 
