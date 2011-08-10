@@ -22,34 +22,32 @@ Banner Blues:
 	3377bb
 */
 body {
-	background-color: #ffffff;
 	width: 100%;
-	margin: 5px 5px 0px 0px;
+	margin: 0px 0px 0px 0px;
 }
 
-.root {
-	margin: 5px;
+.root{
+	margin: 0px 5px 0px 0px;
 }
-
 .header {
+	background-color: #f0f2f2;
 	width: 100%;
 	margin: 10px 5px 0px 5px;
 }
 
 .east {
-	margin: 5px 5px 5px 0px;
 	width: 100%;
 	height: 100%;
+	margin: 0px 5px 0px 0px;
 }
 
 .west {
-	margin: 5px 0px 5px 5px;
 	width: 100%;
 	height: 100%;
+	margin: 0px 0px 0px 5px;
 }
 
 .center {
-	margin: 5px 0px 5px 0px;
 	width: 100%;
 	height: 100%;
 }
@@ -59,54 +57,123 @@ body {
 	font-size: 10pt;
 	width: 100%;
 	height: 100%;
-	margin: 5px;
+	margin: 0px 5px 0px 5px;
 }
 
-.chatTrayWidget {
-	height: 30px;
-}
-
+/* AuthenticationWidget */
 .authenticationWidget {
 	position: relative;
 	float: right;
 	margin: 0px 5px 5px 0px;
 }
 
-.registrationWidget {
+.authenticationWidget-LoggedIn {
+	font-family: Verdana, sans-serif;
+	font-size: 10pt;
+	margin: 0px 5px 0px 0px;
+}
+
+.authenticationWidget-popup {
 	
 }
 
-.textfield {
-	font-family: Verdana;
-	font-size: 10pt;
+/* Signin Widget */
+.signinWidget {
+	padding: 15px;
+	width: 300px;
+	height: 200px;
+	background-color: #b9d1e8;
+	border-style: solid;
+	border-color: #3377bb;
+	border-width: 2px;
+	text-align: center;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
 }
 
-.buttonPane {
-	float: right;
-	vertical-align: bottom;
+.signinWidget-usernameField {
+	padding: 4px;
 }
 
-.button {
-	border: 1px solid #006;
-	background: #aaaaaa;
-	font-size: 10pt;
-	cursor: pointer;
+.signinWidget-passwordField {
+	padding: 4px;
 }
 
-.button:hover {
-	background: #cccccc;
-}
-
-description {
-	text-decoration: none;
-	font-family: Verdana, sans-serif;
-	font-size: 9pt;
-}
-
-label {
+.signinWidget-errorMessage {
 	font-family: Verdana, sans-serif;
 	font-size: 10pt;
+	padding: 4px;
+	color: red;
 }
+
+.signinWidget-staySignedin {
+	padding: 4px;
+	font-family: Verdana, sans-serif;
+	font-size: 10pt;
+}
+
+/* Registration Link Widget */
+.registrationLinkWidget {
+	padding: 15px;
+	width: 300px;
+	height: 100px;
+	background-color: #b9d1e8;
+	border-style: solid;
+	border-color: #3377bb;
+	border-width: 2px;
+	text-align: center;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
+}
+
+.registrationLinkWidget-button {
+	padding: 5px;
+	width: 150px;
+	height: 40px;
+}
+
+.registrationLinkWidget-registerNow {
+	padding: 5px;
+}
+
+.RegistrationWidget-Popup{
+	
+}
+
+.RegistrationWidget {
+	padding: 15px;
+	width: 400px;
+	height: 400px;
+	background-color: #b9d1e8;
+	border-style: solid;
+	border-color: #3377bb;
+	border-width: 2px;
+	text-align: center;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
+}
+
+.RegistrationWidget-Label{
+	padding: 4px;
+	width: 150px;
+}
+
+.RegistrationWidget-Texbox{
+	padding: 4px;
+	width: 175px;
+}
+
+
+.chatTrayWidget {
+	height: 25px;
+}
+
 
 .presenceWidget {
 	padding: 4px;
@@ -128,6 +195,10 @@ label {
 	border-style: solid;
 	border-color: #3377bb;
 	border-width: 2px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
 }
 
 .chatContainer {
@@ -153,10 +224,20 @@ label {
 	padding: 2px;
 	background-color: transparent;
 	vertical-align: top;
+	cursor: pointer;
 }
 
 .buddyWidget:hover {
 	background-color: #ddeeee;
+}
+
+.buddyWidget-buddy {
+	color: #000000;
+}
+
+.buddyWidget-statusDot {
+	margin-left: 2px;
+	margin-right: 3px;
 }
 
 .buddyPopupPanel {
@@ -164,10 +245,6 @@ label {
 	width: 200px;
 	height: 100px;
 	background-color: transparent;
-}
-
-.buddyWidget-buddy {
-	color: #000000;
 }
 
 .buddyPopupPanel-name {
@@ -181,35 +258,9 @@ label {
 	color: #9f9f9f;
 }
 
-.buddyWidget-statusDot {
-	margin-left: 2px;
-	margin-right: 3px;
-}
-
 /* buddyListWidget */
 .buddyListWidget {
 	width: 100%;
-}
-
-.registrationLinkWidget {
-	padding: 15px;
-	width: 300px;
-	height: 100px;
-	background-color: #b9d1e8;
-	border-style: solid;
-	border-color: #3377bb;
-	border-width: 2px;
-	text-align: center;
-}
-
-.registrationLinkWidget-button {
-	padding: 5px;
-	width: 150px;
-	height: 40px;
-}
-
-.registrationLinkWidget-registerNow {
-	padding: 5px;
 }
 
 .AddBuddyWidget {
@@ -219,6 +270,10 @@ label {
 	border-color: #3377bb;
 	border-width: 2px;
 	text-align: center;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
 }
 
 .AddBuddyWidget-jabberId {
@@ -227,61 +282,6 @@ label {
 
 .AddBuddyWidget-buddyName {
 	padding: 4px;
-}
-/* AuthenticationWidget */
-.authenticationWidget-LoggedIn {
-	margin-right: 10px;
-	font-family: Verdana, sans-serif;
-	font-size: 9pt;
-}
-
-.signinPanel {
-	padding: 15px;
-	width: 200px;
-	height: 200px;
-	background-color: transparent;
-}
-
-.signinPanelFull {
-	padding: 15px;
-	width: 300px;
-	height: 200px;
-	background-color: #b9d1e8;
-	border-style: solid;
-	border-color: #3377bb;
-	border-width: 2px;
-	text-align: center;
-}
-
-.signinWidgetPopup {
-	
-}
-
-.signinWidget {
-	padding: 2px;
-	background-color: #b9d1e8;
-	border-style: solid;
-	border-color: #3377bb;
-	border-width: 2px;
-}
-
-.signinWidget-usernameField {
-	padding: 4px;
-}
-
-.signinWidget-passwordField {
-	padding: 4px;
-}
-
-.signinWidget-errorMessage {
-	padding: 4px;
-	color: red;
-}
-
-.signinWidget-staySignedin {
-	padding: 4px;
-	font-family: Verdana, sans-serif;
-	font-size: 10pt;
 }
 
 .chatHeaderWidget {
@@ -295,6 +295,8 @@ label {
 	border-style: solid;
 	border-color: #3377bb;
 	border-width: 1px;
+	cursor: pointer;
+	
 }
 
 .chatHeaderWidget-buttonPanel {

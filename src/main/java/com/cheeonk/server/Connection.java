@@ -100,7 +100,9 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 		{
 			JabberId jabberId = new JabberId(entry);
 
-			IBuddy buddy = new CheeonkBuddy(jabberId, jabberId.toString());
+			RosterEntry rosterEntry = getRoster().getEntry(entry);
+
+			IBuddy buddy = new CheeonkBuddy(new JabberId(rosterEntry.getUser()), rosterEntry.getName());
 
 			eventDeque.add(new AddBuddyEvent(buddy));
 		}

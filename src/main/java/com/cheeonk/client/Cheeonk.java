@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -89,7 +90,6 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		this.authenticationWidget = new AuthenticationWidget(eventBus);
 		this.signinWidget = new SigninWidget(eventBus);
-		this.signinWidget.setStyleName("signinPanelFull");
 
 		this.headerPanel = new VerticalPanel();
 		this.headerPanel.setStyleName("header");
@@ -109,6 +109,12 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		this.footerPanel = new VerticalPanel();
 		this.footerPanel.addStyleName("footer");
 
+		final PopupPanel popup = new PopupPanel(true);
+		popup.setStyleName("RegistrationWidget-Popup");
+
+		// TODO Move the onclick to the actual widget, call the dispatcher from
+		// there and create an onsuccess event
+		// TODO fix bug that will occur after registering.
 		registrationWidget = new RegistrationWidget()
 		{
 			@Override
@@ -124,8 +130,20 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 					{
 						if (isRegistered)
 						{
-							westPanel.clear();
-							westPanel.add(new HTML("Registration Successful."));
+							registrationWidget.onSuccess();
+
+							Timer timer = new Timer()
+							{
+								@Override
+								public void run()
+								{
+									popup.setAnimationEnabled(true);
+									popup.hide();
+
+								}
+							};
+
+							timer.schedule(3000);
 						}
 
 					}
@@ -133,15 +151,17 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 			}
 
 		};
-		registrationWidget.setStyleName("registrationWidget");
+
+		popup.setGlassEnabled(true);
+		popup.add(registrationWidget);
 
 		registrationLinkWidget = new RegistrationLinkWidget()
 		{
-
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				westPanel.add(registrationWidget);
+				popup.show();
+				popup.center();
 			}
 		};
 
@@ -200,6 +220,8 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		eastPanel.add(signinWidget);
 		eastPanel.add(registrationLinkWidget);
+
+		centerPanel.add(new HTML("test"));
 	}
 
 	private void clear()
@@ -211,7 +233,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		centerPanel.clear();
 	}
 
-	public void getEvent()
+	private void getEvent()
 	{
 		rootLogger.log(Level.FINER, "Waiting for incoming events.");
 
@@ -292,6 +314,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	{
 		chatTrayWidget.clear();
 		ConnectionKey.get().reset();
+		chatTimer.cancel();
 
 		createMainPage();
 	}
