@@ -220,8 +220,6 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		eastPanel.add(signinWidget);
 		eastPanel.add(registrationLinkWidget);
-
-		centerPanel.add(new HTML("test"));
 	}
 
 	private void clear()
