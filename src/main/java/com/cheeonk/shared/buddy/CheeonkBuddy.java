@@ -1,5 +1,6 @@
 package com.cheeonk.shared.buddy;
 
+
 public class CheeonkBuddy extends AbstractBuddy
 {
 	private JabberId jID;

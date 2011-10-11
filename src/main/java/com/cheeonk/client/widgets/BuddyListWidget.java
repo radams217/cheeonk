@@ -1,19 +1,28 @@
 package com.cheeonk.client.widgets;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 
 import com.cheeonk.client.callback.AddedBuddy;
-import com.cheeonk.client.event.RemoveBuddyEvent;
 import com.cheeonk.client.event.SignedinEvent;
 import com.cheeonk.client.event.SignedoutEvent;
 import com.cheeonk.client.handler.AuthenticationEventHandler;
 import com.cheeonk.client.handler.BuddyEventHandler;
+import com.cheeonk.client.handler.SubscriptionEventHandler;
 import com.cheeonk.shared.ConnectionKey;
 import com.cheeonk.shared.action.AddBuddy;
+import com.cheeonk.shared.buddy.IBuddy;
+import com.cheeonk.shared.buddy.JabberId;
 import com.cheeonk.shared.event.AddBuddyEvent;
 import com.cheeonk.shared.event.PresenceChangeEvent;
+import com.cheeonk.shared.event.RemoveBuddyEvent;
+import com.cheeonk.shared.event.SubscribeEvent;
+import com.cheeonk.shared.event.UnSubscribeEvent;
+import com.cheeonk.shared.event.UpdateBuddyEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -23,8 +32,10 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler
+public class BuddyListWidget extends Composite implements AuthenticationEventHandler, BuddyEventHandler, SubscriptionEventHandler
 {
+	private final Map<JabberId, IBuddy> buddyMap;
+
 	private final DispatchAsync dispatchAsync;
 	private final SimpleEventBus eventBus;
 	private final Button addButton;
@@ -37,9 +48,12 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		this.eventBus.addHandler(SignedoutEvent.TYPE, this);
 		this.eventBus.addHandler(AddBuddyEvent.TYPE, this);
 		this.eventBus.addHandler(RemoveBuddyEvent.TYPE, this);
+		this.eventBus.addHandler(SubscribeEvent.TYPE, this);
+		this.eventBus.addHandler(UnSubscribeEvent.TYPE, this);
 
 		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
+		this.buddyMap = new HashMap<JabberId, IBuddy>();
 		panel = new VerticalPanel();
 		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		panel.addStyleName("buddyListWidget");
@@ -121,7 +135,11 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	@Override
 	public void onAddBuddy(AddBuddyEvent event)
 	{
-		panel.add(new BuddyWidget(eventBus, event.getBuddy()));
+		// Buddies should only be displayed on the list if they are BOTH or TO
+		IBuddy buddy = event.getBuddy();
+
+		buddyMap.put(buddy.getJabberId(), buddy);
+		panel.add(new BuddyWidget(eventBus, buddy));
 	}
 
 	@Override
@@ -131,10 +149,31 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 		// panel.remove(buddyWidget);
 	}
 
+	@Override
+	public void onUpdateBuddy(UpdateBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 	@Deprecated
 	@Override
 	public void onPresenceChange(PresenceChangeEvent event)
 	{
 		// Event not added to event bus for this object
 	}
+
+	@Override
+	public void onSubscribe(SubscribeEvent event)
+	{
+		panel.add(new SubscribeBuddyWidget(event.getBuddy()));
+	}
+
+	@Override
+	public void onUnSubscribe(UnSubscribeEvent event)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

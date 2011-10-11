@@ -5,6 +5,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
 
 import com.cheeonk.server.Connection;
 import com.cheeonk.server.ConnectionDriver;
@@ -29,10 +30,13 @@ public class AddBuddyHandler implements ActionHandler<AddBuddy, AddBuddyResult>
 		try
 		{
 			connection.getRoster().createEntry(action.getBuddy().getJabberId().getJabberId(), action.getBuddy().getName(), null);
+
+			Presence presence = new Presence(Presence.Type.subscribed);
+			presence.setTo(action.getBuddy().getJabberId().getJabberId());
+			connection.sendPacket(presence);
 		}
 		catch (XMPPException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

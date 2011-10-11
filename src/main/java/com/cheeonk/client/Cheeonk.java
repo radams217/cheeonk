@@ -69,7 +69,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	private final VerticalPanel centerPanel;
 	private final VerticalPanel footerPanel;
 
-	private final Timer chatTimer;
+	private final Timer eventTimer;
 
 	public Cheeonk()
 	{
@@ -115,15 +115,14 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		// TODO Move the onclick to the actual widget, call the dispatcher from
 		// there and create an onsuccess event
 		// TODO fix bug that will occur after registering.
-		registrationWidget = new RegistrationWidget()
+		this.registrationWidget = new RegistrationWidget()
 		{
 			@Override
 			public void onClick(ClickEvent event)
 			{
 				super.onClick(event);
 
-				dispatchAsync.execute(new Register(registrationWidget.getUsername(), registrationWidget.getPassword(), registrationWidget.getName(),
-						registrationWidget.getEmail()), new Registered()
+				dispatchAsync.execute(new Register(getUsername(), getPassword(), getName(), getEmail()), new Registered()
 				{
 					@Override
 					public void got(boolean isRegistered)
@@ -179,7 +178,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		Window.addCloseHandler(this);
 
-		chatTimer = new Timer()
+		eventTimer = new Timer()
 		{
 			@Override
 			public void run()
@@ -216,7 +215,6 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 
 		westPanel.add(new HTML("Stay Connected with Friends by Cheeonking the Shit out of them."));
 		westPanel.add(new HTML("Join the Herd for up to the minute cheeonks for your friends."));
-		westPanel.add(new HTML("Latest Cheeonk:"));
 
 		eastPanel.add(signinWidget);
 		eastPanel.add(registrationLinkWidget);
@@ -245,15 +243,35 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 					eventBus.fireEvent(event);
 				}
 
-				chatTimer.schedule(1);
+				eventTimer.schedule(1);
 			}
 
 		});
 	}
 
 	@Override
-	public void onMessageReceived(MessageReceivedEvent event)
+	public void onMessageReceived(final MessageReceivedEvent event)
 	{
+		final Timer defaultIndicator = new Timer()
+		{
+			@Override
+			public void run()
+			{
+				Window.setTitle("Cheeonk");
+			}
+		};
+
+		final Timer newMessageIndicator = new Timer()
+		{
+			@Override
+			public void run()
+			{
+				Window.setTitle("New Message from " + event.getMessage().getFrom());
+				defaultIndicator.schedule(2000);
+			}
+		};
+
+		newMessageIndicator.scheduleRepeating(4000);
 
 	}
 
@@ -312,7 +330,7 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 	{
 		chatTrayWidget.clear();
 		ConnectionKey.get().reset();
-		chatTimer.cancel();
+		eventTimer.cancel();
 
 		createMainPage();
 	}

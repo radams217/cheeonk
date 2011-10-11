@@ -8,13 +8,17 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.RosterPacket.ItemType;
 
 import com.cheeonk.shared.ConnectionKey;
 import com.cheeonk.shared.buddy.CheeonkBuddy;
@@ -25,11 +29,12 @@ import com.cheeonk.shared.buddy.JabberId;
 import com.cheeonk.shared.event.AddBuddyEvent;
 import com.cheeonk.shared.event.MessageReceivedEvent;
 import com.cheeonk.shared.event.PresenceChangeEvent;
+import com.cheeonk.shared.event.SubscribeEvent;
 import com.cheeonk.shared.message.CheeonkMessage;
 import com.cheeonk.shared.message.IMessage;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class Connection extends XMPPConnection implements RosterListener, ChatManagerListener, MessageListener
+public class Connection extends XMPPConnection implements RosterListener, ChatManagerListener, MessageListener, PacketListener
 {
 	private final BlockingDeque<GwtEvent> eventDeque;
 
@@ -48,12 +53,14 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	{
 		getChatManager().addChatListener(this);
 		getRoster().addRosterListener(this);
+		addPacketListener(this, new PacketTypeFilter(Presence.class));
 	}
 
 	public void removeListeners()
 	{
 		getChatManager().removeChatListener(this);
 		getRoster().removeRosterListener(this);
+		removePacketListener(this);
 	}
 
 	public void processRoster()
@@ -64,29 +71,11 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 
 			// TODO: entry.getStatus()
 
-			switch (entry.getType())
-			{
-				case none:
-					buddy.setSubscription(Subscription.NONE);
-					break;
-				case both:
-					buddy.setSubscription(Subscription.BOTH);
-					break;
-				case to:
-					buddy.setSubscription(Subscription.TO);
-					break;
-				case from:
-					buddy.setSubscription(Subscription.FROM);
-					break;
-				case remove:
-					buddy.setSubscription(Subscription.REMOVE);
-					break;
-			}
+			buddy.setSubscription(getSubscription(entry.getType()));
 
 			for (RosterGroup group : entry.getGroups())
 			{
 				group.getName();
-
 			}
 
 			eventDeque.add(new AddBuddyEvent(buddy));
@@ -98,11 +87,10 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	{
 		for (String entry : entries)
 		{
-			JabberId jabberId = new JabberId(entry);
-
 			RosterEntry rosterEntry = getRoster().getEntry(entry);
 
 			IBuddy buddy = new CheeonkBuddy(new JabberId(rosterEntry.getUser()), rosterEntry.getName());
+			buddy.setSubscription(getSubscription(rosterEntry.getType()));
 
 			eventDeque.add(new AddBuddyEvent(buddy));
 		}
@@ -124,7 +112,64 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	@Override
 	public void presenceChanged(Presence presence)
 	{
-		eventDeque.add(new PresenceChangeEvent(Connection.getPresence(presence)));
+		eventDeque.add(new PresenceChangeEvent(getPresence(presence)));
+	}
+
+	public void sendMessage(IMessage message)
+	{
+		try
+		{
+			getChatManager().createChat(message.getTo().toString(), this).sendMessage(message.getBody());
+		}
+		catch (XMPPException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void processMessage(Chat chat, Message message)
+	{
+		switch (message.getType())
+		{
+			case chat:
+				CheeonkMessage cheeonkMessage = new CheeonkMessage(new JabberId(message.getTo()), new JabberId(message.getFrom()), message.getBody());
+				eventDeque.add(new MessageReceivedEvent(cheeonkMessage));
+				break;
+
+			case groupchat:
+				break;
+
+			case normal:
+				break;
+
+			case headline:
+				break;
+
+			case error:
+				break;
+		}
+
+	}
+
+	@Override
+	public void chatCreated(Chat chat, boolean isLocal)
+	{
+		chat.addMessageListener(this);
+	}
+
+	@Override
+	public void processPacket(Packet packet)
+	{
+		Presence presence = (Presence) packet;
+
+		if (Presence.Type.subscribe.equals(presence.getType()))
+		{
+			eventDeque.add(new SubscribeEvent(new CheeonkBuddy(new JabberId(presence.getFrom()), "")));
+			return;
+		}
+
+		eventDeque.add(new PresenceChangeEvent(getPresence(presence)));
 	}
 
 	public static CheeonkPresence getPresence(Presence presence)
@@ -185,6 +230,18 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 			case UNAVAILABLE:
 				presence = new Presence(Presence.Type.unavailable);
 				break;
+			case SUBSCRIBE:
+				presence = new Presence(Presence.Type.subscribe);
+				break;
+			case SUBSCRIBED:
+				presence = new Presence(Presence.Type.subscribed);
+				break;
+			case UNSUBSCRIBE:
+				presence = new Presence(Presence.Type.unsubscribe);
+				break;
+			case UNSUBSCRIBED:
+				presence = new Presence(Presence.Type.unsubscribed);
+				break;
 		}
 
 		presence.setStatus(cheeonkPresence.getStatus());
@@ -208,49 +265,31 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 				break;
 		}
 
+		presence.setTo(cheeonkPresence.getJabberId().getJabberId());
+
 		return presence;
 	}
 
-	public void sendMessage(IMessage message)
+	public static Subscription getSubscription(ItemType itemType)
 	{
-		try
+		switch (itemType)
 		{
-			getChatManager().createChat(message.getTo().toString(), this).sendMessage(message.getBody());
-		}
-		catch (XMPPException e)
-		{
-			e.printStackTrace();
-		}
-	}
+			case both:
+				return IBuddy.Subscription.BOTH;
 
-	@Override
-	public void processMessage(Chat chat, Message message)
-	{
-		switch (message.getType())
-		{
-			case chat:
-				CheeonkMessage cheeonkMessage = new CheeonkMessage(new JabberId(message.getTo()), new JabberId(message.getFrom()), message.getBody());
-				eventDeque.add(new MessageReceivedEvent(cheeonkMessage));
-				break;
+			case from:
+				return IBuddy.Subscription.FROM;
 
-			case groupchat:
-				break;
+			case none:
+				return IBuddy.Subscription.NONE;
 
-			case normal:
-				break;
+			case remove:
+				return IBuddy.Subscription.REMOVE;
 
-			case headline:
-				break;
-
-			case error:
-				break;
+			case to:
+				return IBuddy.Subscription.TO;
 		}
 
-	}
-
-	@Override
-	public void chatCreated(Chat chat, boolean isLocal)
-	{
-		chat.addMessageListener(this);
+		return IBuddy.Subscription.NONE;
 	}
 }

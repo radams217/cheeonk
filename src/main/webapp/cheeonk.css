@@ -86,10 +86,10 @@ body {
 	border-color: #3377bb;
 	border-width: 2px;
 	text-align: center;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
 }
 
 .signinWidget-usernameField {
@@ -123,10 +123,10 @@ body {
 	border-color: #3377bb;
 	border-width: 2px;
 	text-align: center;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
 }
 
 .registrationLinkWidget-button {
@@ -152,10 +152,10 @@ body {
 	border-color: #3377bb;
 	border-width: 2px;
 	text-align: center;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
 }
 
 .RegistrationWidget-Label{
@@ -194,10 +194,10 @@ body {
 	border-style: solid;
 	border-color: #3377bb;
 	border-width: 2px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
 }
 
 .chatContainer {
@@ -269,10 +269,10 @@ body {
 	border-color: #3377bb;
 	border-width: 2px;
 	text-align: center;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
 }
 
 .AddBuddyWidget-jabberId {

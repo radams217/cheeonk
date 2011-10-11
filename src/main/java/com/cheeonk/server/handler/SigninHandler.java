@@ -40,7 +40,7 @@ public class SigninHandler implements ActionHandler<Signin, SigninResult>
 			Logger.getLogger("").log(Level.FINER, "Client logged in as " + connection.getUser());
 
 			// For now accept all subscription requests
-			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);
+			connection.getRoster().setSubscriptionMode(SubscriptionMode.manual);
 			connection.processRoster();
 
 			connection.addListeners();

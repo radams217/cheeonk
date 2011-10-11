@@ -1,18 +1,28 @@
 package com.cheeonk.client.widgets;
 
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
+
 import com.cheeonk.client.ImageResources;
+import com.cheeonk.client.callback.UpdatedBuddy;
 import com.cheeonk.client.event.ChatCreatedEvent;
-import com.cheeonk.client.event.RemoveBuddyEvent;
 import com.cheeonk.client.handler.BuddyEventHandler;
+import com.cheeonk.shared.ConnectionKey;
+import com.cheeonk.shared.action.UpdateBuddy;
 import com.cheeonk.shared.buddy.CheeonkPresence;
 import com.cheeonk.shared.buddy.IBuddy;
 import com.cheeonk.shared.event.AddBuddyEvent;
 import com.cheeonk.shared.event.PresenceChangeEvent;
+import com.cheeonk.shared.event.RemoveBuddyEvent;
+import com.cheeonk.shared.event.UpdateBuddyEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -35,20 +45,52 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 {
 	protected final IBuddy buddy;
 	private final SimpleEventBus eventBus;
+	private final DispatchAsync dispatchAsync;
+
+	private final VerticalPanel panel;
 	private final BuddyPopupPanel detailsPopupPanel;
 
 	private HTML buddyStatus;
-
 	private Image statusDot;
 
-	public BuddyWidget(SimpleEventBus eventBus, IBuddy buddy)
+	private final EditableTextPanel editBuddyName;
+
+	public BuddyWidget(SimpleEventBus eventBus, final IBuddy buddy)
 	{
 		this.eventBus = eventBus;
 		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
+		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+
 		this.buddy = buddy;
 		this.statusDot = new Image(ImageResources.INSTANCE.getGrayDot());
 		this.statusDot.setStyleName("buddyWidget-statusDot");
+		this.editBuddyName = new EditableTextPanel(this.buddy.getName())
+		{
+			@Override
+			public void onKeyDown(KeyDownEvent event)
+			{
+				super.onKeyDown(event);
+
+				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+				{
+					buddy.setName(this.getText());
+
+					dispatchAsync.execute(new UpdateBuddy(ConnectionKey.get(), buddy), new UpdatedBuddy()
+					{
+						@Override
+						public void got()
+						{
+
+						}
+
+					});
+
+				}
+			}
+
+		};
+		this.editBuddyName.setStyleName("buddyWidget-buddy");
 
 		this.detailsPopupPanel = new BuddyPopupPanel();
 		this.detailsPopupPanel.addChatClickHandler(this);
@@ -57,18 +99,15 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		this.addMouseOverHandler(this);
 		this.addClickHandler(this);
 
-		HTML buddyName = new HTML(this.buddy.getName());
-		buddyName.setStyleName("buddyWidget-buddy");
-
 		buddyStatus = new HTML("");
 		buddyStatus.setStyleName("buddyWidget-status");
 
-		VerticalPanel panel = new VerticalPanel();
+		panel = new VerticalPanel();
 		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		panel.setStyleName("buddyWidget");
 		HorizontalPanel statusDotNamePanel = new HorizontalPanel();
 		statusDotNamePanel.add(statusDot);
-		statusDotNamePanel.add(buddyName);
+		statusDotNamePanel.add(editBuddyName);
 
 		panel.add(statusDotNamePanel);
 		panel.add(buddyStatus);
@@ -234,5 +273,12 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 
 		statusDot.setResource(image);
 		buddyStatus.setHTML(presence.getStatus());
+	}
+
+	@Override
+	public void onUpdateBuddy(UpdateBuddyEvent event)
+	{
+		// TODO Auto-generated method stub
+
 	}
 }

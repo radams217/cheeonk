@@ -1,6 +1,8 @@
 package com.cheeonk.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,11 +17,15 @@ public class ConnectionPool
 	private final ConnectionReaper reaper;
 	private final Logger logger;
 
+	private final List<String> cheeonks;
+
 	public ConnectionPool()
 	{
 		connections = new HashMap<ConnectionKey, Connection>();
 		reaper = new ConnectionReaper(this);
 		logger = Logger.getLogger("");
+
+		cheeonks = new ArrayList<String>();
 	}
 
 	public synchronized void reapConnections()
