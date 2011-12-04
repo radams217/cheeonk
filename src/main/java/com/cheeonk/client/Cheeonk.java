@@ -318,6 +318,8 @@ public class Cheeonk implements EntryPoint, AuthenticationEventHandler, MessageE
 		westPanel.clear();
 		westPanel.add(buddyListPanel);
 
+		// eastPanel.add(new BuddySpots(eventBus));
+
 		footerPanel.add(chatTrayWidget);
 
 		ConnectionKey.get().setConnectionId(event.getConnectionId());

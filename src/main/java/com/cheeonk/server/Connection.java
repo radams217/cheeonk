@@ -67,7 +67,11 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 	{
 		for (RosterEntry entry : getRoster().getEntries())
 		{
-			IBuddy buddy = new CheeonkBuddy(new JabberId(entry.getUser()), entry.getName());
+			// TODO combine this with entries added
+			JabberId jabberId = new JabberId(entry.getUser());
+			String name = entry.getName();
+
+			IBuddy buddy = new CheeonkBuddy(jabberId, name);
 
 			// TODO: entry.getStatus()
 
@@ -89,7 +93,10 @@ public class Connection extends XMPPConnection implements RosterListener, ChatMa
 		{
 			RosterEntry rosterEntry = getRoster().getEntry(entry);
 
-			IBuddy buddy = new CheeonkBuddy(new JabberId(rosterEntry.getUser()), rosterEntry.getName());
+			JabberId jabberId = new JabberId(rosterEntry.getUser());
+			String name = rosterEntry.getName();
+
+			IBuddy buddy = new CheeonkBuddy(jabberId, name);
 			buddy.setSubscription(getSubscription(rosterEntry.getType()));
 
 			eventDeque.add(new AddBuddyEvent(buddy));

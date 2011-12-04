@@ -40,10 +40,9 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class BuddyWidget extends Composite implements HasMouseOverHandlers, MouseOverHandler, HasMouseOutHandlers, MouseOutHandler, HasClickHandlers,
+public abstract class BuddyWidget extends Composite implements HasMouseOverHandlers, MouseOverHandler, HasMouseOutHandlers, MouseOutHandler, HasClickHandlers,
 		ClickHandler, BuddyEventHandler
 {
-	protected final IBuddy buddy;
 	private final SimpleEventBus eventBus;
 	private final DispatchAsync dispatchAsync;
 
@@ -55,17 +54,16 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 
 	private final EditableTextPanel editBuddyName;
 
-	public BuddyWidget(SimpleEventBus eventBus, final IBuddy buddy)
+	public BuddyWidget(SimpleEventBus eventBus)
 	{
 		this.eventBus = eventBus;
 		this.eventBus.addHandler(PresenceChangeEvent.TYPE, this);
 
 		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
-		this.buddy = buddy;
 		this.statusDot = new Image(ImageResources.INSTANCE.getGrayDot());
 		this.statusDot.setStyleName("buddyWidget-statusDot");
-		this.editBuddyName = new EditableTextPanel(this.buddy.getName())
+		this.editBuddyName = new EditableTextPanel(getBuddy().getName())
 		{
 			@Override
 			public void onKeyDown(KeyDownEvent event)
@@ -74,9 +72,9 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 
 				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
 				{
-					buddy.setName(this.getText());
+					getBuddy().setName(this.getText());
 
-					dispatchAsync.execute(new UpdateBuddy(ConnectionKey.get(), buddy), new UpdatedBuddy()
+					dispatchAsync.execute(new UpdateBuddy(ConnectionKey.get(), getBuddy()), new UpdatedBuddy()
 					{
 						@Override
 						public void got()
@@ -139,7 +137,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	@Override
 	public void onClick(ClickEvent event)
 	{
-		eventBus.fireEvent(new ChatCreatedEvent(buddy));
+		eventBus.fireEvent(new ChatCreatedEvent(getBuddy()));
 	}
 
 	private class BuddyPopupPanel extends DecoratedPopupPanel implements HasMouseOutHandlers, MouseOutHandler, HasMouseOverHandlers, MouseOverHandler
@@ -158,10 +156,10 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 			this.addMouseOutHandler(this);
 			this.addMouseOverHandler(this);
 
-			HTML buddyName = new HTML(buddy.getName());
+			HTML buddyName = new HTML(getBuddy().getName());
 			buddyName.setStyleName("buddyPopupPanel-name");
 
-			HTML jabberId = new HTML(buddy.getJabberId().getJabberId());
+			HTML jabberId = new HTML(getBuddy().getJabberId().getJabberId());
 			jabberId.setStyleName("buddyPopupPanel-jabberId");
 
 			VerticalPanel panel = new VerticalPanel();
@@ -243,7 +241,7 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 	@Override
 	public void onPresenceChange(PresenceChangeEvent event)
 	{
-		if (!buddy.getJabberId().equals(event.getPresence().getJabberId()))
+		if (!getBuddy().getJabberId().equals(event.getPresence().getJabberId()))
 		{
 			return;
 		}
@@ -281,4 +279,6 @@ public class BuddyWidget extends Composite implements HasMouseOverHandlers, Mous
 		// TODO Auto-generated method stub
 
 	}
+
+	public abstract IBuddy getBuddy();
 }

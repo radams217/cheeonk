@@ -136,17 +136,23 @@ public class BuddyListWidget extends Composite implements AuthenticationEventHan
 	public void onAddBuddy(AddBuddyEvent event)
 	{
 		// Buddies should only be displayed on the list if they are BOTH or TO
-		IBuddy buddy = event.getBuddy();
+		final IBuddy buddy = event.getBuddy();
 
 		buddyMap.put(buddy.getJabberId(), buddy);
-		panel.add(new BuddyWidget(eventBus, buddy));
+		panel.add(new BuddyWidget(eventBus)
+		{
+			@Override
+			public IBuddy getBuddy()
+			{
+				return buddy;
+			}
+		});
 	}
 
 	@Override
 	public void onRemoveBuddy(RemoveBuddyEvent event)
 	{
 		// BuddyWidget buddyWidget = new BuddyWidget(eventBus, event.get);
-		// panel.remove(buddyWidget);
 	}
 
 	@Override

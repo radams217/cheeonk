@@ -1,5 +1,6 @@
 package com.cheeonk.client.widgets.chat;
 
+import com.cheeonk.shared.buddy.IBuddy;
 import com.cheeonk.shared.message.IMessage;
 
 /**
@@ -13,8 +14,6 @@ import com.cheeonk.shared.message.IMessage;
  */
 public interface IChatWidget
 {
-	void addCheeonk(IMessage message);
-
 	void minimize();
 
 	void maximize();
@@ -26,4 +25,8 @@ public interface IChatWidget
 	boolean isMaximized();
 
 	boolean isClosed();
+
+	void addMessage(IMessage message);
+
+	IBuddy getParticipant();
 }

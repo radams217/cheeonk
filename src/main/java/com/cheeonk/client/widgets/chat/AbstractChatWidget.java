@@ -1,5 +1,6 @@
 package com.cheeonk.client.widgets.chat;
 
+import com.cheeonk.shared.buddy.IBuddy;
 import com.cheeonk.shared.message.IMessage;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -8,6 +9,13 @@ public abstract class AbstractChatWidget extends Composite implements IChatWidge
 	private boolean isMinimized;
 	private boolean isMaximized;
 	private boolean isClosed;
+
+	public AbstractChatWidget()
+	{
+		setMinimized(true);
+		setMaximized(false);
+		setClosed(false);
+	}
 
 	public void setMinimized(boolean isMinimized)
 	{
@@ -43,14 +51,32 @@ public abstract class AbstractChatWidget extends Composite implements IChatWidge
 	}
 
 	@Override
-	public abstract void addCheeonk(IMessage message);
+	public void minimize()
+	{
+		setMinimized(true);
+		setMaximized(false);
+		setClosed(false);
+	}
 
 	@Override
-	public abstract void minimize();
+	public void maximize()
+	{
+		setMinimized(false);
+		setMaximized(true);
+		setClosed(false);
+	}
 
 	@Override
-	public abstract void maximize();
+	public void close()
+	{
+		setMinimized(false);
+		setMaximized(false);
+		setClosed(true);
+	}
 
 	@Override
-	public abstract void close();
+	public abstract void addMessage(IMessage message);
+
+	@Override
+	public abstract IBuddy getParticipant();
 }

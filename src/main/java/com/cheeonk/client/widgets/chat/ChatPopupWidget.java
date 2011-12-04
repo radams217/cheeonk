@@ -7,49 +7,41 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ChatPopupWidget extends AbstractChatWidget
+public abstract class ChatPopupWidget extends AbstractChatWidget
 {
 	private final SimplePanel panel;
-	private final ChatHeaderWidget headerWidget;
+	private final PopupPanel popupPanel;
+
 	private final ChatWidget chatWidget;
 
-	public ChatPopupWidget(SimpleEventBus eventBus, IBuddy buddy)// JabberId
-																	// jabberId)
+	public ChatPopupWidget(SimpleEventBus eventBus)
 	{
 		panel = new SimplePanel();
 		panel.setStyleName("chatPopupWidget");
 
-		final PopupPanel popupPanel = new PopupPanel();
+		popupPanel = new PopupPanel();
 		popupPanel.setStyleName("chatPopupWidget-popupPanel");
 
-		chatWidget = new ChatWidget(eventBus, buddy);
-
-		final VerticalPanel popupContents = new VerticalPanel();
-		popupContents.setStyleName("chatPopupWidget-popupContents");
-		popupPanel.add(popupContents);
-
-		headerWidget = new ChatHeaderWidget(buddy)
+		chatWidget = new ChatWidget(eventBus)
 		{
 			@Override
-			public void onMinimize()
+			public void minimize()
 			{
+				super.minimize();
+
 				panel.clear();
 				panel.add(this);
 				popupPanel.hide();
 
-				setMinimized(true);
-				setMaximized(false);
-				setClosed(false);
 			}
 
 			@Override
-			public void onMaximize()
+			public void maximize()
 			{
+				super.maximize();
+
 				panel.clear();
 
-				popupContents.clear();
-				popupContents.add(this);
-				popupContents.add(chatWidget);
 				popupPanel.setPopupPositionAndShow(new PopupPanel.PositionCallback()
 				{
 					@Override
@@ -61,56 +53,56 @@ public class ChatPopupWidget extends AbstractChatWidget
 					}
 				});
 
-				setMinimized(false);
-				setMaximized(true);
-				setClosed(false);
 			}
 
 			@Override
-			public void onClose()
+			public void close()
 			{
+				super.close();
+
 				popupPanel.hide();
-				ChatPopupWidget.this.onClose();
-				setMinimized(false);
-				setMaximized(false);
-				setClosed(true);
+			}
+
+			@Override
+			public IBuddy getParticipant()
+			{
+				return ChatPopupWidget.this.getParticipant();
 			}
 		};
 
-		panel.add(headerWidget);
+		final VerticalPanel popupContents = new VerticalPanel();
+		popupContents.setStyleName("chatPopupWidget-popupContents");
+		popupContents.add(chatWidget);
+
+		popupPanel.add(popupContents);
+
 		initWidget(panel);
-
-		setMinimized(true);
-		setMaximized(false);
-		setClosed(false);
-	}
-
-	@Override
-	public void addCheeonk(IMessage message)
-	{
-		chatWidget.addCheeonk(message);
 	}
 
 	@Override
 	public void minimize()
 	{
-		headerWidget.onMinimize();
+		chatWidget.minimize();
 	}
 
 	@Override
 	public void maximize()
 	{
-		headerWidget.onMaximize();
+		chatWidget.maximize();
 	}
 
 	@Override
 	public void close()
 	{
-		headerWidget.onClose();
+		chatWidget.close();
 	}
 
-	public void onClose()
-	{
+	@Override
+	public abstract IBuddy getParticipant();
 
+	@Override
+	public void addMessage(IMessage message)
+	{
+		chatWidget.addMessage(message);
 	}
 }

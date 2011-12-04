@@ -10,6 +10,7 @@ import com.cheeonk.client.handler.MessageEventHandler;
 import com.cheeonk.client.widgets.chat.ChatPopupWidget;
 import com.cheeonk.client.widgets.chat.IChatWidget;
 import com.cheeonk.shared.buddy.CheeonkBuddy;
+import com.cheeonk.shared.buddy.IBuddy;
 import com.cheeonk.shared.buddy.JabberId;
 import com.cheeonk.shared.event.MessageReceivedEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -55,34 +56,16 @@ public class ChatTrayWidget extends Composite implements ChatEventHandler, Messa
 	@Override
 	public void onChatCreated(ChatCreatedEvent event)
 	{
-		final JabberId key = event.getBuddy().getJabberId();
+		final IBuddy buddy = event.getBuddy();
 
-		if (!chats.containsKey(key))
+		if (!chats.containsKey(buddy.getJabberId()))
 		{
-			ChatPopupWidget chatPopupWidget = new ChatPopupWidget(eventBus, event.getBuddy())
-			{
-				@Override
-				public void onClose()
-				{
-					panel.remove(this);
-
-					for (IChatWidget chatWidget : chats.values())
-					{
-						// Redraw the popups just in case their position on the
-						// panel changes
-						if (chatWidget.isMaximized())
-						{
-							chatWidget.maximize();
-						}
-					}
-				}
-			};
-
-			chats.put(key, chatPopupWidget);
-			panel.add(chatPopupWidget);
+			ChatPopupWidget popup = getChatPopupWidget(buddy.getJabberId());
+			chats.put(buddy.getJabberId(), popup);
+			panel.add(popup);
 		}
 
-		ChatPopupWidget chatWidget = (ChatPopupWidget) chats.get(key);
+		ChatPopupWidget chatWidget = (ChatPopupWidget) chats.get(buddy.getJabberId());
 
 		if (chatWidget.isClosed())
 		{
@@ -99,11 +82,34 @@ public class ChatTrayWidget extends Composite implements ChatEventHandler, Messa
 
 		if (!chats.containsKey(key))
 		{
-			ChatPopupWidget chatPopupWidget = new ChatPopupWidget(eventBus, new CheeonkBuddy(key, "test"))
+			ChatPopupWidget popup = getChatPopupWidget(key);
+			chats.put(key, popup);
+			panel.add(popup);
+		}
+
+		ChatPopupWidget chatWidget = (ChatPopupWidget) chats.get(key);
+
+		if (chatWidget.isClosed())
+		{
+			panel.add(chatWidget);
+		}
+
+		chatWidget.maximize();
+		chatWidget.addMessage(event.getMessage());
+
+	}
+
+	private ChatPopupWidget getChatPopupWidget(final JabberId key)
+	{
+		if (!chats.containsKey(key))
+		{
+			return new ChatPopupWidget(eventBus)
 			{
 				@Override
-				public void onClose()
+				public void close()
 				{
+					super.close();
+
 					panel.remove(this);
 
 					for (IChatWidget chatWidget : chats.values())
@@ -116,22 +122,16 @@ public class ChatTrayWidget extends Composite implements ChatEventHandler, Messa
 						}
 					}
 				}
+
+				@Override
+				public IBuddy getParticipant()
+				{
+					return new CheeonkBuddy(key, key.getJabberId());
+				}
 			};
-
-			chats.put(key, chatPopupWidget);
-			panel.add(chatPopupWidget);
 		}
 
-		ChatPopupWidget chatWidget = (ChatPopupWidget) chats.get(key);
-
-		if (chatWidget.isClosed())
-		{
-			panel.add(chatWidget);
-		}
-
-		chatWidget.maximize();
-		chatWidget.addCheeonk(event.getMessage());
-
+		return (ChatPopupWidget) chats.get(key);
 	}
 
 	@Override

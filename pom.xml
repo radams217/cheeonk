@@ -11,7 +11,7 @@
 	<name>GWT Maven Archetype</name>
 
 	<properties>
-		<gwtVersion>2.2.0</gwtVersion>
+		<gwtVersion>2.4.0</gwtVersion>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
@@ -100,21 +100,22 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>exploded</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
 					<testTimeOut>600</testTimeOut>
 					<mode>htmlunit</mode>
 					<webappDirectory>${webappDirectory}</webappDirectory>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<phase>compile</phase>
+								<goals>
+									<goal>exploded</goal>
+								</goals>
+							</pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 

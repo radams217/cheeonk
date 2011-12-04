@@ -4,6 +4,7 @@ import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchAsync;
 
+import com.cheeonk.client.ImageResources;
 import com.cheeonk.client.callback.SentMessage;
 import com.cheeonk.client.event.MessageSentEvent;
 import com.cheeonk.client.handler.MessageEventHandler;
@@ -22,7 +23,9 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -36,40 +39,40 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  *         coming from the server. This widget can be added to a dialog box or
  *         any type of panel.
  */
-public class ChatWidget extends Composite implements MessageEventHandler
+public abstract class ChatWidget extends AbstractChatWidget implements MessageEventHandler
 {
+	private final ChatHeaderWidget chatHeaderWidget;
 	private final VerticalPanel cheeonks;
 	private final TextArea messageArea;
 	private final ScrollPanel scrollPanel;
 
 	private final DispatchAsync dispatchAsync;
 
-	private final IBuddy participant;
-
-	public ChatWidget(final SimpleEventBus eventBus, final IBuddy participant)
+	public ChatWidget(final SimpleEventBus eventBus)
 	{
 		eventBus.addHandler(MessageReceivedEvent.TYPE, this);
 
-		this.participant = participant;
+		this.dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
 
-		dispatchAsync = new StandardDispatchAsync(new DefaultExceptionHandler());
+		this.chatHeaderWidget = new ChatHeaderWidget();
 
-		cheeonks = new VerticalPanel();
-		cheeonks.addStyleName("chatWidget-Cheeonks");
+		this.cheeonks = new VerticalPanel();
+		this.cheeonks.addStyleName("chatWidget-Cheeonks");
 
-		scrollPanel = new ScrollPanel();
-		scrollPanel.addStyleName("chatWidget-ScrollCheeonks");
-		scrollPanel.add(cheeonks);
+		this.scrollPanel = new ScrollPanel();
+		this.scrollPanel.addStyleName("chatWidget-ScrollCheeonks");
+		this.scrollPanel.add(cheeonks);
 
-		messageArea = new TextArea();
-		messageArea.addStyleName("chatWidget-MessageArea");
+		this.messageArea = new TextArea();
+		this.messageArea.addStyleName("chatWidget-MessageArea");
 
 		VerticalPanel panel = new VerticalPanel();
 		panel.addStyleName("chatWidget");
+		panel.add(chatHeaderWidget);
 		panel.add(scrollPanel);
 		panel.add(messageArea);
 
-		addKeyPressHandler(new KeyPressHandler()
+		this.messageArea.addKeyPressHandler(new KeyPressHandler()
 		{
 			@Override
 			public void onKeyPress(KeyPressEvent event)
@@ -81,8 +84,8 @@ public class ChatWidget extends Composite implements MessageEventHandler
 						@Override
 						public void got(IMessage message)
 						{
-							resetMessageArea();
-							addCheeonk(message);
+							reset();
+							addMessage(message);
 
 							eventBus.fireEvent(new MessageSentEvent(message));
 						}
@@ -96,60 +99,15 @@ public class ChatWidget extends Composite implements MessageEventHandler
 		initWidget(panel);
 	}
 
-	public void addKeyPressHandler(KeyPressHandler handler)
+	protected IMessage getMessage()
 	{
-		messageArea.addKeyPressHandler(handler);
+		return new CheeonkMessage(getParticipant().getJabberId(), new JabberId("me"), messageArea.getText());
 	}
 
-	public void addCheeonk(IMessage message)
-	{
-		cheeonks.add(new Cheeonk(message));
-		scrollPanel.scrollToBottom();
-	}
-
-	public void resetMessageArea()
+	public void reset()
 	{
 		messageArea.setCursorPos(0);
 		messageArea.setText("");
-	}
-
-	public IMessage getMessage()
-	{
-		return new CheeonkMessage(participant.getJabberId(), new JabberId("me"), messageArea.getText());
-	}
-
-	private class Cheeonk extends Composite implements ClickHandler
-	{
-		private final PushButton cheeonkCastButton;
-		private final IMessage message;
-
-		public Cheeonk(IMessage message)
-		{
-			this.message = message;
-
-			VerticalPanel cheeonkPanel = new VerticalPanel();
-			cheeonkPanel.add(new HTML(message.getFrom().toString() + ":"));
-			cheeonkPanel.add(new HTML(this.message.getBody()));
-
-			cheeonkCastButton = new PushButton("C", this);
-			cheeonkCastButton.setStyleName("cheeonk-Cast");
-
-			HorizontalPanel panel = new HorizontalPanel();
-			panel.setStyleName("cheeonk");
-			panel.add(cheeonkPanel);
-			panel.add(cheeonkCastButton);
-
-			initWidget(panel);
-			setStyleName("cheeonk");
-		}
-
-		@Override
-		public void onClick(ClickEvent event)
-		{
-			// TODO Auto-generated method stub
-
-		}
-
 	}
 
 	@Override
@@ -168,5 +126,71 @@ public class ChatWidget extends Composite implements MessageEventHandler
 	public void onMessageSent(MessageSentEvent event)
 	{
 
+	}
+
+	@Override
+	public void addMessage(IMessage message)
+	{
+		cheeonks.add(new CheeonkWidget(message));
+		scrollPanel.scrollToBottom();
+	}
+
+	@Override
+	public abstract IBuddy getParticipant();
+
+	private class ChatHeaderWidget extends Composite
+	{
+		private final HorizontalPanel panel;
+
+		private final PushButton minimizeButton;
+		private final PushButton maximizeButton;
+		private final PushButton closeButton;
+
+		public ChatHeaderWidget()
+		{
+			panel = new HorizontalPanel();
+
+			HTML buddyName = new HTML(getParticipant().getName());
+			buddyName.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+			panel.add(buddyName);
+
+			HorizontalPanel buttonPanel = new HorizontalPanel();
+			buttonPanel.setStyleName("chatHeaderWidget-buttonPanel");
+			minimizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMinimizeSquare()), new ClickHandler()
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					minimize();
+				}
+			});
+			minimizeButton.setStylePrimaryName("chatHeaderWidget-headerButton");
+			maximizeButton = new PushButton(new Image(ImageResources.INSTANCE.getMaximizeSquare()), new ClickHandler()
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					maximize();
+				}
+			});
+			maximizeButton.setStylePrimaryName("chatHeaderWidget-headerButton");
+			closeButton = new PushButton(new Image(ImageResources.INSTANCE.getCloseSquare()), new ClickHandler()
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					close();
+				}
+			});
+			closeButton.setStylePrimaryName("chatHeaderWidget-headerButton");
+
+			buttonPanel.add(minimizeButton);
+			buttonPanel.add(maximizeButton);
+			buttonPanel.add(closeButton);
+			panel.add(buttonPanel);
+
+			initWidget(panel);
+			setStyleName("chatHeaderWidget");
+		}
 	}
 }
